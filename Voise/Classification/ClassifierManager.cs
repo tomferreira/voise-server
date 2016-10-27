@@ -79,24 +79,6 @@ namespace Voise.Classification
             Base classifier = new LogisticTextClassifier(trainingData.relationName());
             classifier.Train(trainingData);
 
-            Base.Result s0 = classifier.Classify("pare de atrapalhar");
-            Base.Result s1 = classifier.Classify("tá ocupado");
-            Base.Result s2 = classifier.Classify("está ocupado");
-            Base.Result s3 = classifier.Classify("sim");
-            Base.Result s4 = classifier.Classify("não");
-            Base.Result s41 = classifier.Classify("não porque");
-            Base.Result s5 = classifier.Classify("não entendi muito bem");
-            Base.Result s6 = classifier.Classify("sim sim");
-            Base.Result s7 = classifier.Classify("não não");
-            Base.Result s8 = classifier.Classify("só momento");
-            Base.Result s9 = classifier.Classify("está no céu");
-            Base.Result s10 = classifier.Classify("para de ligar para mim");
-            Base.Result s11 = classifier.Classify("para de ligar");
-            Base.Result s12 = classifier.Classify("eu não comemoro o meu aniversário");
-            Base.Result s13 = classifier.Classify("sim mas não comemoro meu aniversário");
-            Base.Result s14 = classifier.Classify("está de cama");
-            Base.Result s15 = classifier.Classify("está fora");
-
             lock (_classifiers)
                 _classifiers.Add(classifier.ModelName, classifier);
 

@@ -157,7 +157,7 @@
     <Compile Include="Classification\ClassifierManager.cs" />
     <Compile Include="Classification\Exception\BadModelException.cs" />
     <Compile Include="Classification\Exception\ClassifiersPathNotFound.cs" />
-    <Compile Include="Classification\Exception\LogisticTextClassifier.cs" />
+    <Compile Include="Classification\LogisticTextClassifier.cs" />
     <Compile Include="Classification\J48TextClassifier.cs" />
     <Compile Include="Classification\MultilayerPerceptronTextClassificatier.cs" />
     <Compile Include="Classification\NaiveBayesTextClassifier.cs" />
