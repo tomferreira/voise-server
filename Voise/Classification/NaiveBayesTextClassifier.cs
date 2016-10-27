@@ -1,0 +1,64 @@
+﻿using weka.classifiers.bayes;
+using weka.classifiers.meta;
+using weka.core;
+
+namespace Voise.Classification
+{
+    internal class NaiveBayesTextClassifier : Base
+    {
+        internal NaiveBayesTextClassifier(string modelName) 
+            : base(modelName)
+        {
+            _classifier = new NaiveBayesMultinomialText();
+
+            (_classifier as NaiveBayesMultinomialText).setLowercaseTokens(true);
+
+            bool d = (_classifier as NaiveBayesMultinomialText).getUseWordFrequencies();
+            string s = (_classifier as NaiveBayesMultinomialText).LNormTipText();
+
+            //PTStemmer stemmer = new PTStemmer();
+
+            //string test = stemmer.stem("ele");
+            //string test2 = stemmer.stem("não");
+
+            //(_classifier as NaiveBayesMultinomialText).setStemmer(stemmer);
+
+            //(_classifier as NaiveBayesMultinomialText).setUseStopList(true);
+
+            //(_classifier as NaiveBayesMultinomialText).setStopwords(
+            //  new java.io.File(@"C:\Users\cirillor\Documents\Visual Studio 2015\Projects\Voise\test\classifiers\felicitacao\stopword.txt"));
+
+            //(_classifier as NaiveBayesMultinomialText).setUseWordFrequencies(true);
+
+            //(_classifier as NaiveBayesMultinomialText).setMinWordFrequency(0.9);
+            //(_classifier as NaiveBayesMultinomialText).setNormalizeDocLength(true);
+        }
+
+        internal override void Train(Instances data)
+        {
+            _trainingData = data;
+
+            CVParameterSelection ps = new CVParameterSelection();
+            ps.setClassifier(new NaiveBayesMultinomialText());
+
+            ps.setNumFolds(5);  // using 5-fold CV
+
+            ps.addCVParameter("C 0.1 0.5 1 5");
+            ps.addCVParameter("N 0 1 2");
+            //ps.addCVParameter("P 0");
+            ps.addCVParameter("M 1.0 3.0 5.0");
+            ps.addCVParameter("norm 0.5 1.0 2.0");
+            ps.addCVParameter("lnorm 1.0 2.0 3.0");
+
+            ps.buildClassifier(_trainingData);
+
+            string summary = ps.toSummaryString();
+
+            string[] options = ps.getBestClassifierOptions();
+
+            (_classifier as NaiveBayesMultinomialText).setOptions(options);
+
+            base.Train(_trainingData);
+        }
+    }
+}

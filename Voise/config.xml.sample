@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+    <!-- Default: 8100 -->
+    <!--<port>8100</port>-->
+
+    <!-- Default: ./classifiers/ -->
+    <!--<classifiers_path>./classifiers/</classifiers_path>-->
+
+    <tunning>
+        <!-- Default: false -->
+        <!-- <enabled>false</enabled> -->
+
+        <!-- Default: ./tunning/ -->
+        <!-- <path>./tunning/</path> -->
+    </tunning>
+</config>

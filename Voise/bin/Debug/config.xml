@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+    <!-- Default: 8100 -->
+    <!--<port>8100</port>-->
+
+    <!-- Default: ./classifiers/ -->
+    <classifiers_path>C:\Users\cirillor\Documents\Visual Studio 2015\Projects\Voise\test\classifiers</classifiers_path>
+
+    <tunning>
+        <!-- Default: false -->
+        <enabled>true</enabled>
+
+        <!-- Default: ./tunning/ -->
+        <!-- <path>./tunning/</path> -->
+    </tunning>
+</config>
