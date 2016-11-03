@@ -29,7 +29,7 @@ namespace Voise.Process
             {
                 try
                 { 
-                    client.StreamIn = new StreamIn(100, request.Config.sample_rate, 2);
+                    client.StreamIn = new AudioStream(100, request.Config.sample_rate, 2);
 
                     await recognizer.StartStreamingRecognitionAsync(
                         client.StreamIn,
@@ -39,16 +39,8 @@ namespace Voise.Process
                         request.Config.context);
 
                     SendAccept(client);
-                }
-                catch (Recognizer.Exception.BadAudioException e)
-                {
-                    SendError(client, e);
-                    pipeline.CancelExecution();
-                }
-                catch (Recognizer.Exception.BadEncodingException e)
-                {
-                    SendError(client, e);
-                    pipeline.CancelExecution();
+
+                    pipeline.SpeechResult = new SpeechResult(SpeechResult.Modes.ASR);
                 }
                 catch (Exception e)
                 {

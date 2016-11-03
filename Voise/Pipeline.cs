@@ -13,7 +13,7 @@ namespace Voise
         private CancellationTokenSource _tokenSource;
         private CancellationToken _cancellationToken;
 
-        internal SpeechResult SpeechResult { get; private set; }
+        internal SpeechResult SpeechResult { get; set; }
 
         // Internal async error
         internal Exception AsyncStreamError { get; set; }
@@ -25,8 +25,6 @@ namespace Voise
 
             _tokenSource = new CancellationTokenSource();
             _cancellationToken = _tokenSource.Token;
-
-            SpeechResult = new SpeechResult();
         }
 
         internal Task StartNew(Func<Task> action)

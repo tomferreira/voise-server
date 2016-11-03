@@ -4,12 +4,12 @@ using System.IO;
 
 namespace Voise
 {
-    internal class StreamIn
+    internal class AudioStream
     {
         /// <summary>
         /// Event Args for StreamIn event
         /// </summary>
-        public class StreamInEventArgs : EventArgs
+        internal class StreamInEventArgs : EventArgs
         {
             private byte[] buffer;
             private int bytes;
@@ -44,25 +44,26 @@ namespace Voise
         /// <summary>
         /// Indicates streamed data is available 
         /// </summary>
-        public event EventHandler<StreamInEventArgs> DataAvailable;
+        internal event EventHandler<StreamInEventArgs> DataAvailable;
 
         /// <summary>
         /// Indicates that all streamed data has now been received.
         /// </summary>
-        public event EventHandler StreamingStopped;
+        internal event EventHandler StreamingStopped;
 
         private bool _started;
-        private int _bufferSize;
+        private int _bufferCapacity;
+
         private Queue<MemoryStream> _buffers;
         private MemoryStream _currentBuffer;
 
-        internal StreamIn(int bufferMillisec, int sampleRate, int bytesPerSample)
+        internal AudioStream(int bufferMillisec, int sampleRate, int bytesPerSample)
         {
             int bytesPerSecond = sampleRate * bytesPerSample;
 
             _started = false;
-            
-            _bufferSize = bufferMillisec * bytesPerSecond / 1000;            
+
+            _bufferCapacity = bufferMillisec * bytesPerSecond / 1000;            
             _buffers = new Queue<MemoryStream>();
 
             CreateBuffer();
@@ -82,41 +83,67 @@ namespace Voise
 
             // Enqueue current buffer to be send too
             if (_currentBuffer != null)
-                _buffers.Enqueue(_currentBuffer);
+            {
+                lock(_buffers)
+                    _buffers.Enqueue(_currentBuffer);
+            }
 
-            Callback();
+            Callback(true);
 
             StreamingStopped?.Invoke(this, EventArgs.Empty);
         }
 
-        internal void AddData(byte[] data)
+        internal void Write(byte[] data)
         {
-            if (_currentBuffer.Length >= _currentBuffer.Capacity)
-                CreateBuffer();
+            int offset = 0;
+            int length = data.Length;
 
-            _currentBuffer.Write(data, 0, data.Length);
+            while (length > 0)
+            {
+                int remmaing = _bufferCapacity - (int)_currentBuffer.Length;
+
+                if (remmaing == 0)
+                {
+                    CreateBuffer();
+                    continue;
+                }
+
+                int count = Math.Min(remmaing, length);
+                _currentBuffer.Write(data, offset, count);
+
+                offset += count;
+                length -= count;
+            }
 
             if (_started)
                 Callback();
         }
 
-        private void Callback()
-        {            
-            while (_buffers.Count > 0)
+        private void Callback(bool sendNotFull = false)
+        {
+            lock (_buffers)
             {
-                MemoryStream buffer = _buffers.Dequeue();
+                while (_buffers.Count > 0)
+                {
+                    if (!sendNotFull && _buffers.Peek().Length < _bufferCapacity)
+                        return;
 
-                DataAvailable?.Invoke(this, new StreamInEventArgs(buffer.GetBuffer(), Convert.ToInt32(buffer.Length)));
+                    MemoryStream buffer = _buffers.Dequeue();
+
+                    DataAvailable?.Invoke(this, new StreamInEventArgs(buffer.ToArray(), Convert.ToInt32(buffer.Length)));
+                }
             }
         }
 
         private void CreateBuffer()
         {
             if (_currentBuffer != null)
-                _buffers.Enqueue(_currentBuffer);
+            {
+                lock(_buffers)
+                    _buffers.Enqueue(_currentBuffer);
+            }
 
-            _currentBuffer = new MemoryStream(_bufferSize);            
+            _currentBuffer = new MemoryStream(_bufferCapacity);            
         }
-
     }
 }

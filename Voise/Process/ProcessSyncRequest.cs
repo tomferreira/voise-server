@@ -30,18 +30,9 @@ namespace Voise.Process
                         request.Config.context);
 
                     //
+                    pipeline.SpeechResult = new SpeechResult(SpeechResult.Modes.ASR);
                     pipeline.SpeechResult.Transcript = recognition.Transcript;
                     pipeline.SpeechResult.Confidence = recognition.Confidence;
-                }
-                catch (Recognizer.Exception.BadAudioException e)
-                {
-                    SendError(client, e);
-                    pipeline.CancelExecution();
-                }
-                catch (Recognizer.Exception.BadEncodingException e)
-                {
-                    SendError(client, e);
-                    pipeline.CancelExecution();
                 }
                 catch (Exception e)
                 {

@@ -10,13 +10,13 @@ namespace Voise.Recognizer.Google
     internal sealed class GoogleRecognizer
     {
         private SpeechRecognizer _recognizer;
-        private Dictionary<StreamIn, StreamingJob> _streamingJobs;
+        private Dictionary<AudioStream, StreamingJob> _streamingJobs;
         private string _tunningPath;
 
         internal GoogleRecognizer()
         {
             _recognizer = SpeechRecognizer.Create();
-            _streamingJobs = new Dictionary<StreamIn, StreamingJob>();
+            _streamingJobs = new Dictionary<AudioStream, StreamingJob>();
             _tunningPath = null;
         }
 
@@ -36,7 +36,7 @@ namespace Voise.Recognizer.Google
             return job.BestAlternative;
         }
 
-        internal async Task StartStreamingRecognitionAsync(StreamIn streamIn, AudioEncoding encoding, 
+        internal async Task StartStreamingRecognitionAsync(AudioStream streamIn, AudioEncoding encoding, 
             int sampleRate, string languageCode, List<string> context)
         {
             StreamingJob job = new StreamingJob(streamIn, encoding, sampleRate, languageCode, context);
@@ -45,7 +45,7 @@ namespace Voise.Recognizer.Google
             await job.StartAsync(_recognizer);
         }
 
-        internal async Task<SpeechRecognitionAlternative> StopStreamingRecognitionAsync(StreamIn streamIn)
+        internal async Task<SpeechRecognitionAlternative> StopStreamingRecognitionAsync(AudioStream streamIn)
         {
             if (!_streamingJobs.ContainsKey(streamIn))
                 throw new System.Exception("Job not exists.");

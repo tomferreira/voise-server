@@ -16,7 +16,6 @@ namespace Voise.TCP
 
         private Socket _socket;
         private SocketAsyncEventArgs _readEventArgs;
-        private SocketAsyncEventArgs _writeEventArgs;
 
         private byte[] _buffer;
         private StringBuilder _data;
@@ -25,7 +24,13 @@ namespace Voise.TCP
         private ILog _log;
 
         internal int ClientNumber { get; private set; }
-        internal StreamIn StreamIn { get; set; }
+
+        //
+        internal AudioStream StreamIn { get; set; }
+
+        //
+        internal AudioStream StreamOut { get; set; }
+
         internal Pipeline CurrentPipeline { get; set; }
 
         internal ClientConnection(Socket acceptedSocket, HandlerRequest hr)
@@ -48,10 +53,6 @@ namespace Voise.TCP
             _readEventArgs.SetBuffer(_buffer, 0, _buffer.Length);
             _readEventArgs.UserToken = this;
 
-            _writeEventArgs = new SocketAsyncEventArgs();
-            _writeEventArgs.Completed += SockAsyncEventArgs_Completed;
-            _writeEventArgs.UserToken = this;
-
             ReceiveAsync(_readEventArgs);
         }
 
@@ -68,7 +69,6 @@ namespace Voise.TCP
                 _data = null;
 
                 _readEventArgs.Dispose();
-                _writeEventArgs.Dispose();
 
                 try
                 {
@@ -144,9 +144,13 @@ namespace Voise.TCP
             // Convert the string data to byte data using UTF8 encoding.
             byte[] byteData = Encoding.UTF8.GetBytes(data);
 
-            _writeEventArgs.SetBuffer(byteData, 0, byteData.Length);
+            SocketAsyncEventArgs writeEventArgs = new SocketAsyncEventArgs();
+            writeEventArgs.Completed += SockAsyncEventArgs_Completed;
+            writeEventArgs.UserToken = this;
 
-            SendAsync(_writeEventArgs);
+            writeEventArgs.SetBuffer(byteData, 0, byteData.Length);
+
+            SendAsync(writeEventArgs);
         }
 
         private void SendAsync(SocketAsyncEventArgs e)

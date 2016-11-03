@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Voise.Google.Cloud.Speech.V1Beta1;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
-using static Voise.StreamIn;
+using static Voise.AudioStream;
 
 namespace Voise.Recognizer.Google.Job
 {
@@ -17,9 +17,9 @@ namespace Voise.Recognizer.Google.Job
         private RequestQueue<ByteString> _requestQueue;
         private Task _doneTask;
 
-        private StreamIn _streamIn;
+        private AudioStream _streamIn;
 
-        internal StreamingJob(StreamIn streamIn, AudioEncoding encoding, int sampleRate, string languageCode, List<string> context)
+        internal StreamingJob(AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, List<string> context)
             : base()
         {
             ValidateArguments(encoding, sampleRate, languageCode);

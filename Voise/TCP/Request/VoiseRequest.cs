@@ -4,11 +4,15 @@ namespace Voise.TCP.Request
 {
     internal class VoiseRequest
     {
+        // ASR
         public VoiseSyncRecognitionRequest SyncRequest { get; set; }
 
         public VoiseStreamRecognitionStartRequest StreamStartRequest { get; set; }
         public VoiseStreamRecognitionDataRequest StreamDataRequest { get; set; }
         public VoiseStreamRecognitionStopRequest StreamStopRequest { get; set; }
+
+        // TTS
+        public VoiseSynthVoiceRequest SynthVoiceRequest { get; set; }
     };
 
     internal class VoiseConfig
