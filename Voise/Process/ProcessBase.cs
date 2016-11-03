@@ -10,7 +10,7 @@ namespace Voise.Process
         {
             if (result != null)
             {
-                var response = new VoiseResponse(200, "OK");
+                var response = new VoiseResponse(ResponseCode.OK);
 
                 switch(result.Mode)
                 {
@@ -35,20 +35,20 @@ namespace Voise.Process
             }
             else
             {
-                var response = new VoiseResponse(202, "No result");
+                var response = new VoiseResponse(ResponseCode.NORESULT);
                 client?.SendResponse(response);
             }            
         }
 
         protected void SendAccept(ClientConnection client)
         {
-            var response = new VoiseResponse(201, "Accept");
+            var response = new VoiseResponse(ResponseCode.ACCEPTED);
             client?.SendResponse(response);
         }
 
         protected void SendError(ClientConnection client, Exception e)
         {
-            var response = new VoiseResponse(300, e.Message);
+            var response = new VoiseResponse(ResponseCode.ERROR, e.Message);
             client?.SendResponse(response);
         }
     }

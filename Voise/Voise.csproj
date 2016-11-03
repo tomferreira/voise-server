@@ -179,6 +179,7 @@
     <Compile Include="Recognizer\Google\Job\SyncJob.cs" />
     <Compile Include="Recognizer\Google\GoogleRecognizer.cs" />
     <Compile Include="Recognizer\Google\RequestQueue.cs" />
+    <Compile Include="ResponseCode.cs" />
     <Compile Include="Synthesizer\Exception\BadEncodingException.cs" />
     <Compile Include="Synthesizer\Exception\BadLanguageException.cs" />
     <Compile Include="Synthesizer\Exception\BadVoiceException.cs" />

@@ -14,11 +14,11 @@
             public long length;
         }
 
-        internal VoiseResponse(int code, string message)
+        internal VoiseResponse(ResponseCode code, string message = null)
         {
             result = new VoiseResult();
-            result.code = code;
-            result.message = message;
+            result.code = code.Code;
+            result.message = message ?? code.Message;
         }
 
         public VoiseResult result;
