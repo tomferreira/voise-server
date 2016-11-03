@@ -12,26 +12,6 @@ namespace Voise.Classification
             _classifier = new NaiveBayesMultinomialText();
 
             (_classifier as NaiveBayesMultinomialText).setLowercaseTokens(true);
-
-            bool d = (_classifier as NaiveBayesMultinomialText).getUseWordFrequencies();
-            string s = (_classifier as NaiveBayesMultinomialText).LNormTipText();
-
-            //PTStemmer stemmer = new PTStemmer();
-
-            //string test = stemmer.stem("ele");
-            //string test2 = stemmer.stem("não");
-
-            //(_classifier as NaiveBayesMultinomialText).setStemmer(stemmer);
-
-            //(_classifier as NaiveBayesMultinomialText).setUseStopList(true);
-
-            //(_classifier as NaiveBayesMultinomialText).setStopwords(
-            //  new java.io.File(@"C:\Users\cirillor\Documents\Visual Studio 2015\Projects\Voise\test\classifiers\felicitacao\stopword.txt"));
-
-            //(_classifier as NaiveBayesMultinomialText).setUseWordFrequencies(true);
-
-            //(_classifier as NaiveBayesMultinomialText).setMinWordFrequency(0.9);
-            //(_classifier as NaiveBayesMultinomialText).setNormalizeDocLength(true);
         }
 
         internal override void Train(Instances data)

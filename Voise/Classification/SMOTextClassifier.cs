@@ -1,10 +1,6 @@
-﻿using System;
-using System.Globalization;
-using weka.classifiers.functions;
-using weka.classifiers.functions.supportVector;
+﻿using weka.classifiers.functions;
 using weka.classifiers.meta;
 using weka.core;
-using weka.core.tokenizers;
 using weka.filters;
 using weka.filters.unsupervised.attribute;
 
