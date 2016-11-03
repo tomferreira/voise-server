@@ -44,6 +44,9 @@ namespace Voise.Process
                 }
                 catch (Exception e)
                 {
+                    // Cleanup streamIn
+                    client.StreamIn = null;
+
                     SendError(client, e);
                     pipeline.CancelExecution();
                 }
@@ -58,6 +61,9 @@ namespace Voise.Process
                 // Caso ocorra alguma exceção asíncrona durante o streming do áudio
                 if (pipeline.AsyncStreamError != null)
                 {
+                    // Cleanup streamIn
+                    client.StreamIn = null;
+
                     SendError(client, pipeline.AsyncStreamError);
                     pipeline.CancelExecution();
                 }
@@ -85,13 +91,11 @@ namespace Voise.Process
                     pipeline.SpeechResult.Intent = classification.ClassName;
                     pipeline.SpeechResult.Probability = classification.Probability;
                 }
-                catch (Classification.Exception.BadModelException e)
-                {
-                    SendError(client, e);
-                    pipeline.CancelExecution();
-                }
                 catch (Exception e)
                 {
+                    // Cleanup streamIn
+                    client.StreamIn = null;
+
                     SendError(client, e);
                     pipeline.CancelExecution();
                 }

@@ -54,6 +54,9 @@ namespace Voise.Process
                 }
                 catch (Exception e)
                 {
+                    // Cleanup streamOut
+                    client.StreamOut = null;
+
                     SendError(client, e);
                     pipeline.CancelExecution();
                 }
@@ -67,6 +70,9 @@ namespace Voise.Process
                 }
                 catch (Exception e)
                 {
+                    // Cleanup streamOut
+                    client.StreamOut = null;
+
                     SendError(client, e);
                     pipeline.CancelExecution();
                 }
