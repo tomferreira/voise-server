@@ -43,6 +43,11 @@ namespace Voise
 
         public Voise(Config config)
         {
+            ILog log = LogManager.GetLogger(
+                System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+            log.Info($"Initializinng Voise Server v{Version.VersionString}.");
+
             _tcpServer = new Server(HandleClientRequest);
 
             // ASR

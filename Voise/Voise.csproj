@@ -200,6 +200,7 @@
     <Compile Include="TCP\Request\VoiseSynthVoiceRequest.cs" />
     <Compile Include="TCP\Response\VoiseResponse.cs" />
     <Compile Include="TCP\Server.cs" />
+    <Compile Include="Version.cs" />
     <Compile Include="Voise.cs" />
   </ItemGroup>
   <ItemGroup>
