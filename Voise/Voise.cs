@@ -13,6 +13,7 @@ namespace Voise
 {
     public class Voise
     {
+#if DEBUG
         public static void Main(string[] args)
         {
             BasicConfigurator.Configure();
@@ -21,6 +22,9 @@ namespace Voise
             {
                 Config config = new Config();
                 new Voise(config);
+
+                while (true)
+                    Thread.Sleep(100);
             }
             catch(Exception e)
             {
@@ -30,13 +34,14 @@ namespace Voise
                 log.Fatal(e.Message);
             }
         }
+#endif
 
         private Server _tcpServer;
         private GoogleRecognizer _recognizer;
         private MicrosoftSynthetizer _synthetizer;
         private ClassifierManager _classifierManager;
 
-        internal Voise(Config config)
+        public Voise(Config config)
         {
             _tcpServer = new Server(HandleClientRequest);
 
@@ -51,9 +56,12 @@ namespace Voise
                 _recognizer.EnableTunnig(config.TunningPath);
 
             _tcpServer.Start(config.Port);
+        }
 
-            while (true)
-                Thread.Sleep(100);
+        public void Stop()
+        {
+            if (_tcpServer != null && _tcpServer.IsOpen)
+                _tcpServer.Stop();
         }
 
         private void HandleClientRequest(ClientConnection client, VoiseRequest request)

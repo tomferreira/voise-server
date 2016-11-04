@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace Voise
 {
-    internal class Config
+    public class Config
     {
         private static string FILENAME_FULLPATH = "./config.xml";
 
@@ -19,7 +19,7 @@ namespace Voise
 
         private XmlElement _element;
 
-        internal Config()
+        public Config()
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(FILENAME_FULLPATH);
