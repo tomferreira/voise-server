@@ -2,6 +2,8 @@
 using Google.Protobuf;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.NetworkInformation;
 using Voise.Recognizer.Exception;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 
@@ -24,6 +26,24 @@ namespace Voise.Recognizer.Google.Job
 
             if (sampleRate < 8000 || sampleRate > 48000)
                 throw new BadEncodingException("Sample rate is invalid.");
+        }
+
+        // Google DotNet API don't handle error in internet connection, 
+        // therefor it's necessary this manual check.
+        protected void CheckForInternetConnection()
+        {
+            try
+            {
+                Ping ping = new Ping();
+                PingReply reply = ping.Send("google.com", 100);
+
+                if (reply.Status != IPStatus.Success)
+                    throw new System.Exception();
+            }
+            catch
+            {
+                throw new System.Exception("No internet connection");
+            }
         }
 
         protected ByteString ConvertAudioToByteString(string audio_base64)

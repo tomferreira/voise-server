@@ -24,6 +24,8 @@ namespace Voise.Recognizer.Google.Job
         {
             ValidateArguments(encoding, sampleRate, languageCode);
 
+            CheckForInternetConnection();
+
             _config = new StreamingRecognitionConfig
             {
                 Config = new RecognitionConfig
