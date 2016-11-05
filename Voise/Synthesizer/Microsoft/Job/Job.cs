@@ -1,6 +1,6 @@
-﻿using System;
-using System.Speech.AudioFormat;
-using System.Speech.Synthesis;
+﻿using Microsoft.Speech.AudioFormat;
+using Microsoft.Speech.Synthesis;
+using System;
 using Voise.Synthesizer.Exception;
 
 namespace Voise.Synthesizer.Microsoft
@@ -22,7 +22,8 @@ namespace Voise.Synthesizer.Microsoft
             _languageCode = languageCode;
 
             _info = new SpeechAudioFormatInfo(
-                encoding.Format, sampleRate, encoding.BitsPerSample, encoding.ChannelCount, sampleRate, 1, null);
+                encoding.Format, sampleRate, encoding.BitsPerSample, 
+                encoding.ChannelCount, sampleRate * encoding.BitsPerSample / 8, encoding.BlockAlign, null);
 
             try
             {

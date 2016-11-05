@@ -1,6 +1,5 @@
 ﻿using log4net;
 using System;
-using Voise.Recognizer.Google;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -9,7 +8,7 @@ namespace Voise.Process
     internal class ProcessStreamStopRequest : ProcessBase
     {
         internal ProcessStreamStopRequest(ClientConnection client, VoiseStreamRecognitionStopRequest request,
-            GoogleRecognizer recognizer)
+            Recognizer.Base recognizer)
         {
             ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

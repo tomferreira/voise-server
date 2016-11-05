@@ -1,7 +1,7 @@
 ﻿using log4net;
 using System;
 using Voise.Classification;
-using Voise.Recognizer.Google;
+using Voise.Recognizer;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -10,7 +10,7 @@ namespace Voise.Process
     internal class ProcessSyncRequest : ProcessBase
     {
         internal ProcessSyncRequest(ClientConnection client, VoiseSyncRecognitionRequest request,
-            GoogleRecognizer recognizer, ClassifierManager classifierManager)
+            Recognizer.Base recognizer, ClassifierManager classifierManager)
         {
             ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -24,10 +24,10 @@ namespace Voise.Process
                 {
                     var recognition = await recognizer.SyncRecognition(
                        request.audio,
-                       GoogleRecognizer.ConvertAudioEncoding(request.Config.encoding),
+                       request.Config.encoding,
                        request.Config.sample_rate,
                        request.Config.language_code,
-                        request.Config.context);
+                       request.Config.context);
 
                     //
                     pipeline.SpeechResult = new SpeechResult(SpeechResult.Modes.ASR);

@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 using Voise.Classification;
 using Voise.Process;
-using Voise.Recognizer.Google;
 using Voise.Synthesizer.Microsoft;
 using Voise.TCP;
 using Voise.TCP.Request;
@@ -37,7 +36,7 @@ namespace Voise
 #endif
 
         private Server _tcpServer;
-        private GoogleRecognizer _recognizer;
+        private Recognizer.Base _recognizer;
         private MicrosoftSynthetizer _synthetizer;
         private ClassifierManager _classifierManager;
 
@@ -51,14 +50,14 @@ namespace Voise
             _tcpServer = new Server(HandleClientRequest);
 
             // ASR
-            _recognizer = new GoogleRecognizer();
+            _recognizer = new Recognizer.Microsoft.MicrosoftRecognizer();
             _classifierManager = new ClassifierManager(config.ClassifiersPath);
 
             // TTS
             _synthetizer = new MicrosoftSynthetizer();
 
-            if (config.TunningEnabled)
-                _recognizer.EnableTunnig(config.TunningPath);
+            //if (config.TunningEnabled)
+            //    _recognizer.EnableTunnig(config.TunningPath);
 
             _tcpServer.Start(config.Port);
         }
