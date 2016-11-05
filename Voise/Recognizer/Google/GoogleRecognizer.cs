@@ -9,6 +9,8 @@ namespace Voise.Recognizer.Google
 {
     internal sealed class GoogleRecognizer : Base
     {
+        internal const string ENGINE_NAME = "e2";
+
         private SpeechRecognizer _recognizer;
         private Dictionary<AudioStream, StreamingJob> _streamingJobs;
         private string _tunningPath;

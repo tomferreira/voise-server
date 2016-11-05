@@ -4,6 +4,7 @@ using System;
 using System.Threading;
 using Voise.Classification;
 using Voise.Process;
+using Voise.Recognizer;
 using Voise.Synthesizer.Microsoft;
 using Voise.TCP;
 using Voise.TCP.Request;
@@ -36,7 +37,7 @@ namespace Voise
 #endif
 
         private Server _tcpServer;
-        private Recognizer.Base _recognizer;
+        private RecognizerManager _recognizerManager;
         private MicrosoftSynthetizer _synthetizer;
         private ClassifierManager _classifierManager;
 
@@ -50,7 +51,7 @@ namespace Voise
             _tcpServer = new Server(HandleClientRequest);
 
             // ASR
-            _recognizer = new Recognizer.Microsoft.MicrosoftRecognizer();
+            _recognizerManager = new RecognizerManager();
             _classifierManager = new ClassifierManager(config.ClassifiersPath);
 
             // TTS
@@ -73,12 +74,12 @@ namespace Voise
             if (request.SyncRequest != null)
             {
                 new ProcessSyncRequest(
-                    client, request.SyncRequest, _recognizer, _classifierManager);
+                    client, request.SyncRequest, _recognizerManager, _classifierManager);
             }
             else if (request.StreamStartRequest != null)
             {
                 new ProcessStreamStartRequest(
-                    client, request.StreamStartRequest, _recognizer, _classifierManager);
+                    client, request.StreamStartRequest, _recognizerManager, _classifierManager);
             }
             else if (request.StreamDataRequest != null)
             {
@@ -88,11 +89,12 @@ namespace Voise
             else if (request.StreamStopRequest != null)
             {
                 new ProcessStreamStopRequest(
-                    client, request.StreamStopRequest, _recognizer);
+                    client, request.StreamStopRequest, _recognizerManager);
             }
             else if (request.SynthVoiceRequest != null)
             {
-                new ProcessSynthVoiceRequest(client, request.SynthVoiceRequest, _synthetizer);
+                new ProcessSynthVoiceRequest(
+                    client, request.SynthVoiceRequest, _synthetizer);
             }
         }
     }

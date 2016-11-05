@@ -6,8 +6,10 @@ using Voise.Synthesizer.Microsoft;
 
 namespace Voise.Recognizer.Microsoft
 {
-    internal class MicrosoftRecognizer : Base
+    internal sealed class MicrosoftRecognizer : Base
     {
+        internal const string ENGINE_NAME = "e1";
+
         private Dictionary<AudioStream, StreamingJob> _streamingJobs;
 
         internal MicrosoftRecognizer()
@@ -55,11 +57,11 @@ namespace Voise.Recognizer.Microsoft
                 case "alaw":
                     return AudioEncoding.Alaw;
 
-                case "linear16":
-                    return AudioEncoding.Linear16;
-
                 case "mulaw":
                     return AudioEncoding.Mulaw;
+
+                case "linear16":
+                    return AudioEncoding.Linear16;
 
                 default:
                     return AudioEncoding.EncodingUnspecified;

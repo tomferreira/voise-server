@@ -10,7 +10,7 @@ namespace Voise.Process
     internal class ProcessSyncRequest : ProcessBase
     {
         internal ProcessSyncRequest(ClientConnection client, VoiseSyncRecognitionRequest request,
-            Recognizer.Base recognizer, ClassifierManager classifierManager)
+            RecognizerManager recognizerManager, ClassifierManager classifierManager)
         {
             ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -22,6 +22,8 @@ namespace Voise.Process
             {
                 try
                 {
+                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine);
+
                     var recognition = await recognizer.SyncRecognition(
                        request.audio,
                        request.Config.encoding,

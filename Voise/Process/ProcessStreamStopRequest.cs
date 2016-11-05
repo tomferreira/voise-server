@@ -1,5 +1,6 @@
 ﻿using log4net;
 using System;
+using Voise.Recognizer;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -8,7 +9,7 @@ namespace Voise.Process
     internal class ProcessStreamStopRequest : ProcessBase
     {
         internal ProcessStreamStopRequest(ClientConnection client, VoiseStreamRecognitionStopRequest request,
-            Recognizer.Base recognizer)
+            RecognizerManager recognizerManager)
         {
             ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -16,8 +17,11 @@ namespace Voise.Process
 
             try
             {
+                if (client.CurrentPipeline.Recognizer == null)
+                    throw new Exception("Engine not defined.");
+
                 var recognition =
-                    recognizer.StopStreamingRecognitionAsync(client.StreamIn).Result;
+                    client.CurrentPipeline.Recognizer.StopStreamingRecognitionAsync(client.StreamIn).Result;
 
                 client.CurrentPipeline.SpeechResult.Transcript = recognition.Transcript;
                 client.CurrentPipeline.SpeechResult.Confidence = recognition.Confidence;

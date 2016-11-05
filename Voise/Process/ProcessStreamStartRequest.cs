@@ -10,7 +10,7 @@ namespace Voise.Process
     internal class ProcessStreamStartRequest : ProcessBase
     {
         internal ProcessStreamStartRequest(ClientConnection client, VoiseStreamRecognitionStartRequest request,
-            Recognizer.Base recognizer, ClassifierManager classifierManager)
+            RecognizerManager recognizerManager, ClassifierManager classifierManager)
         {
             ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -29,6 +29,10 @@ namespace Voise.Process
             {
                 try
                 {
+                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine);
+
+                    client.CurrentPipeline.Recognizer = recognizer;
+
                     // FIXME
                     ////int bytesPerSample = GoogleRecognizer.GetBytesPerSample(request.Config.encoding);
                     int bytesPerSample = 2;

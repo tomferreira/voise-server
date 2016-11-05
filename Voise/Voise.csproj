@@ -185,6 +185,7 @@
     <Compile Include="Recognizer\Google\RequestQueue.cs" />
     <Compile Include="Recognizer\Microsoft\Job\SyncJob.cs" />
     <Compile Include="Recognizer\Microsoft\MicrosoftRecognizer.cs" />
+    <Compile Include="Recognizer\RecognizerManager.cs" />
     <Compile Include="ResponseCode.cs" />
     <Compile Include="Synthesizer\Exception\BadEncodingException.cs" />
     <Compile Include="Synthesizer\Exception\BadLanguageException.cs" />
