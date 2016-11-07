@@ -19,7 +19,7 @@ namespace Voise.Recognizer.Google.Job
 
         private AudioStream _streamIn;
 
-        internal StreamingJob(AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, List<string> context)
+        internal StreamingJob(AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base()
         {
             ValidateArguments(encoding, sampleRate, languageCode);
@@ -34,7 +34,7 @@ namespace Voise.Recognizer.Google.Job
                     SampleRate = sampleRate,
                     MaxAlternatives = 5,
                     LanguageCode = languageCode,
-                    SpeechContext = CreateSpeechContext(context)
+                    SpeechContext = CreateSpeechContext(contexts)
                 },
                 InterimResults = true
             };
@@ -80,7 +80,7 @@ namespace Voise.Recognizer.Google.Job
                         {
                             foreach (var alternative in result.Alternatives)
                             {
-                                if (BestAlternative == null || BestAlternative.Confidence < alternative.Confidence)
+                                if (BestAlternative == NoResultSpeechRecognitionAlternative.Default || BestAlternative.Confidence < alternative.Confidence)
                                     BestAlternative = alternative;
                             }
                         }

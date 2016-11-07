@@ -1,6 +1,6 @@
 ﻿using Google.Cloud.Speech.V1Beta1;
 
-namespace Voise.Recognizer.Google
+namespace Voise.Recognizer
 {
     internal class NoResultSpeechRecognitionAlternative
     {
@@ -9,7 +9,7 @@ namespace Voise.Recognizer.Google
         static NoResultSpeechRecognitionAlternative()
         {
             Default.Transcript = "#NORESULT";
-            Default.Confidence = -1;
+            Default.Confidence = 1;
         }
     }
 }

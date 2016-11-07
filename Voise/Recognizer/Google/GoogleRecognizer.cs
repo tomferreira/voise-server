@@ -7,8 +7,10 @@ using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 
 namespace Voise.Recognizer.Google
 {
-    internal sealed class GoogleRecognizer
+    internal sealed class GoogleRecognizer : Base
     {
+        internal const string ENGINE_NAME = "e2";
+
         private SpeechRecognizer _recognizer;
         private Dictionary<AudioStream, StreamingJob> _streamingJobs;
         private string _tunningPath;
@@ -26,26 +28,26 @@ namespace Voise.Recognizer.Google
         }
 
         // Max duration of audio ~60s (https://cloud.google.com/speech/limits)
-        internal async Task<SpeechRecognitionAlternative> SyncRecognition(string audio_base64, AudioEncoding encoding, 
-            int sampleRate, string languageCode, List<string> context)
+        internal override async Task<SpeechRecognitionAlternative> SyncRecognition(string audio_base64, string encoding, 
+            int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            SyncJob job = new SyncJob(audio_base64, encoding, sampleRate, languageCode, context);
+            SyncJob job = new SyncJob(audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
 
             await job.StartAsync(_recognizer);
 
             return job.BestAlternative;
         }
 
-        internal async Task StartStreamingRecognitionAsync(AudioStream streamIn, AudioEncoding encoding, 
-            int sampleRate, string languageCode, List<string> context)
+        internal override async Task StartStreamingRecognitionAsync(AudioStream streamIn, string encoding, 
+            int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            StreamingJob job = new StreamingJob(streamIn, encoding, sampleRate, languageCode, context);
+            StreamingJob job = new StreamingJob(streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
             _streamingJobs.Add(streamIn, job);
 
             await job.StartAsync(_recognizer);
         }
 
-        internal async Task<SpeechRecognitionAlternative> StopStreamingRecognitionAsync(AudioStream streamIn)
+        internal override async Task<SpeechRecognitionAlternative> StopStreamingRecognitionAsync(AudioStream streamIn)
         {
             if (!_streamingJobs.ContainsKey(streamIn))
                 throw new System.Exception("Job not exists.");
@@ -74,6 +76,24 @@ namespace Voise.Recognizer.Google
 
                 default:
                     return AudioEncoding.EncodingUnspecified;
+            }
+        }
+
+        internal static int GetBytesPerSample(string encoding)
+        {
+            var enc = ConvertAudioEncoding(encoding);
+
+            switch(enc)
+            {
+                case AudioEncoding.Flac:
+                case AudioEncoding.Linear16:
+                    return 2;
+
+                case AudioEncoding.Mulaw:
+                    return 1;
+
+                default:
+                    return 0;
             }
         }
     }

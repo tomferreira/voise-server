@@ -13,6 +13,9 @@ namespace Voise
         private CancellationTokenSource _tokenSource;
         private CancellationToken _cancellationToken;
 
+        // Recognizer used in this pipeline (if ASR)
+        internal Recognizer.Base Recognizer { get; set; }
+
         internal SpeechResult SpeechResult { get; set; }
 
         // Internal async error

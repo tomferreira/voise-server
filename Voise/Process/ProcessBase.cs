@@ -1,11 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
+using Voise.Classification;
 using Voise.TCP;
+using Voise.TCP.Request;
 using Voise.TCP.Response;
 
 namespace Voise.Process
 {
     internal abstract class ProcessBase
     {
+        protected Dictionary<string, List<string>> GetContexts(VoiseConfig config, ClassifierManager classifierManager)
+        {
+            Dictionary<string, List<string>> contexts = null;
+
+            if (config.context != null)
+            {
+                contexts = new Dictionary<string, List<string>>();
+                contexts.Add("default", config.context);
+            }
+            else
+            {
+                contexts = classifierManager.GetTrainingList(config.model_name);
+            }
+
+            return contexts;
+        }
+
         protected void SendResult(ClientConnection client, SpeechResult result)
         {
             if (result != null)

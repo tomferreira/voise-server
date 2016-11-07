@@ -22,6 +22,21 @@ namespace Voise.Classification
             LoadClassifiers(classifiersPath);
         }
 
+        internal Dictionary<string, List<string>> GetTrainingList(string modelName)
+        {
+            Base classifier = null;
+
+            lock (_classifiers)
+            {
+                if (!_classifiers.ContainsKey(modelName))
+                    return null;
+
+                classifier = _classifiers[modelName];
+            }
+
+            return classifier.GetTrainingList();
+        }
+
         internal async Task<Base.Result> ClassifyAsync(string modelName, string message)
         {
             if (modelName == null || modelName.Trim() == "")

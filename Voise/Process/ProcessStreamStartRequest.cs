@@ -1,7 +1,8 @@
 ﻿using log4net;
 using System;
+using System.Collections.Generic;
 using Voise.Classification;
-using Voise.Recognizer.Google;
+using Voise.Recognizer;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -10,7 +11,7 @@ namespace Voise.Process
     internal class ProcessStreamStartRequest : ProcessBase
     {
         internal ProcessStreamStartRequest(ClientConnection client, VoiseStreamRecognitionStartRequest request,
-            GoogleRecognizer recognizer, ClassifierManager classifierManager)
+            RecognizerManager recognizerManager, ClassifierManager classifierManager)
         {
             ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -28,15 +29,26 @@ namespace Voise.Process
             var task1 = pipeline.StartNew(async () =>
             {
                 try
-                { 
-                    client.StreamIn = new AudioStream(100, request.Config.sample_rate, 2);
+                {
+                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine_name);
+
+                    // Set the recognizer for be used when to stop the stream
+                    client.CurrentPipeline.Recognizer = recognizer;
+
+                    Dictionary<string, List<string>> contexts = GetContexts(request.Config, classifierManager);
+
+                    // FIXME
+                    ////int bytesPerSample = GoogleRecognizer.GetBytesPerSample(request.Config.encoding);
+                    int bytesPerSample = 2;
+
+                    client.StreamIn = new AudioStream(100, request.Config.sample_rate, bytesPerSample);
 
                     await recognizer.StartStreamingRecognitionAsync(
                         client.StreamIn,
-                        GoogleRecognizer.ConvertAudioEncoding(request.Config.encoding),
+                        request.Config.encoding,
                         request.Config.sample_rate,
                         request.Config.language_code,
-                        request.Config.context);
+                        contexts);
 
                     SendAccept(client);
 
