@@ -43,7 +43,6 @@ namespace Voise.Process
 
                     synthetizer.Create(
                         client.StreamOut, 
-                        SynthetizerVoice.Maria,
                         encoding,
                         request.Config.sample_rate,
                         request.Config.language_code);

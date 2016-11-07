@@ -11,9 +11,9 @@ namespace Voise.Synthesizer.Microsoft
             _streamingJobs = new Dictionary<AudioStream, Job>();
         }
 
-        internal void Create(AudioStream streamOut, SynthetizerVoice voice, AudioEncoding encoding, int sampleRate, string languageCode)
+        internal void Create(AudioStream streamOut, AudioEncoding encoding, int sampleRate, string languageCode)
         {
-            Job job = new Job(streamOut, voice, encoding, sampleRate, languageCode);
+            Job job = new Job(streamOut, encoding, sampleRate, languageCode);
 
             _streamingJobs.Add(streamOut, job);
         }

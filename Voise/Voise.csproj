@@ -181,7 +181,6 @@
     <Compile Include="Synthesizer\Exception\BadVoiceException.cs" />
     <Compile Include="Synthesizer\Microsoft\AudioEncoding.cs" />
     <Compile Include="Synthesizer\Microsoft\MicrosoftSynthetizer.cs" />
-    <Compile Include="Synthesizer\Microsoft\SynthetizerVoice.cs" />
     <Compile Include="Synthesizer\Microsoft\WaveStream.cs" />
     <Compile Include="Synthesizer\Microsoft\Job\Job.cs" />
     <Compile Include="Pipeline.cs" />

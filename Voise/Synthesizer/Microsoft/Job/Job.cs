@@ -12,11 +12,11 @@ namespace Voise.Synthesizer.Microsoft
         private AudioStream _streamOut;
         private string _languageCode;
 
-        internal Job(AudioStream streamOut, SynthetizerVoice voice, AudioEncoding encoding, int sampleRate, string languageCode)
+        internal Job(AudioStream streamOut, AudioEncoding encoding, int sampleRate, string languageCode)
         {
             _speechSynthesizer = new SpeechSynthesizer();
 
-            ValidateArguments(encoding, sampleRate, languageCode);
+            ValidateArguments(encoding, sampleRate);
 
             _streamOut = streamOut;
             _languageCode = languageCode;
@@ -24,14 +24,12 @@ namespace Voise.Synthesizer.Microsoft
             _info = new SpeechAudioFormatInfo(
                 encoding.Format, sampleRate, encoding.BitsPerSample, encoding.ChannelCount, sampleRate, 1, null);
 
-            try
-            {
-                _speechSynthesizer.SelectVoice(voice.Name);
-            }
-            catch(ArgumentException e)
-            {
-                throw new BadVoiceException(e.Message);
-            }
+            InstalledVoice voice = GetVoise(languageCode);
+
+            if (voice == null || !voice.Enabled)
+                throw new BadVoiceException($"Voice not found for language '{languageCode}'");
+
+            _speechSynthesizer.SelectVoice(voice.VoiceInfo.Name);
         }
 
         internal void Synth(string text)
@@ -61,29 +59,24 @@ namespace Voise.Synthesizer.Microsoft
             _streamOut.Write(e.Chunk);
         }
 
-        private void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode)
+        private void ValidateArguments(AudioEncoding encoding, int sampleRate)
         {
             if (encoding == AudioEncoding.EncodingUnspecified)
                 throw new BadEncodingException("Encoding is invalid.");
 
             if (sampleRate < 8000 || sampleRate > 48000)
                 throw new BadEncodingException("Sample rate is invalid.");
-
-            ValidateLanguage(languageCode);
         }
 
-        private void ValidateLanguage(string languageCode)
+        private InstalledVoice GetVoise(string languageCode)
         {
-            bool found = false;
-
-            foreach (InstalledVoice voice in _speechSynthesizer.GetInstalledVoices())
+            foreach (var voice in _speechSynthesizer.GetInstalledVoices())
             {
-                if (voice.VoiceInfo.Culture.Name == languageCode)
-                    found = true;
+                if (voice.VoiceInfo.Culture.Name.ToLower() == languageCode.ToLower())
+                    return voice;
             }
 
-            if (!found)
-                throw new BadLanguageException($"Language '{languageCode}' not found.");
+            return null;
         }
     }
 }
