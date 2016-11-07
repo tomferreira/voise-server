@@ -10,7 +10,6 @@ namespace Voise.Synthesizer.Microsoft
         private SpeechSynthesizer _speechSynthesizer;
         private SpeechAudioFormatInfo _info;
         private AudioStream _streamOut;
-        private string _languageCode;
 
         internal Job(AudioStream streamOut, AudioEncoding encoding, int sampleRate, string languageCode)
         {
@@ -19,7 +18,6 @@ namespace Voise.Synthesizer.Microsoft
             ValidateArguments(encoding, sampleRate);
 
             _streamOut = streamOut;
-            _languageCode = languageCode;
 
             _info = new SpeechAudioFormatInfo(
                 encoding.Format, sampleRate, encoding.BitsPerSample, 
@@ -40,10 +38,10 @@ namespace Voise.Synthesizer.Microsoft
             WaveStream waveStream = new WaveStream();
 
             _speechSynthesizer.SetOutputToAudioStream(waveStream, _info);
-            //_speechSynthesizer.SetOutputToWaveStream(waveStream);
 
             string script = string.Format(
-                "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"{0}\">{1}</speak>", _languageCode, text);
+                "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"{0}\">{1}</speak>", 
+                _speechSynthesizer.Voice.Culture.Name, text);
 
             Prompt prompt = new Prompt(script, SynthesisTextFormat.Ssml);
 
