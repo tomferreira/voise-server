@@ -2,8 +2,10 @@
 using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Recognition;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Voise.Recognizer.Exception;
+using Voise.Synthesizer.Microsoft;
 
 namespace Voise.Recognizer.Microsoft.Job
 {
@@ -22,14 +24,6 @@ namespace Voise.Recognizer.Microsoft.Job
 
             // Set as default alterative
             BestAlternative = NoResultSpeechRecognitionAlternative.Default;
-        }
-
-        protected void SpeechRecognitionRejected(object sender, SpeechRecognitionRejectedEventArgs e)
-        {
-            // No result
-
-            lock (_completed)
-                Monitor.Pulse(_completed);
         }
 
         protected void RecognizeCompleted(object sender, RecognizeCompletedEventArgs e)
@@ -52,6 +46,18 @@ namespace Voise.Recognizer.Microsoft.Job
 
             lock (_completed)
                 Monitor.Pulse(_completed);
+        }
+
+        protected void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        {
+            if (encoding == AudioEncoding.EncodingUnspecified)
+                throw new BadEncodingException("Encoding is invalid.");
+
+            if (sampleRate < 8000 || sampleRate > 48000)
+                throw new BadEncodingException("Sample rate is invalid.");
+
+            if (contexts == null || contexts.Count == 0)
+                throw new System.Exception("Context is not defined.");
         }
 
         protected byte[] ConvertAudioToBytes(string audio_base64)

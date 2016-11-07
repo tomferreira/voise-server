@@ -1,20 +1,21 @@
 ﻿using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Recognition;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
-using Voise.Recognizer.Exception;
 using Voise.Synthesizer.Microsoft;
 
 namespace Voise.Recognizer.Microsoft.Job
 {
     internal class SyncJob : Base
     {
-        internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
+        internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base()
         {
+            ValidateArguments(encoding, sampleRate, languageCode, contexts);
+
             _info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,
                 encoding.ChannelCount, sampleRate * encoding.BitsPerSample / 8, encoding.BlockAlign, null);
 
@@ -23,21 +24,19 @@ namespace Voise.Recognizer.Microsoft.Job
             _engine.RecognizeCompleted +=
                 new EventHandler<RecognizeCompletedEventArgs>(RecognizeCompleted);
 
-            _engine.SpeechRecognitionRejected +=
-                new EventHandler<SpeechRecognitionRejectedEventArgs>(SpeechRecognitionRejected);
+            // Not reject any utterance
+            _engine.UpdateRecognizerSetting("CFGConfidenceRejectionThreshold", 0);
 
-            Choices options = new Choices();
-            options.Add(new string[] {
-                "sim",
-                "não",
-                "alô"
-            });
+            foreach (var context in contexts)
+            {
+                GrammarBuilder gb = new GrammarBuilder();
+                gb.Append(new Choices(context.Value.ToArray()));
 
-            GrammarBuilder gb = new GrammarBuilder();
-            gb.Append(options);
+                Grammar gram = new Grammar(gb);
+                gram.Name = context.Key;
 
-            Grammar g = new Grammar(gb);
-            _engine.LoadGrammar(g);
+                _engine.LoadGrammar(gram);
+            }
 
             _engine.SetInputToAudioStream(
                 new MemoryStream(ConvertAudioToBytes(audio_base64)), _info);

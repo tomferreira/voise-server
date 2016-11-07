@@ -1,5 +1,6 @@
 ﻿using log4net;
 using System;
+using System.Collections.Generic;
 using Voise.Classification;
 using Voise.Recognizer;
 using Voise.TCP;
@@ -22,14 +23,16 @@ namespace Voise.Process
             {
                 try
                 {
-                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine);
+                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine_name);
+
+                    Dictionary<string, List<string>> contexts = GetContexts(request.Config, classifierManager);
 
                     var recognition = await recognizer.SyncRecognition(
                        request.audio,
                        request.Config.encoding,
                        request.Config.sample_rate,
                        request.Config.language_code,
-                       request.Config.context);
+                       contexts);
 
                     //
                     pipeline.SpeechResult = new SpeechResult(SpeechResult.Modes.ASR);

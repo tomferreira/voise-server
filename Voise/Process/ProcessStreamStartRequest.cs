@@ -1,5 +1,6 @@
 ﻿using log4net;
 using System;
+using System.Collections.Generic;
 using Voise.Classification;
 using Voise.Recognizer;
 using Voise.TCP;
@@ -29,9 +30,12 @@ namespace Voise.Process
             {
                 try
                 {
-                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine);
+                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine_name);
 
+                    // Set the recognizer for be used when to stop the stream
                     client.CurrentPipeline.Recognizer = recognizer;
+
+                    Dictionary<string, List<string>> contexts = GetContexts(request.Config, classifierManager);
 
                     // FIXME
                     ////int bytesPerSample = GoogleRecognizer.GetBytesPerSample(request.Config.encoding);
@@ -44,7 +48,7 @@ namespace Voise.Process
                         request.Config.encoding,
                         request.Config.sample_rate,
                         request.Config.language_code,
-                        request.Config.context);
+                        contexts);
 
                     SendAccept(client);
 

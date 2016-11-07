@@ -18,9 +18,9 @@ namespace Voise.Recognizer.Microsoft
         }
 
         internal override async Task<SpeechRecognitionAlternative> SyncRecognition(string audio_base64, string encoding,
-            int sampleRate, string languageCode, List<string> context)
+            int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            SyncJob job = new SyncJob(audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode);
+            SyncJob job = new SyncJob(audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
 
             job.Start();
 
@@ -28,9 +28,9 @@ namespace Voise.Recognizer.Microsoft
         }
 
         internal override async Task StartStreamingRecognitionAsync(AudioStream streamIn, string encoding,
-            int sampleRate, string languageCode, List<string> context)
+            int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            StreamingJob job = new StreamingJob(streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode, context);
+            StreamingJob job = new StreamingJob(streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
             _streamingJobs.Add(streamIn, job);
 
             job.Start();

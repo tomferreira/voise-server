@@ -16,9 +16,11 @@ namespace Voise.Recognizer.Microsoft.Job
 
         private SpeechStreamer _ss;
 
-        internal StreamingJob(AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, List<string> context)
+        internal StreamingJob(AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base()
         {
+            ValidateArguments(encoding, sampleRate, languageCode, contexts);
+
             _info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,
                 encoding.ChannelCount, sampleRate * encoding.BitsPerSample / 8, encoding.BlockAlign, null);
 
@@ -27,21 +29,19 @@ namespace Voise.Recognizer.Microsoft.Job
             _engine.RecognizeCompleted +=
                 new EventHandler<RecognizeCompletedEventArgs>(RecognizeCompleted);
 
-            _engine.SpeechRecognitionRejected +=
-                new EventHandler<SpeechRecognitionRejectedEventArgs>(SpeechRecognitionRejected);
+            // Not reject any utterance
+            _engine.UpdateRecognizerSetting("CFGConfidenceRejectionThreshold", 0);
 
-            Choices options = new Choices();
-            options.Add(new string[] {
-                "sim",
-                "não",
-                "alô"
-            });
+            foreach (var context in contexts)
+            {
+                GrammarBuilder gb = new GrammarBuilder();
+                gb.Append(new Choices(context.Value.ToArray()));
 
-            GrammarBuilder gb = new GrammarBuilder();
-            gb.Append(options);
+                Grammar gram = new Grammar(gb);
+                gram.Name = context.Key;
 
-            Grammar g = new Grammar(gb);
-            _engine.LoadGrammar(g);
+                _engine.LoadGrammar(gram);
+            }
 
             // Prevents the event RecognizeCompleted to be triggered improperly
             _engine.EndSilenceTimeout = TimeSpan.FromSeconds(10);

@@ -9,7 +9,7 @@ namespace Voise.Recognizer
         static NoResultSpeechRecognitionAlternative()
         {
             Default.Transcript = "#NORESULT";
-            Default.Confidence = -1;
+            Default.Confidence = 1;
         }
     }
 }

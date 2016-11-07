@@ -8,10 +8,10 @@ namespace Voise.Recognizer
     internal abstract class Base
     {
         internal abstract Task<SpeechRecognitionAlternative> SyncRecognition(string audio_base64, string encoding,
-            int sampleRate, string languageCode, List<string> context);
+            int sampleRate, string languageCode, Dictionary<string, List<string>> contexts);
 
         internal abstract Task StartStreamingRecognitionAsync(AudioStream streamIn, string encoding,
-            int sampleRate, string languageCode, List<string> context);
+            int sampleRate, string languageCode, Dictionary<string, List<string>> contexts);
 
         internal abstract Task<SpeechRecognitionAlternative> StopStreamingRecognitionAsync(AudioStream streamIn);
     }
