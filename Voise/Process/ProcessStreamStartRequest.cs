@@ -30,7 +30,7 @@ namespace Voise.Process
             {
                 try
                 {
-                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine_name);
+                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine_id);
 
                     // Set the recognizer for be used when to stop the stream
                     client.CurrentPipeline.Recognizer = recognizer;

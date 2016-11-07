@@ -14,22 +14,22 @@ namespace Voise.Recognizer
             _microsoftRecognizer = new MicrosoftRecognizer();
         }
 
-        internal Base GetRecognizer(string engine)
+        internal Base GetRecognizer(string engineID)
         {
             // Microsoft is the default engine for recognizer.
-            if (engine == null)
-                engine = MicrosoftRecognizer.ENGINE_NAME;
+            if (engineID == null)
+                engineID = MicrosoftRecognizer.ENGINE_IDENTIFIER;
 
-            switch (engine.ToLower())
+            switch (engineID.ToLower())
             {
-                case MicrosoftRecognizer.ENGINE_NAME:
+                case MicrosoftRecognizer.ENGINE_IDENTIFIER:
                     return _microsoftRecognizer;
 
-                case GoogleRecognizer.ENGINE_NAME:
+                case GoogleRecognizer.ENGINE_IDENTIFIER:
                     return _googleRecognizer;
 
                 default:
-                    throw new System.Exception($"Engine '{engine}' not found.");
+                    throw new System.Exception($"Engine '{engineID}' not found.");
             }
         }
     }

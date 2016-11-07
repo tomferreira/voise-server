@@ -23,7 +23,7 @@ namespace Voise.Process
             {
                 try
                 {
-                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine_name);
+                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine_id);
 
                     Dictionary<string, List<string>> contexts = GetContexts(request.Config, classifierManager);
 

@@ -8,7 +8,7 @@ namespace Voise.Recognizer.Microsoft
 {
     internal sealed class MicrosoftRecognizer : Base
     {
-        internal const string ENGINE_NAME = "me";
+        internal const string ENGINE_IDENTIFIER = "me";
 
         private Dictionary<AudioStream, StreamingJob> _streamingJobs;
 

@@ -17,7 +17,7 @@ namespace Voise.TCP.Request
 
     internal class VoiseConfig
     {
-        public string engine_name;
+        public string engine_id;
         public string encoding;
         public int sample_rate;
         public string language_code;
