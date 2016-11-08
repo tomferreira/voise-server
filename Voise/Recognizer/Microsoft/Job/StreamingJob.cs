@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
-using System.Threading.Tasks;
+using Voise.Recognizer.Microsoft.Internal;
 using Voise.Synthesizer.Microsoft;
 using static Voise.AudioStream;
 
@@ -46,7 +46,7 @@ namespace Voise.Recognizer.Microsoft.Job
             // Prevents the event RecognizeCompleted to be triggered improperly
             _engine.EndSilenceTimeout = TimeSpan.FromSeconds(10);
 
-            _ss = new SpeechStreamer(3200);
+            _ss = new SpeechStreamer(streamIn.BufferCapacity * 50);
 
             _streamIn = streamIn;
             _streamIn.DataAvailable += ConsumeStreamData;
@@ -62,10 +62,9 @@ namespace Voise.Recognizer.Microsoft.Job
             _engine.RecognizeAsync(RecognizeMode.Single);
         }
 
-        private async void StreamingStopped(object sender, EventArgs e)
+        private void StreamingStopped(object sender, EventArgs e)
         {
-            //await _requestQueue.CompleteAsync();
-            _ss.Close();
+            _ss.Complete();
         }
 
         private void ConsumeStreamData(object sender, StreamInEventArgs e)
@@ -81,6 +80,8 @@ namespace Voise.Recognizer.Microsoft.Job
 
             lock (_completed)
                 Monitor.Wait(_completed);
+
+            _ss.Close();
         }
     }
 }

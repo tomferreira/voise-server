@@ -174,9 +174,10 @@
     <Compile Include="Recognizer\Base.cs" />
     <Compile Include="Recognizer\Exception\BadAudioException.cs" />
     <Compile Include="Recognizer\Exception\BadEncodingException.cs" />
+    <Compile Include="Recognizer\Microsoft\Internal\CircularBuffer.cs" />
     <Compile Include="Recognizer\Microsoft\Job\Base.cs" />
     <Compile Include="Recognizer\Microsoft\Job\StreamingJob.cs" />
-    <Compile Include="Recognizer\Microsoft\SpeechStreamer.cs" />
+    <Compile Include="Recognizer\Microsoft\Internal\SpeechStreamer.cs" />
     <Compile Include="Recognizer\NoResultSpeechRecognitionAlternative.cs" />
     <Compile Include="Recognizer\Google\Job\Base.cs" />
     <Compile Include="Recognizer\Google\Job\StreamingJob.cs" />

@@ -52,10 +52,11 @@ namespace Voise
         internal event EventHandler StreamingStopped;
 
         private bool _started;
-        private int _bufferCapacity;
 
         private Queue<MemoryStream> _buffers;
         private MemoryStream _currentBuffer;
+
+        internal int BufferCapacity { get; private set; }
 
         internal AudioStream(int bufferMillisec, int sampleRate, int bytesPerSample)
         {
@@ -63,7 +64,7 @@ namespace Voise
 
             _started = false;
 
-            _bufferCapacity = bufferMillisec * bytesPerSecond / 1000;            
+            BufferCapacity = bufferMillisec * bytesPerSecond / 1000;            
             _buffers = new Queue<MemoryStream>();
 
             CreateBuffer();
@@ -100,7 +101,7 @@ namespace Voise
 
             while (length > 0)
             {
-                int remmaing = _bufferCapacity - (int)_currentBuffer.Length;
+                int remmaing = BufferCapacity - (int)_currentBuffer.Length;
 
                 if (remmaing == 0)
                 {
@@ -125,7 +126,7 @@ namespace Voise
             {
                 while (_buffers.Count > 0)
                 {
-                    if (!sendNotFull && _buffers.Peek().Length < _bufferCapacity)
+                    if (!sendNotFull && _buffers.Peek().Length < BufferCapacity)
                         return;
 
                     MemoryStream buffer = _buffers.Dequeue();
@@ -143,7 +144,7 @@ namespace Voise
                     _buffers.Enqueue(_currentBuffer);
             }
 
-            _currentBuffer = new MemoryStream(_bufferCapacity);            
+            _currentBuffer = new MemoryStream(BufferCapacity);            
         }
     }
 }
