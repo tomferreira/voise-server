@@ -24,7 +24,10 @@ namespace Voise.Recognizer.Microsoft.Job
             _info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,
                 encoding.ChannelCount, sampleRate * encoding.BitsPerSample / 8, encoding.BlockAlign, null);
 
-            _engine = new SpeechRecognitionEngine(new CultureInfo(languageCode));
+            CultureInfo cultureInfo = new CultureInfo(languageCode);
+
+            Thread.CurrentThread.CurrentCulture = cultureInfo;
+            _engine = new SpeechRecognitionEngine(cultureInfo);
 
             _engine.RecognizeCompleted +=
                 new EventHandler<RecognizeCompletedEventArgs>(RecognizeCompleted);
@@ -35,7 +38,8 @@ namespace Voise.Recognizer.Microsoft.Job
             foreach (var context in contexts)
             {
                 GrammarBuilder gb = new GrammarBuilder();
-                gb.Append(new Choices(context.Value.ToArray()));
+                gb.Culture = cultureInfo;
+                gb.Append(new Choices(context.Value.ToArray()));                
 
                 Grammar gram = new Grammar(gb);
                 gram.Name = context.Key;
