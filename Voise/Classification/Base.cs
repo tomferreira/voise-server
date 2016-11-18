@@ -59,7 +59,7 @@ namespace Voise.Classification
             SetTrainText();
 
             // TODO: Resolver se irei usar isso para verificar a "qualidade" do modelo.
-            /*Evaluation evaluator = new Evaluation(data);
+            Evaluation evaluator = new Evaluation(data);
 
             evaluator.setDiscardPredictions(false);
             evaluator.crossValidateModel(_classifier, data, 11, new java.util.Random(42));
@@ -73,7 +73,13 @@ namespace Voise.Classification
             string matrix = evaluator.toMatrixString();
 
             if (waupr < MINUMIN_APRC)
-                _log.Warn($"{ModelName}: Area under PR Curve below down {MINUMIN_APRC}");*/
+            {
+                _log.Warn($"{ModelName}: Area under PR Curve is {waupr}, that is below down {MINUMIN_APRC}");
+            }
+            else
+            {
+                _log.Info($"{ModelName}: Area under PR Curve is {waupr}");
+            }
         }
 
         internal virtual Result Classify(string message)
