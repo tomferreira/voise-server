@@ -13,9 +13,9 @@ namespace Voise
 {
     public class Voise
     {
-#if DEBUG
         public static void Main(string[] args)
         {
+#if DEBUG
             BasicConfigurator.Configure();
 
             try
@@ -33,8 +33,10 @@ namespace Voise
 
                 log.Fatal(e.Message);
             }
-        }
+#else
+            Console.WriteLine("To Start Voise Server, use the Windows Service.");
 #endif
+        }
 
         private Server _tcpServer;
         private RecognizerManager _recognizerManager;
@@ -55,10 +57,7 @@ namespace Voise
             _classifierManager = new ClassifierManager(config.ClassifiersPath);
 
             // TTS
-            _synthetizer = new MicrosoftSynthetizer();
-
-            //if (config.TunningEnabled)
-            //    _recognizer.EnableTunnig(config.TunningPath);
+            _synthetizer = new MicrosoftSynthetizer();                
 
             _tcpServer.Start(config.Port);
         }
