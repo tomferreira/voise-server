@@ -14,13 +14,15 @@ namespace Voise.Recognizer.Microsoft.Job
         protected SpeechRecognitionEngine _engine;
         protected SpeechAudioFormatInfo _info;
 
-        protected readonly object _completed;
+        protected bool _completed;
+        protected readonly object _monitorCompleted;
 
         public SpeechRecognitionAlternative BestAlternative { get; protected set; }
 
         protected Base()
         {
-            _completed = new object();
+            _monitorCompleted = new object();
+            _completed = false;
 
             // Set as default alterative
             BestAlternative = NoResultSpeechRecognitionAlternative.Default;
@@ -44,8 +46,11 @@ namespace Voise.Recognizer.Microsoft.Job
                 BestAlternative.Confidence = e.Result.Confidence;
             }
 
-            lock (_completed)
-                Monitor.Pulse(_completed);
+            lock (_monitorCompleted)
+            {
+                _completed = true;
+                Monitor.Pulse(_monitorCompleted);
+            }
         }
 
         protected void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)

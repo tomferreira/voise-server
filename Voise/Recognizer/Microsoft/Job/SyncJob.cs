@@ -1,4 +1,4 @@
-﻿using Microsoft.Speech.AudioFormat;
+using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Recognition;
 using System;
 using System.Collections.Generic;
@@ -50,8 +50,11 @@ namespace Voise.Recognizer.Microsoft.Job
         {
             _engine.RecognizeAsync();
 
-            lock (_completed)
-                Monitor.Wait(_completed);
+            lock (_monitorCompleted)
+            {
+                if (!_completed)
+                    Monitor.Wait(_monitorCompleted);
+            }
         }
     }
 }
