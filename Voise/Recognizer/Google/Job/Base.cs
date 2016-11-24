@@ -28,24 +28,6 @@ namespace Voise.Recognizer.Google.Job
                 throw new BadEncodingException("Sample rate is invalid.");
         }
 
-        // Google DotNet API don't handle error in internet connection, 
-        // therefor it's necessary this manual check.
-        protected void CheckForInternetConnection()
-        {
-            try
-            {
-                Ping ping = new Ping();
-                PingReply reply = ping.Send("google.com", 100);
-
-                if (reply.Status != IPStatus.Success)
-                    throw new System.Exception();
-            }
-            catch
-            {
-                throw new System.Exception("No internet connection");
-            }
-        }
-
         protected ByteString ConvertAudioToByteString(string audio_base64)
         {
             if (audio_base64 == null || audio_base64.Trim() == string.Empty)
