@@ -36,9 +36,9 @@ namespace Voise.Process
 
                     client.StreamOut.DataAvailable += delegate (object sender, AudioStream.StreamInEventArgs e)
                     {
-                        SpeechResult r = new SpeechResult(SpeechResult.Modes.TTS);
-                        r.AudioContent = Convert.ToBase64String(e.Buffer);
-                        SendResult(client, r);
+                        SpeechResult result = new SpeechResult(SpeechResult.Modes.TTS);
+                        result.AudioContent = Convert.ToBase64String(e.Buffer);
+                        SendResult(client, result);
                     };
 
                     synthetizer.Create(
