@@ -18,10 +18,16 @@ namespace Voise.Recognizer.Microsoft.Internal
         /// </summary>
         private CircularBuffer<byte> _buffer;
 
+        private bool _completed;
+        private object _monitorCompleted;
+
         public SpeechStreamer(int bufferSize)
         {
             _buffer = new CircularBuffer<byte>(bufferSize);
             _writeEvent = new AutoResetEvent(false);
+
+            _monitorCompleted = new object();
+            _completed = false;
         }
 
         public override bool CanRead
@@ -73,13 +79,16 @@ namespace Voise.Recognizer.Microsoft.Internal
                 if (_buffer.TryGet(buffer, offset, count))
                     return count;
 
-                // If closed, reads the rest of buffer
-                if (_writeEvent == null)
+                // If completed, reads the rest of buffer
+                lock (_monitorCompleted)
                 {
-                    count = _buffer.Count;
-                    _buffer.TryGet(buffer, offset, _buffer.Count);
+                    if (_completed)
+                    {
+                        count = _buffer.Count;
+                        _buffer.TryGet(buffer, offset, _buffer.Count);
 
-                    return count;
+                        return count;
+                    }
                 }
 
                 // If not closed, wait for a buffered write
@@ -107,14 +116,17 @@ namespace Voise.Recognizer.Microsoft.Internal
         /// </summary>
         public void Complete()
         {
-            _writeEvent.Close();
-            _writeEvent = null;
+            lock (_monitorCompleted)
+                _completed = true;
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
+                _writeEvent.Close();
+                _writeEvent = null;
+
                 _buffer.Dispose();
                 _buffer = null;
             }
