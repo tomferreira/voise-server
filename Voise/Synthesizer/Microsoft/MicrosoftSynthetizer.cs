@@ -15,17 +15,26 @@ namespace Voise.Synthesizer.Microsoft
         {
             Job job = new Job(streamOut, encoding, sampleRate, languageCode);
 
-            _streamingJobs.Add(streamOut, job);
+            lock (_streamingJobs)
+                _streamingJobs.Add(streamOut, job);
         }
 
         internal void Synth(AudioStream streamOut, string text)
         {
-            if (!_streamingJobs.ContainsKey(streamOut))
-                throw new System.Exception("Job not exists.");
+            Job job = null;
 
-            Job job = _streamingJobs[streamOut];
+            lock (_streamingJobs)
+            { 
+                if (!_streamingJobs.ContainsKey(streamOut))
+                    throw new System.Exception("Job not exists.");
+
+                job = _streamingJobs[streamOut];
+            }
 
             job.Synth(text);
+
+            lock (_streamingJobs)
+                _streamingJobs.Remove(streamOut);
         }
 
         internal static AudioEncoding ConvertAudioEncoding(string encoding)
