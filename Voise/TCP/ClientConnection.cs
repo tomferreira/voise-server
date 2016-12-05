@@ -23,6 +23,8 @@ namespace Voise.TCP
 
         private ILog _log;
 
+        internal delegate void ClosedEventHandler(ClientConnection client);
+
         internal int ClientNumber { get; private set; }
 
         //
@@ -56,6 +58,8 @@ namespace Voise.TCP
             ReceiveAsync(_readEventArgs);
         }
 
+        internal event ClosedEventHandler Closed;
+
         internal bool IsOpen()
         {
             lock (_socket)
@@ -78,6 +82,8 @@ namespace Voise.TCP
 
                 _socket.Close();
             }
+
+            Closed?.Invoke(this);
         }
 
         private void SockAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
