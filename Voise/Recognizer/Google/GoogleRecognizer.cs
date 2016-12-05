@@ -42,21 +42,29 @@ namespace Voise.Recognizer.Google
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
             StreamingJob job = new StreamingJob(streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
-            _streamingJobs.Add(streamIn, job);
+
+            lock (_streamingJobs)
+                _streamingJobs.Add(streamIn, job);
 
             await job.StartAsync(_recognizer);
         }
 
         internal override async Task<SpeechRecognitionAlternative> StopStreamingRecognitionAsync(AudioStream streamIn)
         {
-            if (!_streamingJobs.ContainsKey(streamIn))
-                throw new System.Exception("Job not exists.");
+            StreamingJob job = null;
 
-            StreamingJob job = _streamingJobs[streamIn];
+            lock (_streamingJobs)
+            {
+                if (!_streamingJobs.ContainsKey(streamIn))
+                    throw new System.Exception("Job not exists.");
+
+                job = _streamingJobs[streamIn];
+            }
 
             await job.Stop();
 
-            _streamingJobs.Remove(streamIn);
+            lock (_streamingJobs)
+                _streamingJobs.Remove(streamIn);
 
             return job.BestAlternative;
         }
