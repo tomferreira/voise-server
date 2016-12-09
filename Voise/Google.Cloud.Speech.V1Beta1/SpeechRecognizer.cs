@@ -1,10 +1,10 @@
 ﻿using Google.Api.Gax;
+using Google.Api.Gax.Grpc;
 using Google.Cloud.Speech.V1Beta1;
-using Google.Longrunning;
+using Google.LongRunning;
 using Grpc.Core;
 using System.Threading;
 using System.Threading.Tasks;
-using Voise.Google.Longrunning;
 
 namespace Voise.Google.Cloud.Speech.V1Beta1
 {
@@ -57,9 +57,6 @@ namespace Voise.Google.Cloud.Speech.V1Beta1
             return new Operation<AsyncRecognizeResponse>(operation, _operationsClient);
         }
 
-        public Task<Operation<AsyncRecognizeResponse>> BeginRecognizeAsync(RecognitionConfig config, RecognitionAudio audio, CancellationToken cancellationToken)
-            => BeginRecognizeAsync(config, audio, new CallSettings { CancellationToken = cancellationToken });
-
         public async Task<Operation<AsyncRecognizeResponse>> BeginRecognizeAsync(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
         {
             var operation = await _client.AsyncRecognizeAsync(
@@ -71,10 +68,10 @@ namespace Voise.Google.Cloud.Speech.V1Beta1
 
         // TODO: CallSettings?
         public Operation<AsyncRecognizeResponse> PollRecognize(string operationName) =>
-            Operation<AsyncRecognizeResponse>.PollFromName(operationName, _operationsClient);
+            Operation<AsyncRecognizeResponse>.PollOnceFromName(operationName, _operationsClient);
 
         public Task<Operation<AsyncRecognizeResponse>> PollRecognizeAsync(string operationName) =>
-            Operation<AsyncRecognizeResponse>.PollFromNameAsync(operationName, _operationsClient);
+            Operation<AsyncRecognizeResponse>.PollOnceFromNameAsync(operationName, _operationsClient);
 
         public async Task<RecognizerStream> BeginStreamingRecognizeAsync(StreamingRecognitionConfig config, CallSettings settings = null)
         {
