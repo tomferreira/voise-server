@@ -4,7 +4,8 @@ using System;
 using System.Threading;
 using Voise.Classification;
 using Voise.Process;
-using Voise.Recognizer.Google;
+using Voise.Recognizer;
+using Voise.Synthesizer.Microsoft;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -14,12 +15,16 @@ namespace Voise
     {
         public static void Main(string[] args)
         {
+#if DEBUG
             BasicConfigurator.Configure();
 
             try
             {
                 Config config = new Config();
                 new Voise(config);
+
+                while (true)
+                    Thread.Sleep(100);
             }
             catch(Exception e)
             {
@@ -28,25 +33,39 @@ namespace Voise
 
                 log.Fatal(e.Message);
             }
+#else
+            Console.WriteLine("To Start Voise Server, use the Windows Service.");
+#endif
         }
 
         private Server _tcpServer;
-        private GoogleRecognizer _recognizer;
+        private RecognizerManager _recognizerManager;
+        private MicrosoftSynthetizer _synthetizer;
         private ClassifierManager _classifierManager;
 
-        internal Voise(Config config)
+        public Voise(Config config)
         {
+            ILog log = LogManager.GetLogger(
+                System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+            log.Info($"Initializinng Voise Server v{Version.VersionString}.");
+
             _tcpServer = new Server(HandleClientRequest);
-            _recognizer = new GoogleRecognizer();
+
+            // ASR
+            _recognizerManager = new RecognizerManager();
             _classifierManager = new ClassifierManager(config.ClassifiersPath);
 
-            if (config.TunningEnabled)
-                _recognizer.EnableTunnig(config.TunningPath);
+            // TTS
+            _synthetizer = new MicrosoftSynthetizer();                
 
             _tcpServer.Start(config.Port);
+        }
 
-            while (true)
-                Thread.Sleep(100);
+        public void Stop()
+        {
+            if (_tcpServer != null && _tcpServer.IsOpen)
+                _tcpServer.Stop();
         }
 
         private void HandleClientRequest(ClientConnection client, VoiseRequest request)
@@ -54,12 +73,12 @@ namespace Voise
             if (request.SyncRequest != null)
             {
                 new ProcessSyncRequest(
-                    client, request.SyncRequest, _recognizer, _classifierManager);
+                    client, request.SyncRequest, _recognizerManager, _classifierManager);
             }
             else if (request.StreamStartRequest != null)
             {
                 new ProcessStreamStartRequest(
-                    client, request.StreamStartRequest, _recognizer, _classifierManager);
+                    client, request.StreamStartRequest, _recognizerManager, _classifierManager);
             }
             else if (request.StreamDataRequest != null)
             {
@@ -69,7 +88,12 @@ namespace Voise
             else if (request.StreamStopRequest != null)
             {
                 new ProcessStreamStopRequest(
-                    client, request.StreamStopRequest, _recognizer);
+                    client, request.StreamStopRequest, _recognizerManager);
+            }
+            else if (request.SynthVoiceRequest != null)
+            {
+                new ProcessSynthVoiceRequest(
+                    client, request.SynthVoiceRequest, _synthetizer);
             }
         }
     }

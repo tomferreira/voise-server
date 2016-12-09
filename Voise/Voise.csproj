@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.7.4137.9688, Culture=neutral, PublicKeyToken=a4292a325f69b123, processorArchitecture=MSIL">
@@ -99,10 +101,6 @@
       <HintPath>..\packages\IKVM.OpenJDK.Core.7.2.4630.5\lib\IKVM.OpenJDK.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.SwingAWT, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <HintPath>..\packages\IKVM.OpenJDK.SwingAWT.7.2.4630.5\lib\IKVM.OpenJDK.SwingAWT.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="IKVM.OpenJDK.Text, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\IKVM.OpenJDK.Text.7.2.4630.5\lib\IKVM.OpenJDK.Text.dll</HintPath>
       <Private>True</Private>
@@ -119,9 +117,13 @@
       <HintPath>..\packages\IKVM.Runtime.7.2.4630.5\lib\IKVM.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Speech, Version=11.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files\Microsoft SDKs\Speech\v11.0\Assembly\Microsoft.Speech.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -153,11 +155,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioStream.cs" />
     <Compile Include="Classification\Base.cs" />
     <Compile Include="Classification\ClassifierManager.cs" />
     <Compile Include="Classification\Exception\BadModelException.cs" />
     <Compile Include="Classification\Exception\ClassifiersPathNotFound.cs" />
-    <Compile Include="Classification\Exception\LogisticTextClassifier.cs" />
+    <Compile Include="Classification\LogisticTextClassifier.cs" />
     <Compile Include="Classification\J48TextClassifier.cs" />
     <Compile Include="Classification\MultilayerPerceptronTextClassificatier.cs" />
     <Compile Include="Classification\NaiveBayesTextClassifier.cs" />
@@ -168,14 +171,31 @@
     <Compile Include="Google.Longrunning\Operation.cs" />
     <Compile Include="Google.Longrunning\OperationFailedException.cs" />
     <Compile Include="Process\ProcessStreamStopRequest.cs" />
+    <Compile Include="Process\ProcessSynthVoiceRequest.cs" />
+    <Compile Include="Recognizer\Base.cs" />
     <Compile Include="Recognizer\Exception\BadAudioException.cs" />
     <Compile Include="Recognizer\Exception\BadEncodingException.cs" />
-    <Compile Include="Recognizer\Google\NoResultSpeechRecognitionAlternative.cs" />
+    <Compile Include="Recognizer\Microsoft\Internal\CircularBuffer.cs" />
+    <Compile Include="Recognizer\Microsoft\Job\Base.cs" />
+    <Compile Include="Recognizer\Microsoft\Job\StreamingJob.cs" />
+    <Compile Include="Recognizer\Microsoft\Internal\SpeechStreamer.cs" />
+    <Compile Include="Recognizer\NoResultSpeechRecognitionAlternative.cs" />
     <Compile Include="Recognizer\Google\Job\Base.cs" />
     <Compile Include="Recognizer\Google\Job\StreamingJob.cs" />
     <Compile Include="Recognizer\Google\Job\SyncJob.cs" />
     <Compile Include="Recognizer\Google\GoogleRecognizer.cs" />
     <Compile Include="Recognizer\Google\RequestQueue.cs" />
+    <Compile Include="Recognizer\Microsoft\Job\SyncJob.cs" />
+    <Compile Include="Recognizer\Microsoft\MicrosoftRecognizer.cs" />
+    <Compile Include="Recognizer\RecognizerManager.cs" />
+    <Compile Include="ResponseCode.cs" />
+    <Compile Include="Synthesizer\Exception\BadEncodingException.cs" />
+    <Compile Include="Synthesizer\Exception\BadLanguageException.cs" />
+    <Compile Include="Synthesizer\Exception\BadVoiceException.cs" />
+    <Compile Include="Synthesizer\Microsoft\AudioEncoding.cs" />
+    <Compile Include="Synthesizer\Microsoft\MicrosoftSynthetizer.cs" />
+    <Compile Include="Synthesizer\Microsoft\WaveStream.cs" />
+    <Compile Include="Synthesizer\Microsoft\Job\Job.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="Process\ProcessBase.cs" />
     <Compile Include="Process\ProcessStreamDataRequest.cs" />
@@ -183,16 +203,16 @@
     <Compile Include="Process\ProcessStreamStartRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpeechResult.cs" />
-    <Compile Include="StreamIn.cs" />
-    <Compile Include="TCP\BufferManager.cs" />
     <Compile Include="TCP\ClientConnection.cs" />
     <Compile Include="TCP\Request\VoiseStreamRecognitionStopRequest.cs" />
     <Compile Include="TCP\Request\VoiseSyncRecognitionRequest.cs" />
     <Compile Include="TCP\Request\VoiseRequest.cs" />
     <Compile Include="TCP\Request\VoiseStreamRecognitionStartRequest.cs" />
     <Compile Include="TCP\Request\VoiseStreamRecognitionDataRequest.cs" />
+    <Compile Include="TCP\Request\VoiseSynthVoiceRequest.cs" />
     <Compile Include="TCP\Response\VoiseResponse.cs" />
     <Compile Include="TCP\Server.cs" />
+    <Compile Include="Version.cs" />
     <Compile Include="Voise.cs" />
   </ItemGroup>
   <ItemGroup>

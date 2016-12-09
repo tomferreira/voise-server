@@ -1,5 +1,6 @@
 ﻿using log4net;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using weka.classifiers;
@@ -28,6 +29,10 @@ namespace Voise.Classification
         protected StringToWordVector _filter;
 
         protected Instances _trainingData;
+
+        // List of all class => text used in train data.
+        protected Dictionary<string, List<string>> _trainingList;
+
         protected ILog _log;
 
         internal string ModelName { get; private set; }
@@ -38,11 +43,20 @@ namespace Voise.Classification
                 System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
             ModelName = modelName;
+
+            _trainingList = new Dictionary<string, List<string>>();
+        }
+
+        internal Dictionary<string, List<string>> GetTrainingList()
+        {
+            return _trainingList;
         }
 
         internal virtual void Train(Instances data)
         {
             _classifier.buildClassifier(data);
+
+            SetTrainText();
 
             // TODO: Resolver se irei usar isso para verificar a "qualidade" do modelo.
             Evaluation evaluator = new Evaluation(data);
@@ -59,7 +73,13 @@ namespace Voise.Classification
             string matrix = evaluator.toMatrixString();
 
             if (waupr < MINUMIN_APRC)
-                _log.Warn($"{ModelName}: Area under PR Curve below down {MINUMIN_APRC}");
+            {
+                _log.Warn($"{ModelName}: Area under PR Curve is {waupr}, that is below down {MINUMIN_APRC}");
+            }
+            else
+            {
+                _log.Info($"{ModelName}: Area under PR Curve is {waupr}");
+            }
         }
 
         internal virtual Result Classify(string message)
@@ -143,6 +163,23 @@ namespace Voise.Classification
             }
 
             return null;
+        }
+
+        private void SetTrainText()
+        {
+            int numInstances = _trainingData.numInstances();
+            for (int i = 0; i < numInstances; i++)
+            {
+                Instance inst = _trainingData.instance(i);
+
+                int ci = Convert.ToInt32(inst.classValue());
+                string className = _trainingData.classAttribute().value(ci);
+
+                if (!_trainingList.ContainsKey(className))
+                    _trainingList.Add(className, new List<string>());
+
+                _trainingList[className].Add(inst.stringValue(0).ToLower());
+            }
         }
     }
 }

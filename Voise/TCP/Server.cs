@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using log4net;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Voise.TCP.Request;
@@ -14,10 +15,15 @@ namespace Voise.TCP
         private List<ClientConnection> _listConnection;
         private HandlerRequest _hr;
 
+        private ILog _log;
+
         internal Server(HandlerRequest hr)
         {
+            _log = LogManager.GetLogger(
+                    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
             _hr = hr;
-            _listConnection = new List<ClientConnection>();            
+            _listConnection = new List<ClientConnection>();
         }
 
         internal bool IsOpen { get; private set; }
@@ -54,13 +60,12 @@ namespace Voise.TCP
             {
                 if (e.SocketError == SocketError.Success)
                 {
-                    ClientConnection Client = new ClientConnection(e.AcceptSocket, _hr);
+                    ClientConnection client = new ClientConnection(e.AcceptSocket, _hr);
+                    client.Closed += (ClientConnection c) => ClearClientConnection(c);
 
                     lock (_listConnection)
-                        _listConnection.Add(Client);
+                        _listConnection.Add(client);
                 }
-
-                CheckClientConnections();
 
                 e.AcceptSocket = null;
 
@@ -76,12 +81,14 @@ namespace Voise.TCP
                 AcceptCompleted(_listenSocket, e);
         }
 
-        private void CheckClientConnections()
+        private void ClearClientConnection(ClientConnection client)
         {
             lock (_listConnection)
             {
-                // Remove closed connections
-                _listConnection.RemoveAll(client => !client.IsOpen());
+                // Remove closed client
+                _listConnection.Remove(client);
+
+                _log.Info($"Exits {_listConnection.Count} active connections.");
             }
         }
     }

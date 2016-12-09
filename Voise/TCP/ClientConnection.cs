@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using Voise.TCP.Request;
 using Voise.TCP.Response;
 using static Voise.TCP.Server;
@@ -20,12 +21,23 @@ namespace Voise.TCP
 
         private byte[] _buffer;
         private StringBuilder _data;
+
+        AutoResetEvent _dataSent;
+
         private HandlerRequest _hr;
 
         private ILog _log;
 
+        internal delegate void ClosedEventHandler(ClientConnection client);
+
         internal int ClientNumber { get; private set; }
-        internal StreamIn StreamIn { get; set; }
+
+        //
+        internal AudioStream StreamIn { get; set; }
+
+        //
+        internal AudioStream StreamOut { get; set; }
+
         internal Pipeline CurrentPipeline { get; set; }
 
         internal ClientConnection(Socket acceptedSocket, HandlerRequest hr)
@@ -39,6 +51,8 @@ namespace Voise.TCP
 
             _buffer = new byte[1024]; // 1 KB
             _data = new StringBuilder();
+
+            _dataSent = new AutoResetEvent(false);
 
             _socket = acceptedSocket;
             _hr = hr;
@@ -55,6 +69,8 @@ namespace Voise.TCP
             ReceiveAsync(_readEventArgs);
         }
 
+        internal event ClosedEventHandler Closed;
+
         internal bool IsOpen()
         {
             lock (_socket)
@@ -65,19 +81,25 @@ namespace Voise.TCP
         {
             lock (_socket)
             {
+                _data.Clear();
                 _data = null;
+
+                _dataSent.Dispose();
+                _dataSent = null;
 
                 _readEventArgs.Dispose();
                 _writeEventArgs.Dispose();
 
                 try
                 {
-                    _socket.Shutdown(SocketShutdown.Send);
+                    _socket.Shutdown(SocketShutdown.Both);
                 }
                 catch (Exception) { }
 
                 _socket.Close();
             }
+
+            Closed?.Invoke(this);
         }
 
         private void SockAsyncEventArgs_Completed(object sender, SocketAsyncEventArgs e)
@@ -100,6 +122,8 @@ namespace Voise.TCP
                 CloseConnection();
                 return;
             }
+
+            _dataSent.Set();
         }
 
         private void ProcessReceive(SocketAsyncEventArgs e)
@@ -147,6 +171,10 @@ namespace Voise.TCP
             _writeEventArgs.SetBuffer(byteData, 0, byteData.Length);
 
             SendAsync(_writeEventArgs);
+
+            // TODO: Espera completar a requisição de envio anterior (se houver).
+            // Com isso, esse método não é verdadeiramente assíncrono.
+            _dataSent.WaitOne();
         }
 
         private void SendAsync(SocketAsyncEventArgs e)

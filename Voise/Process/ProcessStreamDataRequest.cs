@@ -14,7 +14,7 @@ namespace Voise.Process
             log.Debug("StreamDataRequest");
 
             byte[] data = Convert.FromBase64String(request.data);
-            client.StreamIn?.AddData(data);
+            client.StreamIn?.Write(data);
         }
     }
 }

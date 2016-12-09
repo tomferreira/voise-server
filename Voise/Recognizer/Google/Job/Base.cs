@@ -2,6 +2,8 @@
 using Google.Protobuf;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.NetworkInformation;
 using Voise.Recognizer.Exception;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 
@@ -41,15 +43,18 @@ namespace Voise.Recognizer.Google.Job
             }
         }
 
-        protected SpeechContext CreateSpeechContext(List<string> context)
+        protected SpeechContext CreateSpeechContext(Dictionary<string, List<string>> contexts)
         {
-            if (context == null || context.Count == 0)
+            if (contexts == null || contexts.Count == 0)
                 return null;
 
             var speechContext = new SpeechContext();
 
-            foreach (var phrase in context)
-                speechContext.Phrases.Add(phrase);
+            foreach (var context in contexts)
+            {
+                foreach (var phrase in context.Value)
+                    speechContext.Phrases.Add(phrase);
+            }
 
             return speechContext;
         }

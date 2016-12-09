@@ -1,7 +1,8 @@
 ﻿using log4net;
 using System;
+using System.Collections.Generic;
 using Voise.Classification;
-using Voise.Recognizer.Google;
+using Voise.Recognizer;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -10,7 +11,7 @@ namespace Voise.Process
     internal class ProcessSyncRequest : ProcessBase
     {
         internal ProcessSyncRequest(ClientConnection client, VoiseSyncRecognitionRequest request,
-            GoogleRecognizer recognizer, ClassifierManager classifierManager)
+            RecognizerManager recognizerManager, ClassifierManager classifierManager)
         {
             ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -22,26 +23,21 @@ namespace Voise.Process
             {
                 try
                 {
+                    Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine_id);
+
+                    Dictionary<string, List<string>> contexts = GetContexts(request.Config, classifierManager);
+
                     var recognition = await recognizer.SyncRecognition(
                        request.audio,
-                       GoogleRecognizer.ConvertAudioEncoding(request.Config.encoding),
+                       request.Config.encoding,
                        request.Config.sample_rate,
                        request.Config.language_code,
-                        request.Config.context);
+                       contexts);
 
                     //
+                    pipeline.SpeechResult = new SpeechResult(SpeechResult.Modes.ASR);
                     pipeline.SpeechResult.Transcript = recognition.Transcript;
                     pipeline.SpeechResult.Confidence = recognition.Confidence;
-                }
-                catch (Recognizer.Exception.BadAudioException e)
-                {
-                    SendError(client, e);
-                    pipeline.CancelExecution();
-                }
-                catch (Recognizer.Exception.BadEncodingException e)
-                {
-                    SendError(client, e);
-                    pipeline.CancelExecution();
                 }
                 catch (Exception e)
                 {

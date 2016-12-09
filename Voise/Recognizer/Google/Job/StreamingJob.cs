@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Voise.Google.Cloud.Speech.V1Beta1;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
-using static Voise.StreamIn;
+using static Voise.AudioStream;
 
 namespace Voise.Recognizer.Google.Job
 {
@@ -17,9 +17,9 @@ namespace Voise.Recognizer.Google.Job
         private RequestQueue<ByteString> _requestQueue;
         private Task _doneTask;
 
-        private StreamIn _streamIn;
+        private AudioStream _streamIn;
 
-        internal StreamingJob(StreamIn streamIn, AudioEncoding encoding, int sampleRate, string languageCode, List<string> context)
+        internal StreamingJob(AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base()
         {
             ValidateArguments(encoding, sampleRate, languageCode);
@@ -32,7 +32,7 @@ namespace Voise.Recognizer.Google.Job
                     SampleRate = sampleRate,
                     MaxAlternatives = 5,
                     LanguageCode = languageCode,
-                    SpeechContext = CreateSpeechContext(context)
+                    SpeechContext = CreateSpeechContext(contexts)
                 },
                 InterimResults = true
             };
@@ -78,7 +78,7 @@ namespace Voise.Recognizer.Google.Job
                         {
                             foreach (var alternative in result.Alternatives)
                             {
-                                if (BestAlternative == null || BestAlternative.Confidence < alternative.Confidence)
+                                if (BestAlternative == NoResultSpeechRecognitionAlternative.Default || BestAlternative.Confidence < alternative.Confidence)
                                     BestAlternative = alternative;
                             }
                         }
