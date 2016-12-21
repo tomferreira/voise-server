@@ -88,7 +88,7 @@ namespace Voise.TCP
                 // Remove closed client
                 _listConnection.Remove(client);
 
-                _log.Info($"Exits {_listConnection.Count} active connections.");
+                _log.Info($"Exists {_listConnection.Count} active connections.");
             }
         }
     }
