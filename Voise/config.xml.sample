@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <config>
-    <!-- Default: 8100 -->
-    <!--<port>8100</port>-->
+    <!-- Default: 8102 -->
+    <!--<port>8102</port>-->
 
     <!-- Default: ./classifiers/ -->
     <!--<classifiers_path>./classifiers/</classifiers_path>-->

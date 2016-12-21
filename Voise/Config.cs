@@ -8,7 +8,7 @@ namespace Voise
         private static string FILENAME_FULLPATH = "./config.xml";
 
         // General
-        private static int DEFAULT_PORT = 8100;
+        private static int DEFAULT_PORT = 8102;
 
         // Classifier
         private static string DEFAULT_CLASSIFIERS_PATH = "./classifiers/";
