@@ -14,20 +14,18 @@ namespace Voise.Google.Cloud.Speech.V1Beta1
     public class SpeechRecognizer
     {
         private readonly SpeechClient _client;
-        private readonly OperationsClient _operationsClient;
 
         // Note: eventually SpeechClient will have an OperationsClient itself, at which point the second parameter
         // can be removed.
-        public SpeechRecognizer(SpeechClient client, OperationsClient operationsClient)
+        public SpeechRecognizer(SpeechClient client)
         {
             _client = client;
-            _operationsClient = operationsClient;
         }
 
-        public static SpeechRecognizer Create()
+        public static SpeechRecognizer Create(ServiceEndpoint endpoint = null)
         {
             // TODO: Use a single channel... should be fine when SpeechClient has an OperationsClient.
-            return new SpeechRecognizer(SpeechClient.Create(), OperationsClient.Create(SpeechClient.DefaultEndpoint));
+            return new SpeechRecognizer(SpeechClient.Create(endpoint));
         }
 
         public SyncRecognizeResponse Recognize(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
@@ -49,29 +47,16 @@ namespace Voise.Google.Cloud.Speech.V1Beta1
                 cancellationToken);
 
         public Operation<AsyncRecognizeResponse> BeginRecognize(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
-        {
-            var operation = _client.AsyncRecognize(
+            => _client.AsyncRecognize(
                 GaxPreconditions.CheckNotNull(config, nameof(config)),
                 GaxPreconditions.CheckNotNull(audio, nameof(audio)),
                 callSettings);
-            return new Operation<AsyncRecognizeResponse>(operation, _operationsClient);
-        }
 
         public async Task<Operation<AsyncRecognizeResponse>> BeginRecognizeAsync(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
-        {
-            var operation = await _client.AsyncRecognizeAsync(
+            => await _client.AsyncRecognizeAsync(
                 GaxPreconditions.CheckNotNull(config, nameof(config)),
                 GaxPreconditions.CheckNotNull(audio, nameof(audio)),
                 callSettings).ConfigureAwait(false);
-            return new Operation<AsyncRecognizeResponse>(operation, _operationsClient);
-        }
-
-        // TODO: CallSettings?
-        public Operation<AsyncRecognizeResponse> PollRecognize(string operationName) =>
-            Operation<AsyncRecognizeResponse>.PollOnceFromName(operationName, _operationsClient);
-
-        public Task<Operation<AsyncRecognizeResponse>> PollRecognizeAsync(string operationName) =>
-            Operation<AsyncRecognizeResponse>.PollOnceFromNameAsync(operationName, _operationsClient);
 
         public async Task<RecognizerStream> BeginStreamingRecognizeAsync(StreamingRecognitionConfig config, CallSettings settings = null)
         {

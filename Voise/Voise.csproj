@@ -46,11 +46,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Api.Gax, Version=1.0.0.0, Culture=neutral, PublicKeyToken=3ec5ea7f18953e47, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Api.Gax.1.0.0-beta05\lib\net45\Google.Api.Gax.dll</HintPath>
+      <HintPath>..\packages\Google.Api.Gax.1.0.0-beta06\lib\net45\Google.Api.Gax.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Api.Gax.Grpc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=3ec5ea7f18953e47, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Api.Gax.Grpc.1.0.0-beta05\lib\net45\Google.Api.Gax.Grpc.dll</HintPath>
+      <HintPath>..\packages\Google.Api.Gax.Grpc.1.0.0-beta06\lib\net45\Google.Api.Gax.Grpc.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -74,11 +74,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Cloud.Speech.V1Beta1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=185c282632e132a0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Cloud.Speech.V1Beta1.1.0.0-alpha01\lib\net45\Google.Cloud.Speech.V1Beta1.dll</HintPath>
+      <HintPath>..\packages\Google.Cloud.Speech.V1Beta1.1.0.0-alpha03\lib\net45\Google.Cloud.Speech.V1Beta1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.LongRunning, Version=1.0.0.0, Culture=neutral, PublicKeyToken=185c282632e132a0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.LongRunning.1.0.0-beta04\lib\net45\Google.LongRunning.dll</HintPath>
+      <HintPath>..\packages\Google.LongRunning.1.0.0-beta05\lib\net45\Google.LongRunning.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Protobuf, Version=3.1.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
