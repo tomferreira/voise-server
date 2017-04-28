@@ -1,4 +1,5 @@
 ﻿using Google.Cloud.Speech.V1Beta1;
+using log4net;
 using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Recognition;
 using System;
@@ -17,6 +18,8 @@ namespace Voise.Recognizer.Microsoft.Job
         protected bool _completed;
         protected readonly object _monitorCompleted;
 
+        protected ILog _log;
+
         public SpeechRecognitionAlternative BestAlternative { get; protected set; }
 
         protected Base()
@@ -32,12 +35,11 @@ namespace Voise.Recognizer.Microsoft.Job
         {
             if (e.Error != null)
             {
-                Console.WriteLine("RecognizeCompleted, error occurred during recognition: {0}", e.Error);
+                _log.Error($"Error occurred during recognition: {e.Error}");
             }
             else if (e.InitialSilenceTimeout || e.BabbleTimeout)
             {
-                // This not must be raised!
-                // TODO: Log this!
+                _log.Error("Initial silence timeout ou babble timeout raised");
             }
             else if (e.Result != null)
             {

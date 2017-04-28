@@ -13,8 +13,6 @@ namespace Voise.Process
         {
             ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-            log.Debug("StreamStopRequest");
-
             try
             {
                 if (client.CurrentPipeline.Recognizer == null)
@@ -28,7 +26,7 @@ namespace Voise.Process
             }
             catch(Exception e)
             {
-                client.CurrentPipeline.AsyncStreamError = e.InnerException;
+                client.CurrentPipeline.AsyncStreamError = e.InnerException ?? e;
                 log.Error(e.InnerException?.Message);
             }
 

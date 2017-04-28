@@ -81,13 +81,18 @@ namespace Voise.TCP
         {
             lock (_socket)
             {
+                _buffer = null;
+
                 _data.Clear();
                 _data = null;
 
                 _dataSent.Dispose();
                 _dataSent = null;
 
+                _readEventArgs.Completed -= SockAsyncEventArgs_Completed;
                 _readEventArgs.Dispose();
+
+                _writeEventArgs.Completed -= SockAsyncEventArgs_Completed;
                 _writeEventArgs.Dispose();
 
                 try
@@ -98,6 +103,8 @@ namespace Voise.TCP
 
                 _socket.Close();
             }
+
+            _log = null;
 
             Closed?.Invoke(this);
         }

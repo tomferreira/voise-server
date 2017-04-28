@@ -61,7 +61,7 @@ namespace Voise.TCP
                 if (e.SocketError == SocketError.Success)
                 {
                     ClientConnection client = new ClientConnection(e.AcceptSocket, _hr);
-                    client.Closed += (ClientConnection c) => ClearClientConnection(c);
+                    client.Closed += ClientClosed;
 
                     lock (_listConnection)
                         _listConnection.Add(client);
@@ -79,6 +79,13 @@ namespace Voise.TCP
 
             if (!willRaiseEvent)
                 AcceptCompleted(_listenSocket, e);
+        }
+
+        private void ClientClosed(ClientConnection client)
+        {
+            client.Closed -= ClientClosed;
+
+            ClearClientConnection(client);
         }
 
         private void ClearClientConnection(ClientConnection client)

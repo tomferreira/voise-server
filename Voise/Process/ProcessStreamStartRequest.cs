@@ -1,5 +1,4 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Voise.Classification;
 using Voise.Recognizer;
@@ -13,10 +12,6 @@ namespace Voise.Process
         internal ProcessStreamStartRequest(ClientConnection client, VoiseStreamRecognitionStartRequest request,
             RecognizerManager recognizerManager, ClassifierManager classifierManager)
         {
-            ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-            log.Debug("StreamStartRequest");
-
             // This client already is streaming audio.
             if (client.StreamIn != null)
             {
@@ -26,7 +21,7 @@ namespace Voise.Process
 
             var pipeline = client.CurrentPipeline = new Pipeline();
 
-            var task1 = pipeline.StartNew(async () =>
+            pipeline.StartNew(async () =>
             {
                 try
                 {
@@ -64,7 +59,7 @@ namespace Voise.Process
                 }
             });
 
-            var task2 = pipeline.StartNew(async () =>
+            pipeline.StartNew(async () =>
             {
                 // Espera pelo término do streaming para continuar a pipeline.
                 // Veja o tratamento do comando 'StreamDataRequest'.
@@ -81,7 +76,7 @@ namespace Voise.Process
                 }
             });
 
-            var task3 = pipeline.StartNew(async () =>
+            pipeline.StartNew(async () =>
             {
                 if (request.Config.model_name == null || pipeline.SpeechResult.Transcript == null)
                     return;
@@ -113,7 +108,7 @@ namespace Voise.Process
                 }
             });
 
-            var task4 = pipeline.StartNew(async () =>
+            pipeline.StartNew(async () =>
             {
                 // Cleanup streamIn
                 client.StreamIn = null;
@@ -122,7 +117,7 @@ namespace Voise.Process
                 pipeline = client.CurrentPipeline = null;
             });
 
-            pipeline.WaitAll(task1, task2, task3, task4);
+            pipeline.WaitAll();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Voise.Classification;
 using Voise.Recognizer;
@@ -13,13 +12,9 @@ namespace Voise.Process
         internal ProcessSyncRequest(ClientConnection client, VoiseSyncRecognitionRequest request,
             RecognizerManager recognizerManager, ClassifierManager classifierManager)
         {
-            ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-            log.Debug("SyncRequest");
-
             var pipeline = client.CurrentPipeline = new Pipeline();
 
-            var task1 = pipeline.StartNew(async () =>
+            pipeline.StartNew(async () =>
             {
                 try
                 {
@@ -28,11 +23,11 @@ namespace Voise.Process
                     Dictionary<string, List<string>> contexts = GetContexts(request.Config, classifierManager);
 
                     var recognition = await recognizer.SyncRecognition(
-                       request.audio,
-                       request.Config.encoding,
-                       request.Config.sample_rate,
-                       request.Config.language_code,
-                       contexts);
+                        request.audio,
+                        request.Config.encoding,
+                        request.Config.sample_rate,
+                        request.Config.language_code,
+                        contexts);
 
                     //
                     pipeline.SpeechResult = new SpeechResult(SpeechResult.Modes.ASR);
@@ -46,7 +41,7 @@ namespace Voise.Process
                 }
             });
 
-            var task2 = pipeline.StartNew(async () =>
+            pipeline.StartNew(async () =>
             {
                 if (request.Config.model_name == null || pipeline.SpeechResult.Transcript == null)
                     return;
@@ -68,7 +63,7 @@ namespace Voise.Process
                     pipeline.SpeechResult.Intent = classification.ClassName;
                     pipeline.SpeechResult.Probability = classification.Probability;
                 }
-                catch(Classification.Exception.BadModelException e)
+                catch (Classification.Exception.BadModelException e)
                 {
                     SendError(client, e);
                     pipeline.CancelExecution();
@@ -80,13 +75,13 @@ namespace Voise.Process
                 }
             });
 
-            var task3 = pipeline.StartNew(async () =>
+            pipeline.StartNew(async () =>
             {
                 SendResult(client, pipeline.SpeechResult);
                 pipeline = client.CurrentPipeline = null;
             });
 
-            pipeline.WaitAll(task1, task2, task3);
+            pipeline.WaitAll();
         }
     }
 }

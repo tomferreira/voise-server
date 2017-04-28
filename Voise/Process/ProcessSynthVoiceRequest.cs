@@ -1,5 +1,4 @@
-﻿using log4net;
-using System;
+﻿using System;
 using Voise.Synthesizer.Microsoft;
 using Voise.TCP;
 using Voise.TCP.Request;
@@ -10,10 +9,6 @@ namespace Voise.Process
     {
         internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, MicrosoftSynthetizer synthetizer)
         {
-            ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-            log.Debug("SynthVoiceRequest");
-
             // This client already is receiving stream.
             if (client.StreamOut != null)
             {
@@ -24,7 +19,7 @@ namespace Voise.Process
             var pipeline = client.CurrentPipeline = new Pipeline();
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-            var task1 = pipeline.StartNew(async () =>
+            pipeline.StartNew(async () =>
             {
                 try
                 {
@@ -61,7 +56,7 @@ namespace Voise.Process
                 }
             });
 
-            var task2 = pipeline.StartNew(async () =>
+            pipeline.StartNew(async () =>
             {
                 try
                 { 
@@ -77,7 +72,7 @@ namespace Voise.Process
                 }
             });
 
-            var task3 = pipeline.StartNew(async () =>
+            pipeline.StartNew(async () =>
             {
                 // Cleanup streamOut
                 client.StreamOut = null;
@@ -90,7 +85,7 @@ namespace Voise.Process
             });
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
-            pipeline.WaitAll(task1, task2, task3);
+            pipeline.WaitAll();
         }
     }
 }
