@@ -95,7 +95,7 @@ namespace Voise.TCP
                 // Remove closed client
                 _listConnection.Remove(client);
 
-                _log.Info($"Exists {_listConnection.Count} active connections.");
+                _log.Debug($"Exists {_listConnection.Count} active connections.");
             }
         }
     }

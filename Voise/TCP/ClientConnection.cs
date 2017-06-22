@@ -47,7 +47,7 @@ namespace Voise.TCP
 
             ClientNumber = _clientNumberID++;
 
-            _log.Info($"Initializing connection from {acceptedSocket.RemoteEndPoint.ToString()}.");
+            _log.Debug($"Initializing connection from {acceptedSocket.RemoteEndPoint.ToString()}.");
 
             _buffer = new byte[1024]; // 1 KB
             _data = new StringBuilder();
