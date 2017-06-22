@@ -24,10 +24,12 @@ namespace Voise.Process
                 client.CurrentPipeline.SpeechResult.Transcript = recognition.Transcript;
                 client.CurrentPipeline.SpeechResult.Confidence = recognition.Confidence;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                client.CurrentPipeline.AsyncStreamError = e.InnerException ?? e;
-                log.Error(e.InnerException?.Message);
+                Exception deepestException = e.InnerException ?? e;
+
+                client.CurrentPipeline.AsyncStreamError = deepestException;
+                log.Error(deepestException?.Message);
             }
 
             // Avisa à pipeline que pode continuar.
