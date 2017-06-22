@@ -10,7 +10,6 @@ namespace VoiseService
     {
         static void Main(string[] args)
         {
-
             // This will ensure that future calls to Directory.GetCurrentDirectory()
             // returns the actual executable directory and not something like C:\Windows\System32 
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
@@ -34,31 +33,17 @@ namespace VoiseService
                     sc.WhenStarted((s, hostControl) => s.Start(hostControl));
                     sc.WhenStopped((s, hostControl) => s.Stop(hostControl));
 
-                    // optional pause/continue methods if used
-                    sc.WhenPaused((s, hostControl) => s.Pause(hostControl));
-                    sc.WhenContinued((s, hostControl) => s.Continue(hostControl));
-
                     // optional, when shutdown is supported
                     sc.WhenShutdown((s, hostControl) => s.Shutdown(hostControl));
 
                 });
 
-                //=> Service Identity
-
                 x.RunAsLocalSystem();
-
-                //x.RunAs("username", "password"); // predefined user
-                //x.RunAsPrompt(); // when service is installed, the installer will prompt for a username and password
-                //x.RunAsNetworkService(); // runs as the NETWORK_SERVICE built-in account
-                //x.RunAsLocalSystem(); // run as the local system account
-                //x.RunAsLocalService(); // run as the local service account
 
                 x.StartAutomaticallyDelayed();
 
-                //=> Service Configuration
-
-                //x.EnablePauseAndContinue(); // Specifies that the service supports pause and continue.
-                //x.EnableShutdown(); //Specifies that the service supports the shutdown service command.
+                // Specifies that the service supports the shutdown service command.
+                x.EnableShutdown(); 
 
                 x.SetDescription(description);
                 x.SetDisplayName(displayName);
