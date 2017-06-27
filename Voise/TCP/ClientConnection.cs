@@ -13,7 +13,6 @@ namespace Voise.TCP
     internal class ClientConnection
     {
         private const string DELIMITER = "<EOF>";
-        private static int _clientNumberID = 0;
 
         private Socket _socket;
         private SocketAsyncEventArgs _readEventArgs;
@@ -30,8 +29,6 @@ namespace Voise.TCP
 
         internal delegate void ClosedEventHandler(ClientConnection client);
 
-        internal int ClientNumber { get; private set; }
-
         //
         internal AudioStream StreamIn { get; set; }
 
@@ -44,8 +41,6 @@ namespace Voise.TCP
         {
             _log = LogManager.GetLogger(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-            ClientNumber = _clientNumberID++;
 
             _log.Debug($"Initializing connection from {acceptedSocket.RemoteEndPoint.ToString()}.");
 
