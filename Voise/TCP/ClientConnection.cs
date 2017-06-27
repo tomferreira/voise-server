@@ -85,6 +85,7 @@ namespace Voise.TCP
                 _dataSent = null;
 
                 _readEventArgs.Completed -= SockAsyncEventArgs_Completed;
+                _readEventArgs.SetBuffer(null, 0, 0);
                 _readEventArgs.Dispose();
 
                 _writeEventArgs.Completed -= SockAsyncEventArgs_Completed;
