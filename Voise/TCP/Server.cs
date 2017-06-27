@@ -12,7 +12,7 @@ namespace Voise.TCP
 
         private Socket _listenSocket;
         private SocketAsyncEventArgs _acceptAsyncArgs;
-        private List<ClientConnection> _listConnection;
+        private List<ClientConnection> _connections;
         private HandlerRequest _hr;
 
         private ILog _log;
@@ -20,10 +20,10 @@ namespace Voise.TCP
         internal Server(HandlerRequest hr)
         {
             _log = LogManager.GetLogger(
-                    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+                System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
             _hr = hr;
-            _listConnection = new List<ClientConnection>();
+            _connections = new List<ClientConnection>();
         }
 
         internal bool IsOpen { get; private set; }
@@ -50,8 +50,8 @@ namespace Voise.TCP
             _listenSocket.Close();            
             _listenSocket = null;
 
-            lock (_listConnection)
-                _listConnection.Clear();
+            lock (_connections)
+                _connections.Clear();
         }
 
         private void AcceptCompleted(object sender, SocketAsyncEventArgs e)
@@ -63,8 +63,8 @@ namespace Voise.TCP
                     ClientConnection client = new ClientConnection(e.AcceptSocket, _hr);
                     client.Closed += ClientClosed;
 
-                    lock (_listConnection)
-                        _listConnection.Add(client);
+                    lock (_connections)
+                        _connections.Add(client);
                 }
 
                 e.AcceptSocket = null;
@@ -90,12 +90,12 @@ namespace Voise.TCP
 
         private void ClearClientConnection(ClientConnection client)
         {
-            lock (_listConnection)
+            lock (_connections)
             {
                 // Remove closed client
-                _listConnection.Remove(client);
+                _connections.Remove(client);
 
-                _log.Debug($"Exists {_listConnection.Count} active connections.");
+                _log.Debug($"There are still {_connections.Count} active connections.");
             }
         }
     }
