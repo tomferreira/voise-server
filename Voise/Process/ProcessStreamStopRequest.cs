@@ -8,7 +8,7 @@ namespace Voise.Process
 {
     internal class ProcessStreamStopRequest : ProcessBase
     {
-        internal ProcessStreamStopRequest(ClientConnection client, VoiseStreamRecognitionStopRequest request,
+        internal static async void Execute(ClientConnection client, VoiseStreamRecognitionStopRequest request,
             RecognizerManager recognizerManager)
         {
             ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
