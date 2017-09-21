@@ -1,17 +1,25 @@
-﻿using Voise.Recognizer.Google;
+﻿using System.Collections.Generic;
+using Voise.Recognizer.Google;
 using Voise.Recognizer.Microsoft;
 
 namespace Voise.Recognizer
 {
     internal class RecognizerManager
     {
-        private GoogleRecognizer _googleRecognizer;
-        private MicrosoftRecognizer _microsoftRecognizer;
+        private Dictionary<string, Base> _recognizers;
 
-        internal RecognizerManager()
+        internal RecognizerManager(List<string> recognizersEnabled)
         {
-            _googleRecognizer = new GoogleRecognizer();
-            _microsoftRecognizer = new MicrosoftRecognizer();
+            if (recognizersEnabled.Count == 0)
+                throw new System.Exception("At least one recogning engine must be enabled.");
+
+            _recognizers = new Dictionary<string, Base>();
+
+            if (recognizersEnabled.Contains(MicrosoftRecognizer.ENGINE_IDENTIFIER))
+                _recognizers.Add(MicrosoftRecognizer.ENGINE_IDENTIFIER, new MicrosoftRecognizer());
+
+            if (recognizersEnabled.Contains(GoogleRecognizer.ENGINE_IDENTIFIER))
+                _recognizers.Add(GoogleRecognizer.ENGINE_IDENTIFIER, new GoogleRecognizer());
         }
 
         internal Base GetRecognizer(string engineID)
@@ -20,17 +28,10 @@ namespace Voise.Recognizer
             if (engineID == null)
                 engineID = MicrosoftRecognizer.ENGINE_IDENTIFIER;
 
-            switch (engineID.ToLower())
-            {
-                case MicrosoftRecognizer.ENGINE_IDENTIFIER:
-                    return _microsoftRecognizer;
+            if (!_recognizers.ContainsKey(engineID.ToLower()))
+                throw new System.Exception($"Recogning engine '{engineID}' disabled or invalid.");
 
-                case GoogleRecognizer.ENGINE_IDENTIFIER:
-                    return _googleRecognizer;
-
-                default:
-                    throw new System.Exception($"Engine '{engineID}' not found.");
-            }
+            return _recognizers[engineID.ToLower()];
         }
     }
 }

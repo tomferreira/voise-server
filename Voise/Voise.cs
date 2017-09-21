@@ -53,7 +53,7 @@ namespace Voise
             _tcpServer = new Server(HandleClientRequest);
 
             // ASR
-            _recognizerManager = new RecognizerManager();
+            _recognizerManager = new RecognizerManager(config.RecognizersEnabled);
             _classifierManager = new ClassifierManager(config.ClassifiersPath);
 
             // TTS

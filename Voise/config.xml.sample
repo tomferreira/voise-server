@@ -3,6 +3,9 @@
     <!-- Default: 8102 -->
     <!--<port>8102</port>-->
 
+    <!-- Default: me -->
+    <!--<recognizers_enabled>me,ge</recognizers_enabled>-->
+
     <!-- Default: ./classifiers/ -->
     <!--<classifiers_path>./classifiers/</classifiers_path>-->
 

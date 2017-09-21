@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 
 namespace Voise
@@ -9,6 +10,10 @@ namespace Voise
 
         // General
         private static int DEFAULT_PORT = 8102;
+
+        // Recognizer
+        private static List<string> DEFAULT_RECOGNIZERS_ENABLED = 
+            new List<string>() { Recognizer.Microsoft.MicrosoftRecognizer.ENGINE_IDENTIFIER };
 
         // Classifier
         private static string DEFAULT_CLASSIFIERS_PATH = "./classifiers/";
@@ -38,6 +43,24 @@ namespace Voise
                 catch (Exception)
                 {
                     return DEFAULT_PORT;
+                }
+            }
+        }
+
+        internal List<string> RecognizersEnabled
+        {
+            get
+            {
+                try
+                {
+                    string[] elem = 
+                        _element.SelectSingleNode("recognizers_enabled").InnerText.Split(';', ',');
+
+                    return new List<string>(elem);
+                }
+                catch (Exception)
+                {
+                    return DEFAULT_RECOGNIZERS_ENABLED;
                 }
             }
         }
