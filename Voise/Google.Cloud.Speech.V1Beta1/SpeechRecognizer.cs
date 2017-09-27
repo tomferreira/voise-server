@@ -1,7 +1,6 @@
 ﻿using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
 using Google.Cloud.Speech.V1Beta1;
-using Google.LongRunning;
 using Grpc.Core;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,24 +38,6 @@ namespace Voise.Google.Cloud.Speech.V1Beta1
                 GaxPreconditions.CheckNotNull(config, nameof(config)),
                 GaxPreconditions.CheckNotNull(audio, nameof(audio)),
                 callSettings);
-
-        public Task<SyncRecognizeResponse> RecognizeAsync(RecognitionConfig config, RecognitionAudio audio, CancellationToken cancellationToken)
-            => _client.SyncRecognizeAsync(
-                GaxPreconditions.CheckNotNull(config, nameof(config)),
-                GaxPreconditions.CheckNotNull(audio, nameof(audio)),
-                cancellationToken);
-
-        public Operation<AsyncRecognizeResponse> BeginRecognize(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
-            => _client.AsyncRecognize(
-                GaxPreconditions.CheckNotNull(config, nameof(config)),
-                GaxPreconditions.CheckNotNull(audio, nameof(audio)),
-                callSettings);
-
-        public async Task<Operation<AsyncRecognizeResponse>> BeginRecognizeAsync(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
-            => await _client.AsyncRecognizeAsync(
-                GaxPreconditions.CheckNotNull(config, nameof(config)),
-                GaxPreconditions.CheckNotNull(audio, nameof(audio)),
-                callSettings).ConfigureAwait(false);
 
         public async Task<RecognizerStream> BeginStreamingRecognizeAsync(StreamingRecognitionConfig config, CallSettings settings = null)
         {
