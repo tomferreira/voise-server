@@ -1,0 +1,170 @@
+@RELATION felicitacao/localizacao2
+
+@ATTRIBUTE text string
+@ATTRIBUTE class {sim,nao,duvida,chamando,ocupado,ocupado2,desconhecido,parente,falecido,desinteressado,nervoso}
+
+@DATA
+
+'sim',sim
+'sou eu',sim
+'sim sou eu mesmo',sim
+'correto',sim
+'positivo',sim
+'isso',sim
+'claro',sim
+'está',sim
+'está correto',sim
+'é ele',sim
+'é ela',sim
+'é eu',sim
+'é ele mesmo',sim
+'é eu mesmo',sim
+'é',sim
+'está sim',sim
+'está falando sim',sim
+'está falando com ele',sim
+'isso mesmo',sim
+'exato',sim
+'fale',sim
+'não',nao
+'é não',nao
+'não sou eu',nao
+'não tem ninguém',nao
+'negativo',nao
+'quem está falando',duvida
+'quem fala',duvida
+'quem gostaria de falar com ele',duvida
+'quer falar com quem',duvida
+'deseja falar com quem',duvida
+'você quer falar com quem',duvida
+'você deseja falar com quem',duvida
+'alô quer falar com quem',duvida
+'alô deseja falar com quem',duvida
+'alô você quer falar com quem',duvida
+'alô você deseja falar com quem',duvida
+'quem eu não entendi o nome',duvida
+'quem',duvida
+'quem é',duvida
+'com quem',duvida
+'está falando com quem',duvida
+'com quem eu falo',duvida
+'não entendi',duvida
+'como é o nome',duvida
+'como é que é',duvida
+'falar com',duvida
+'alô',duvida
+'quê',duvida
+'o quê',duvida
+'oi',duvida
+'vou chamar',chamando
+'vou chamar ele',chamando
+'vou passar para ele',chamando
+'vou passar o telefone',chamando
+'vou passar o telefone para ele',chamando
+'só um instante',chamando
+'só um momento',chamando
+'só um momentinho',chamando
+'só um minuto',chamando
+'só um minutinho',chamando
+'só um segundo',chamando
+'só um segundinho',chamando
+'espera',chamando
+'espera aí',chamando
+'ele está fora',ocupado
+'ela está fora',ocupado
+'ele está ocupado',ocupado
+'ela está ocupada',ocupado
+'já foi para o trabalho',ocupado
+'ele já foi para o trabalho',ocupado
+'ela já foi para o trabalho',ocupado
+'ele está no trabalho',ocupado
+'ele está trabalhando',ocupado
+'ela está no trabalho',ocupado
+'ela está trabalhando',ocupado
+'ele está no serviço',ocupado
+'ela está no serviço',ocupado
+'ele está na rua',ocupado
+'ela está na rua',ocupado
+'ele está tomando banho',ocupado
+'ela está tomando banho',ocupado
+'ele está no banheiro',ocupado
+'ela está no banheiro',ocupado
+'ele está dormindo',ocupado
+'ela está dormindo',ocupado
+'ele está almoçando',ocupado
+'ele está no almoço',ocupado
+'ele está no horário de almoço',ocupado
+'ele está jantando',ocupado
+'ela está almoçando',ocupado
+'ela está no almoço',ocupado
+'ela está no horário de almoço',ocupado
+'ela está jantando',ocupado
+'ele dormiu',ocupado
+'ela dormiu',ocupado
+'ele saiu',ocupado
+'ela saiu',ocupado
+'não pode falar agora',ocupado
+'não está aqui no momento',ocupado
+'não está em casa no momento',ocupado
+'não se encontra no momento',ocupado
+'só vai estar aqui depois das',ocupado
+'ele se mudou',ocupado2
+'ela se mudou',ocupado2
+'ele viajou',ocupado2
+'ela viajou',ocupado2
+'ele está viajando',ocupado2
+'ela está viajando',ocupado2
+'ele não mora mais neste endereço',desconhecido
+'ela não mora mais neste endereço',desconhecido
+'eu não conheço ninguém com esse nome aqui',desconhecido
+'eu não conheço essa pessoa',desconhecido
+'eu não conheço ele',desconhecido
+'eu não conheço ela',desconhecido
+'não tem essa pessoa aqui',desconhecido
+'não existe essa pessoa aqui',desconhecido
+'não é esse telefone',desconhecido
+'não é esse número',desconhecido
+'esse telefone não é dele',desconhecido
+'esse número não é dele',desconhecido
+'esse telefone não é dela',desconhecido
+'esse número não é dela',desconhecido
+'não é aqui',desconhecido
+'não é daqui',desconhecido
+'eu sou a esposa dele',parente
+'eu sou a mulher dele',parente
+'eu sou a irmã dele',parente
+'eu sou a filha dele',parente
+'eu sou a mãe dele',parente
+'eu sou a namorada dele',parente
+'está falando com a esposa dele',parente
+'está falando com a mulher dele',parente
+'está falando com a irmã dele',parente
+'está falando com a filha dele',parente
+'está falando com a mãe dele',parente
+'está falando com a namorada dele',parente
+'eu sou o esposo dela',parente
+'eu sou o marido dela',parente
+'eu sou o irmão dela',parente
+'eu sou o filho dela',parente
+'eu sou o pai dela',parente
+'eu sou o namorado dela',parente
+'está falando com o esposo dela',parente
+'está falando com o marido dela',parente
+'está falando com o irmão dela',parente
+'está falando com o filho dela',parente
+'está falando com o pai dela',parente
+'está falando com o namorado dela',parente
+'ele faleceu',falecido
+'ele morreu',falecido
+'ele desencarnou',falecido
+'ele está morto',falecido
+'ela faleceu',falecido
+'ela morreu',falecido
+'ela desencarnou',falecido
+'ela está morta',falecido
+'eu não comemoro aniversário',desinteressado
+'eu não comemoro meu aniversário',desinteressado
+'não interessa a mensagem',desinteressado
+'pare de ligar',nervoso 
+'pare de ligar pra mim',nervoso 
+'pare de me ligar',nervoso
