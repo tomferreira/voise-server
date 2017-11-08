@@ -68,8 +68,9 @@ namespace Voise.Classification
             {
                 IEnumerable<string> files = Directory.EnumerateFiles(directory, "*.arff");
 
-                foreach(var file in files)
+                Parallel.ForEach(files, (file) => {
                     AddClassifier(file);
+                });
             }
         }
 
