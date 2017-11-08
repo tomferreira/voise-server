@@ -1,3 +1,4 @@
+﻿using log4net;
 using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Recognition;
 using System;
@@ -14,6 +15,8 @@ namespace Voise.Recognizer.Microsoft.Job
         internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base()
         {
+            _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
             ValidateArguments(encoding, sampleRate, languageCode, contexts);
 
             _info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,

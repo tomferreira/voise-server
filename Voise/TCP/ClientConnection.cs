@@ -13,24 +13,18 @@ namespace Voise.TCP
     internal class ClientConnection
     {
         private const string DELIMITER = "<EOF>";
-        private static int _clientNumberID = 0;
 
         private Socket _socket;
         private SocketAsyncEventArgs _readEventArgs;
-        private SocketAsyncEventArgs _writeEventArgs;
 
         private byte[] _buffer;
         private StringBuilder _data;
-
-        AutoResetEvent _dataSent;
 
         private HandlerRequest _hr;
 
         private ILog _log;
 
         internal delegate void ClosedEventHandler(ClientConnection client);
-
-        internal int ClientNumber { get; private set; }
 
         //
         internal AudioStream StreamIn { get; set; }
@@ -45,14 +39,10 @@ namespace Voise.TCP
             _log = LogManager.GetLogger(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-            ClientNumber = _clientNumberID++;
-
-            _log.Info($"Initializing connection from {acceptedSocket.RemoteEndPoint.ToString()}.");
+            _log.Debug($"Initializing connection from {acceptedSocket.RemoteEndPoint.ToString()}.");
 
             _buffer = new byte[1024]; // 1 KB
             _data = new StringBuilder();
-
-            _dataSent = new AutoResetEvent(false);
 
             _socket = acceptedSocket;
             _hr = hr;
@@ -61,10 +51,6 @@ namespace Voise.TCP
             _readEventArgs.Completed += SockAsyncEventArgs_Completed;
             _readEventArgs.SetBuffer(_buffer, 0, _buffer.Length);
             _readEventArgs.UserToken = this;
-
-            _writeEventArgs = new SocketAsyncEventArgs();
-            _writeEventArgs.Completed += SockAsyncEventArgs_Completed;
-            _writeEventArgs.UserToken = this;
 
             ReceiveAsync(_readEventArgs);
         }
@@ -81,14 +67,14 @@ namespace Voise.TCP
         {
             lock (_socket)
             {
+                _buffer = null;
+
                 _data.Clear();
                 _data = null;
 
-                _dataSent.Dispose();
-                _dataSent = null;
-
+                _readEventArgs.Completed -= SockAsyncEventArgs_Completed;
+                _readEventArgs.SetBuffer(null, 0, 0);
                 _readEventArgs.Dispose();
-                _writeEventArgs.Dispose();
 
                 try
                 {
@@ -98,6 +84,8 @@ namespace Voise.TCP
 
                 _socket.Close();
             }
+
+            _log = null;
 
             Closed?.Invoke(this);
         }
@@ -109,21 +97,7 @@ namespace Voise.TCP
                 case SocketAsyncOperation.Receive:
                     ProcessReceive(e);
                     break;
-                case SocketAsyncOperation.Send:
-                    ProcessSend(e);
-                    break;
             }
-        }
-
-        private void ProcessSend(SocketAsyncEventArgs e)
-        {
-            if (e.SocketError != SocketError.Success)
-            {
-                CloseConnection();
-                return;
-            }
-
-            _dataSent.Set();
         }
 
         private void ProcessReceive(SocketAsyncEventArgs e)
@@ -168,21 +142,7 @@ namespace Voise.TCP
             // Convert the string data to byte data using UTF8 encoding.
             byte[] byteData = Encoding.UTF8.GetBytes(data);
 
-            _writeEventArgs.SetBuffer(byteData, 0, byteData.Length);
-
-            SendAsync(_writeEventArgs);
-
-            // TODO: Espera completar a requisição de envio anterior (se houver).
-            // Com isso, esse método não é verdadeiramente assíncrono.
-            _dataSent.WaitOne();
-        }
-
-        private void SendAsync(SocketAsyncEventArgs e)
-        {
-            bool willRaiseEvent = _socket.SendAsync(e);
-
-            if (!willRaiseEvent)
-                ProcessSend(e);
+            _socket.Send(byteData);
         }
 
         private void ReceiveAsync(SocketAsyncEventArgs e)

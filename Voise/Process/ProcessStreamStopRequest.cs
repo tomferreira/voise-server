@@ -8,12 +8,10 @@ namespace Voise.Process
 {
     internal class ProcessStreamStopRequest : ProcessBase
     {
-        internal ProcessStreamStopRequest(ClientConnection client, VoiseStreamRecognitionStopRequest request,
+        internal static async void Execute(ClientConnection client, VoiseStreamRecognitionStopRequest request,
             RecognizerManager recognizerManager)
         {
             ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-            log.Debug("StreamStopRequest");
 
             try
             {
@@ -26,10 +24,12 @@ namespace Voise.Process
                 client.CurrentPipeline.SpeechResult.Transcript = recognition.Transcript;
                 client.CurrentPipeline.SpeechResult.Confidence = recognition.Confidence;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                client.CurrentPipeline.AsyncStreamError = e.InnerException;
-                log.Error(e.InnerException?.Message);
+                Exception deepestException = e.InnerException ?? e;
+
+                client.CurrentPipeline.AsyncStreamError = deepestException;
+                log.Error(deepestException?.Message);
             }
 
             // Avisa à pipeline que pode continuar.

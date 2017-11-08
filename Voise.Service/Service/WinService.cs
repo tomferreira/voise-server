@@ -49,27 +49,12 @@ namespace VoiseService.Service
             return true;
         }
 
-        public bool Pause(HostControl hostControl)
-        {
-            Log.Trace($"{nameof(Service.WinService)} Pause command received.");
-
-            //TODO: Implement your service start routine.
-            return true;
-        }
-
-        public bool Continue(HostControl hostControl)
-        {
-            Log.Trace($"{nameof(Service.WinService)} Continue command received.");
-
-            //TODO: Implement your service stop routine.
-            return true;
-        }
-
         public bool Shutdown(HostControl hostControl)
         {
             Log.Trace($"{nameof(Service.WinService)} Shutdown command received.");
 
-            //TODO: Implement your service stop routine.
+            _voise?.Stop();
+
             return true;
         }
     }

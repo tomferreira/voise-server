@@ -53,7 +53,7 @@ namespace Voise
             _tcpServer = new Server(HandleClientRequest);
 
             // ASR
-            _recognizerManager = new RecognizerManager();
+            _recognizerManager = new RecognizerManager(config.RecognizersEnabled);
             _classifierManager = new ClassifierManager(config.ClassifiersPath);
 
             // TTS
@@ -72,27 +72,27 @@ namespace Voise
         {
             if (request.SyncRequest != null)
             {
-                new ProcessSyncRequest(
+                ProcessSyncRequest.Execute(
                     client, request.SyncRequest, _recognizerManager, _classifierManager);
             }
             else if (request.StreamStartRequest != null)
             {
-                new ProcessStreamStartRequest(
+                ProcessStreamStartRequest.Execute(
                     client, request.StreamStartRequest, _recognizerManager, _classifierManager);
             }
             else if (request.StreamDataRequest != null)
             {
-                new ProcessStreamDataRequest(
+                ProcessStreamDataRequest.Execute(
                     client, request.StreamDataRequest);
             }
             else if (request.StreamStopRequest != null)
             {
-                new ProcessStreamStopRequest(
+                ProcessStreamStopRequest.Execute(
                     client, request.StreamStopRequest, _recognizerManager);
             }
             else if (request.SynthVoiceRequest != null)
             {
-                new ProcessSynthVoiceRequest(
+                ProcessSynthVoiceRequest.Execute(
                     client, request.SynthVoiceRequest, _synthetizer);
             }
         }

@@ -9,7 +9,7 @@ namespace Voise.Process
 {
     internal abstract class ProcessBase
     {
-        protected Dictionary<string, List<string>> GetContexts(VoiseConfig config, ClassifierManager classifierManager)
+        protected static Dictionary<string, List<string>> GetContexts(VoiseConfig config, ClassifierManager classifierManager)
         {
             Dictionary<string, List<string>> contexts = null;
 
@@ -26,7 +26,7 @@ namespace Voise.Process
             return contexts;
         }
 
-        protected void SendResult(ClientConnection client, SpeechResult result)
+        protected static void SendResult(ClientConnection client, SpeechResult result)
         {
             if (result != null)
             {
@@ -60,13 +60,13 @@ namespace Voise.Process
             }            
         }
 
-        protected void SendAccept(ClientConnection client)
+        protected static void SendAccept(ClientConnection client)
         {
             var response = new VoiseResponse(ResponseCode.ACCEPTED);
             client?.SendResponse(response);
         }
 
-        protected void SendError(ClientConnection client, Exception e)
+        protected static void SendError(ClientConnection client, Exception e)
         {
             var response = new VoiseResponse(ResponseCode.ERROR, e.Message);
             client?.SendResponse(response);
