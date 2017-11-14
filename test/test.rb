@@ -20,50 +20,56 @@ class VoiseClientTest
   # client.recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Alo {duvida}.wav")
   # client.recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Sem voz {#NOVOICE}.wav")
   def recognize(encoding, sample_rate, language_code, context, model_name, audio_file, engine = nil)
-    time_method do
+    VoiseClientTest::time_method do
       puts @client.recognize(encoding, sample_rate, language_code, context, model_name, audio_file, engine).to_pretty_s
     end
   end
 
-  # VoiseClientTest.test1("me", 2)
-  def self.test1(engine, max_sleep_sec)
-    threads = []
-    100.times do |i| 
-      threads << Thread.new do
-        client = VoiseClientTest.new
-        client.stream_recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Alo {duvida}.wav", engine)
-        client.close
-        puts "Thread #{i+1} finnished"
+  # VoiseClientTest.test1("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Alo {duvida}.wav", "me", 2)
+  # VoiseClientTest.test1("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Sem voz {#NOVOICE}.wav", "me", 1)
+  def self.test1(encoding, sample_rate, language_code, context, model_name, audio_file, engine, max_sleep_sec)
+    time_method do
+      threads = []
+      100.times do |i| 
+        threads << Thread.new do
+          client = VoiseClientTest.new
+          client.stream_recognize(encoding, sample_rate, language_code, context, model_name, audio_file, engine)
+          client.close
+          puts "Thread #{i+1} finnished"
+        end
+
+        # Sleep until 'max_sleep_sec' seconds
+        sleep(rand * max_sleep_sec)
       end
-
-      # Sleep until 'max_sleep_sec' seconds
-      sleep(rand * max_sleep_sec)
+      threads.each {|t| t.join }
     end
-    threads.each {|t| t.join }
-
-    puts "-------------- FIM --------------"
   end
 
-  # VoiseClientTest.test2("me")
-  def self.test2(engine)
-    client = VoiseClientTest.new
-    100.times do |i| 
-      client.stream_recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Alo {duvida}.wav", engine)
+  # VoiseClientTest.test2("me", "felicitacao/localizacao", "./Alo {duvida}.wav")
+  def self.test2(engine, model_name, audio_file)
+    time_method do
+      client = VoiseClientTest.new
+      100.times do |i| 
+        client.stream_recognize("LINEAR16", 8000, "pt-BR", nil, model_name, audio_file, engine)
+      end
+      client.close
     end
-    client.close
   end
 
   def self.test3
-    client = VoiseClientTest.new
-    100.times do |i| 
-      client.say("Mensagem de teste", "alaw", 8000, "pt-BR", "result.wav")
+    time_method do
+      client = VoiseClientTest.new
+      100.times do |i| 
+        client.say("Mensagem de teste", "alaw", 8000, "pt-BR", "result.wav")
+      end
+      client.close
     end
-    client.close
   end
 
   # client = VoiseClientTest.new
   # client.stream_recognize("FLAC", 16000, "pt-BR", nil, "felicitacao/localizacao", "./alo.flac")
   # client.stream_recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Alo {duvida}.wav")
+  # client.stream_recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Sem voz {#NOVOICE}.wav")
   def stream_recognize(encoding, sample_rate, language_code, context, model_name, audio_file, engine = nil)
 
     response = @client.start_streaming_recognize(encoding, sample_rate, language_code, context, model_name, engine)
@@ -88,7 +94,7 @@ class VoiseClientTest
       sleep(samples_per_buffer / samples_per_millis / 1000.0)
     end
 
-    time_method do
+    VoiseClientTest::time_method do
       reponse = @client.stop_streaming_recognize
       puts reponse.to_pretty_s
     end
@@ -112,7 +118,7 @@ class VoiseClientTest
 
 private
 
-  def time_method(method = nil, *args)
+  def self.time_method(method = nil, *args)
     beginning_time = Time.now
 
     if block_given?
