@@ -13,7 +13,7 @@ namespace Voise.Process
 
             byte[] data = Convert.FromBase64String(request.data);
 
-            log.Info($"Receiving stream data request ({data.Length} bytes) at pipeline {client.CurrentPipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
+            log.Debug($"Receiving stream data ({data.Length} bytes) at pipeline {client.CurrentPipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
 
             client.StreamIn?.Write(data);
         }
