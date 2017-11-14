@@ -70,40 +70,40 @@ namespace Voise.Process
                 return;
             }
 
-            if (request.Config.model_name == null || pipeline.SpeechResult.Transcript == null)
-                return;
-
-            if (pipeline.SpeechResult.Transcript == NoResultSpeechRecognitionAlternative.Default.Transcript)
-            {
-                pipeline.SpeechResult.Intent = NoResultSpeechRecognitionAlternative.Default.Transcript;
-                pipeline.SpeechResult.Probability = 1;
-
-                return;
-            }
-
             try
-            { 
-                var classification = await classifierManager.ClassifyAsync(
-                    request.Config.model_name,
-                    pipeline.SpeechResult.Transcript);
+            {
+                if (request.Config.model_name != null && pipeline.SpeechResult.Transcript != null)
+                {
+                    if (pipeline.SpeechResult.Transcript == NoResultSpeechRecognitionAlternative.Default.Transcript)
+                    {
+                        pipeline.SpeechResult.Intent = NoResultSpeechRecognitionAlternative.Default.Transcript;
+                        pipeline.SpeechResult.Probability = 1;
+                    }
+                    else
+                    {
+                        var classification = await classifierManager.ClassifyAsync(
+                            request.Config.model_name,
+                            pipeline.SpeechResult.Transcript);
 
-                pipeline.SpeechResult.Intent = classification.ClassName;
-                pipeline.SpeechResult.Probability = classification.Probability;
+                        pipeline.SpeechResult.Intent = classification.ClassName;
+                        pipeline.SpeechResult.Probability = classification.Probability;
+                    }
+                }
+
+                SendResult(client, pipeline.SpeechResult);
             }
             catch (Exception e)
+            {
+
+                SendError(client, e);
+            }
+            finally
             {
                 // Cleanup streamIn
                 client.StreamIn = null;
 
-                SendError(client, e);
-                return;
+                pipeline = client.CurrentPipeline = null;
             }
-
-            // Cleanup streamIn
-            client.StreamIn = null;
-
-            SendResult(client, pipeline.SpeechResult);
-            pipeline = client.CurrentPipeline = null;
         }
     }
 }

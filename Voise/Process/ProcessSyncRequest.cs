@@ -38,39 +38,37 @@ namespace Voise.Process
                 return;
             }
 
-            if (request.Config.model_name == null || pipeline.SpeechResult.Transcript == null)
-                return;
-
-            if (pipeline.SpeechResult.Transcript == NoResultSpeechRecognitionAlternative.Default.Transcript)
-            {
-                pipeline.SpeechResult.Intent = NoResultSpeechRecognitionAlternative.Default.Transcript;
-                pipeline.SpeechResult.Probability = 1;
-
-                return;
-            }
-
             try
             {
-                var classification = await classifierManager.ClassifyAsync(
-                    request.Config.model_name,
-                    pipeline.SpeechResult.Transcript);
+                if (request.Config.model_name != null && pipeline.SpeechResult.Transcript != null)
+                {
+                    if (pipeline.SpeechResult.Transcript == NoResultSpeechRecognitionAlternative.Default.Transcript)
+                    {
+                        pipeline.SpeechResult.Intent = NoResultSpeechRecognitionAlternative.Default.Transcript;
+                        pipeline.SpeechResult.Probability = 1;
+                    }
+                    else
+                    {
+                        var classification = await classifierManager.ClassifyAsync(
+                            request.Config.model_name,
+                            pipeline.SpeechResult.Transcript);
 
-                pipeline.SpeechResult.Intent = classification.ClassName;
-                pipeline.SpeechResult.Probability = classification.Probability;
-            }
-            catch (Classification.Exception.BadModelException e)
-            {
-                SendError(client, e);
-                return;
+                        pipeline.SpeechResult.Intent = classification.ClassName;
+                        pipeline.SpeechResult.Probability = classification.Probability;
+                    }
+                }
+
+
+                SendResult(client, pipeline.SpeechResult);
             }
             catch (Exception e)
             {
                 SendError(client, e);
-                return;
             }
-
-            SendResult(client, pipeline.SpeechResult);
-            pipeline = client.CurrentPipeline = null;
+            finally
+            {
+                pipeline = client.CurrentPipeline = null;
+            }
         }
     }
 }
