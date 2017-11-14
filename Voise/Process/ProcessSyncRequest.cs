@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using Voise.Classification;
 using Voise.Recognizer;
@@ -12,7 +13,11 @@ namespace Voise.Process
         internal static async void Execute(ClientConnection client, VoiseSyncRecognitionRequest request,
             RecognizerManager recognizerManager, ClassifierManager classifierManager)
         {
+            ILog log = LogManager.GetLogger(typeof(ProcessStreamStartRequest));
+
             var pipeline = client.CurrentPipeline = new Pipeline();
+
+            log.Info($"Starting request with engine '{request.Config.engine_id}' at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
 
             try
             {
@@ -34,6 +39,8 @@ namespace Voise.Process
             }
             catch (Exception e)
             {
+                log.Error($"{e.Message}. [Client: {client.RemoteEndPoint().ToString()}]");
+
                 SendError(client, e);
                 return;
             }
@@ -58,11 +65,14 @@ namespace Voise.Process
                     }
                 }
 
+                log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
 
                 SendResult(client, pipeline.SpeechResult);
             }
             catch (Exception e)
             {
+                log.Error($"{e.Message}. [Client: {client.RemoteEndPoint().ToString()}]");
+
                 SendError(client, e);
             }
             finally
