@@ -64,7 +64,7 @@ namespace Voise.Recognizer.Microsoft.Job
                 throw new BadEncodingException("Sample rate is invalid.");
 
             if (contexts == null || contexts.Count == 0)
-                throw new System.Exception("Context is not defined.");
+                throw new System.Exception("Context is not defined. (This is only required to Microsoft engine, for all others this is optional)");
         }
 
         protected byte[] ConvertAudioToBytes(string audio_base64)

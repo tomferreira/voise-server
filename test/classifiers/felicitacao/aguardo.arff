@@ -1,0 +1,97 @@
+@RELATION felicitacao/aguardo
+
+@ATTRIBUTE text string
+@ATTRIBUTE class {alo,ocupado}
+
+@DATA
+
+'alô',alo
+'sim',alo
+'pois não',alo
+'quem é',alo
+'quem fala',alo
+'quem está falando',alo
+'ele está fora',ocupado
+'ela está fora',ocupado
+'ele está ocupado',ocupado
+'ela está ocupada',ocupado
+%'já foi para o trabalho',ocupado
+'ele já foi para o trabalho',ocupado
+'ela já foi para o trabalho',ocupado
+'ele está no trabalho',ocupado
+'ele está trabalhando',ocupado
+'ela está no trabalho',ocupado
+'ela está trabalhando',ocupado
+'ele está no serviço',ocupado
+'ela está no serviço',ocupado
+'ele está na rua',ocupado
+'ela está na rua',ocupado
+'ele foi passear',ocupado
+'ela foi passear',ocupado
+'ele está tomando banho',ocupado
+'ela está tomando banho',ocupado
+'ele está no banheiro',ocupado
+'ela está no banheiro',ocupado
+'ele está dormindo',ocupado
+'ela está dormindo',ocupado
+'ele está almoçando',ocupado
+'ele está no almoço',ocupado
+'ele está no horário de almoço',ocupado
+'ele está jantando',ocupado
+'ela está almoçando',ocupado
+'ela está no almoço',ocupado
+'ela está no horário de almoço',ocupado
+'ela está jantando',ocupado
+'ele dormiu',ocupado
+'ela dormiu',ocupado
+'ele saiu',ocupado
+'ela saiu',ocupado
+'não pode falar',ocupado
+'não pode falar agora',ocupado
+'ele não pode falar',ocupado
+'ela não pode falar',ocupado
+'ele não pode falar agora',ocupado
+'ela não pode falar agora',ocupado
+'não está aqui',ocupado
+'não está no momento',ocupado
+'não está aqui no momento',ocupado
+'ele não está',ocupado
+'ele não está aqui',ocupado
+'ele não está no momento',ocupado
+'ele não está aqui no momento',ocupado
+'ela não está',ocupado
+'ela não está aqui',ocupado
+'ela não está no momento',ocupado
+'ela não está aqui no momento',ocupado
+'não está em casa',ocupado
+'não está em casa no momento',ocupado
+'ele não está em casa',ocupado
+'ele não está em casa no momento',ocupado
+'ela não está em casa',ocupado
+'ela não está em casa no momento',ocupado
+'não se encontra',ocupado
+'não se encontra no momento',ocupado
+'ele não se encontra',ocupado
+'ele não se encontra no momento',ocupado
+'ela não se encontra',ocupado
+'ela não se encontra no momento',ocupado
+'só vai estar aqui depois das',ocupado
+'ele só vai estar aqui depois das',ocupado
+'ela só vai estar aqui depois das',ocupado
+'ele está viajando',ocupado
+'ela está viajando',ocupado
+'ele está de férias',ocupado
+'ela está de férias',ocupado
+'ele está no hospital',ocupado
+'ela está no hospital',ocupado
+'ele está doente',ocupado
+'ela está doente',ocupado
+'ele está enfermo',ocupado
+'ela está enferma',ocupado
+'ele está de cama',ocupado
+'ela está de cama',ocupado
+'se mudou',ocupado
+'ele se mudou',ocupado
+'ela se mudou',ocupado
+'ele viajou',ocupado
+'ela viajou',ocupado

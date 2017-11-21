@@ -48,7 +48,7 @@ namespace Voise
             ILog log = LogManager.GetLogger(
                 System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-            log.Info($"Initializinng Voise Server v{Version.VersionString}.");
+            log.Info($"Initializing Voise Server v{Version.VersionString}.");
 
             _tcpServer = new Server(HandleClientRequest);
 

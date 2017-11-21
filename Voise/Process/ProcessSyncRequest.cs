@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using Voise.Classification;
 using Voise.Recognizer;
@@ -12,7 +13,11 @@ namespace Voise.Process
         internal static async void Execute(ClientConnection client, VoiseSyncRecognitionRequest request,
             RecognizerManager recognizerManager, ClassifierManager classifierManager)
         {
+            ILog log = LogManager.GetLogger(typeof(ProcessStreamStartRequest));
+
             var pipeline = client.CurrentPipeline = new Pipeline();
+
+            log.Info($"Starting request with engine '{request.Config.engine_id}' at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
 
             try
             {
@@ -34,43 +39,46 @@ namespace Voise.Process
             }
             catch (Exception e)
             {
+                log.Error($"{e.Message}. [Client: {client.RemoteEndPoint().ToString()}]");
+
                 SendError(client, e);
-                return;
-            }
-
-            if (request.Config.model_name == null || pipeline.SpeechResult.Transcript == null)
-                return;
-
-            if (pipeline.SpeechResult.Transcript == NoResultSpeechRecognitionAlternative.Default.Transcript)
-            {
-                pipeline.SpeechResult.Intent = NoResultSpeechRecognitionAlternative.Default.Transcript;
-                pipeline.SpeechResult.Probability = 1;
-
                 return;
             }
 
             try
             {
-                var classification = await classifierManager.ClassifyAsync(
-                    request.Config.model_name,
-                    pipeline.SpeechResult.Transcript);
+                if (request.Config.model_name != null && pipeline.SpeechResult.Transcript != null)
+                {
+                    if (pipeline.SpeechResult.Transcript == NoResultSpeechRecognitionAlternative.Default.Transcript)
+                    {
+                        pipeline.SpeechResult.Intent = NoResultSpeechRecognitionAlternative.Default.Transcript;
+                        pipeline.SpeechResult.Probability = 1;
+                    }
+                    else
+                    {
+                        var classification = await classifierManager.ClassifyAsync(
+                            request.Config.model_name,
+                            pipeline.SpeechResult.Transcript);
 
-                pipeline.SpeechResult.Intent = classification.ClassName;
-                pipeline.SpeechResult.Probability = classification.Probability;
-            }
-            catch (Classification.Exception.BadModelException e)
-            {
-                SendError(client, e);
-                return;
+                        pipeline.SpeechResult.Intent = classification.ClassName;
+                        pipeline.SpeechResult.Probability = classification.Probability;
+                    }
+                }
+
+                log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
+
+                SendResult(client, pipeline.SpeechResult);
             }
             catch (Exception e)
             {
-                SendError(client, e);
-                return;
-            }
+                log.Error($"{e.Message}. [Client: {client.RemoteEndPoint().ToString()}]");
 
-            SendResult(client, pipeline.SpeechResult);
-            pipeline = client.CurrentPipeline = null;
+                SendError(client, e);
+            }
+            finally
+            {
+                pipeline = client.CurrentPipeline = null;
+            }
         }
     }
 }

@@ -11,7 +11,9 @@ namespace Voise.Process
         internal static async void Execute(ClientConnection client, VoiseStreamRecognitionStopRequest request,
             RecognizerManager recognizerManager)
         {
-            ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            ILog log = LogManager.GetLogger(typeof(ProcessStreamStopRequest));
+
+            log.Info($"Stoping stream request at pipeline {client.CurrentPipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
 
             try
             {
@@ -29,7 +31,7 @@ namespace Voise.Process
                 Exception deepestException = e.InnerException ?? e;
 
                 client.CurrentPipeline.AsyncStreamError = deepestException;
-                log.Error(deepestException?.Message);
+                log.Error($"{deepestException?.Message} [Client: {client.RemoteEndPoint().ToString()}]");
             }
 
             // Avisa à pipeline que pode continuar.
