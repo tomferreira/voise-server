@@ -59,7 +59,7 @@ namespace Voise.Process
                 // Cleanup streamIn
                 client.StreamIn = null;
 
-                log.Error($"{e.Message}. [Client: {client.RemoteEndPoint().ToString()}]");
+                log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {client.RemoteEndPoint().ToString()}]");
 
                 SendError(client, e);
                 return;
@@ -107,7 +107,7 @@ namespace Voise.Process
             }
             catch (Exception e)
             {
-                log.Error($"{e.Message}. [Client: {client.RemoteEndPoint().ToString()}]");
+                log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {client.RemoteEndPoint().ToString()}]");
 
                 SendError(client, e);
             }

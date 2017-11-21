@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Xml;
 
 namespace Voise
@@ -27,7 +29,9 @@ namespace Voise
         public Config()
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(FILENAME_FULLPATH);
+
+            using (StreamReader reader = new StreamReader(FILENAME_FULLPATH, Encoding.GetEncoding("UTF-8")))
+                doc.Load(reader);
 
             _element = doc.DocumentElement;
         }
