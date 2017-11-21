@@ -2,8 +2,6 @@
 using Google.Protobuf;
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.NetworkInformation;
 using Voise.Recognizer.Exception;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 

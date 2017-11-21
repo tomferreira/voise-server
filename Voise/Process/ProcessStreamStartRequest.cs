@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using Voise.Classification;
 using Voise.Recognizer;
@@ -12,14 +13,20 @@ namespace Voise.Process
         internal static async void Execute(ClientConnection client, VoiseStreamRecognitionStartRequest request,
             RecognizerManager recognizerManager, ClassifierManager classifierManager)
         {
+            ILog log = LogManager.GetLogger(typeof(ProcessStreamStartRequest));
+
             // This client already is streaming audio.
             if (client.StreamIn != null)
             {
+                log.Error($"Client already is streaming audio. [Client: {client.RemoteEndPoint().ToString()}]");
+
                 SendError(client, new Exception("Client already is streaming audio."));
                 return;
             }
 
             var pipeline = client.CurrentPipeline = new Pipeline();
+
+            log.Info($"Starting stream request with engine '{request.Config.engine_id}' at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
 
             try
             {
@@ -52,6 +59,8 @@ namespace Voise.Process
                 // Cleanup streamIn
                 client.StreamIn = null;
 
+                log.Error($"{e.Message}. [Client: {client.RemoteEndPoint().ToString()}]");
+
                 SendError(client, e);
                 return;
             }
@@ -66,44 +75,49 @@ namespace Voise.Process
                 // Cleanup streamIn
                 client.StreamIn = null;
 
+                log.Error($"{pipeline.AsyncStreamError.Message}. [Client: {client.RemoteEndPoint().ToString()}]");
+
                 SendError(client, pipeline.AsyncStreamError);
                 return;
             }
 
-            if (request.Config.model_name == null || pipeline.SpeechResult.Transcript == null)
-                return;
-
-            if (pipeline.SpeechResult.Transcript == NoResultSpeechRecognitionAlternative.Default.Transcript)
-            {
-                pipeline.SpeechResult.Intent = NoResultSpeechRecognitionAlternative.Default.Transcript;
-                pipeline.SpeechResult.Probability = 1;
-
-                return;
-            }
-
             try
-            { 
-                var classification = await classifierManager.ClassifyAsync(
-                    request.Config.model_name,
-                    pipeline.SpeechResult.Transcript);
+            {
+                if (request.Config.model_name != null && pipeline.SpeechResult.Transcript != null)
+                {
+                    if (pipeline.SpeechResult.Transcript == NoResultSpeechRecognitionAlternative.Default.Transcript)
+                    {
+                        pipeline.SpeechResult.Intent = NoResultSpeechRecognitionAlternative.Default.Transcript;
+                        pipeline.SpeechResult.Probability = 1;
+                    }
+                    else
+                    {
+                        var classification = await classifierManager.ClassifyAsync(
+                            request.Config.model_name,
+                            pipeline.SpeechResult.Transcript);
 
-                pipeline.SpeechResult.Intent = classification.ClassName;
-                pipeline.SpeechResult.Probability = classification.Probability;
+                        pipeline.SpeechResult.Intent = classification.ClassName;
+                        pipeline.SpeechResult.Probability = classification.Probability;
+                    }
+                }
+
+                log.Info($"Stream request successful finished at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
+
+                SendResult(client, pipeline.SpeechResult);
             }
             catch (Exception e)
+            {
+                log.Error($"{e.Message}. [Client: {client.RemoteEndPoint().ToString()}]");
+
+                SendError(client, e);
+            }
+            finally
             {
                 // Cleanup streamIn
                 client.StreamIn = null;
 
-                SendError(client, e);
-                return;
+                pipeline = client.CurrentPipeline = null;
             }
-
-            // Cleanup streamIn
-            client.StreamIn = null;
-
-            SendResult(client, pipeline.SpeechResult);
-            pipeline = client.CurrentPipeline = null;
         }
     }
 }

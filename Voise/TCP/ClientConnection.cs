@@ -63,6 +63,12 @@ namespace Voise.TCP
                 return _socket.Connected;
         }
 
+        internal System.Net.EndPoint RemoteEndPoint()
+        {
+            lock (_socket)
+                return _socket.RemoteEndPoint;
+        }
+
         private void CloseConnection()
         {
             lock (_socket)

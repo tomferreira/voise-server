@@ -1,0 +1,75 @@
+@RELATION felicitacao/saudacao
+
+@ATTRIBUTE text string
+@ATTRIBUTE class {sim,nao,nao_sou_eu,duvida,desinteressado,cancelamento}
+
+@DATA
+
+'sim',sim
+'sou eu',sim
+'sim sou eu mesmo',sim
+'correto',sim
+'positivo',sim
+'isso',sim
+'claro',sim
+'está',sim
+'está correto',sim
+'é ele',sim
+'é ela',sim
+'é eu',sim
+'é ele mesmo',sim
+'é eu mesmo',sim
+'é',sim
+'está sim',sim
+'está falando sim',sim
+'está falando com ele',sim
+'isso mesmo',sim
+'exato',sim
+'fale',sim
+'oquei',sim 
+'ok',sim 
+'é mesmo',sim 
+'hoje é meu aniversário',sim 
+'hoje é',sim
+'não',nao
+'incorreto',nao
+'está incorreto',nao
+'não é não',nao
+'negativo',nao
+'é amanhã',nao
+'não sou eu',nao_sou_eu
+'quem está falando',duvida
+'quem fala',duvida
+'quem gostaria de falar com ele',duvida
+'quer falar com quem',duvida
+'deseja falar com quem',duvida
+'você quer falar com quem',duvida
+'você deseja falar com quem',duvida
+'alô quer falar com quem',duvida
+'alô deseja falar com quem',duvida
+'alô você quer falar com quem',duvida
+'alô você deseja falar com quem',duvida
+'quem eu não entendi o nome',duvida
+%'quem',duvida
+'quem é',duvida
+'com quem',duvida
+'está falando com quem',duvida
+'com quem eu falo',duvida
+'não entendi',duvida
+'como é o nome',duvida
+'como é que é',duvida
+'falar com',duvida
+'alô',duvida
+%'quê',duvida
+'o quê',duvida
+'oi',duvida
+'não comemoramos aniversário',desinteressado
+'sim mas não comemoramos aniversário',desinteressado
+'não comemoro aniversário',desinteressado
+'não comemoro meu aniversário',desinteressado
+'eu não comemoro aniversário',desinteressado
+'não interessa',desinteressado
+'não interessa a mensagem',desinteressado
+'não me interessa',desinteressado
+'não me interessa a mensagem',desinteressado
+'eu quero cancelar minha doação',cancelamento

@@ -1,0 +1,199 @@
+@RELATION felicitacao/chamamento
+
+@ATTRIBUTE text string
+@ATTRIBUTE class {sim,nao,sou_eu,duvida,ocupado,ocupado2,desconhecido,falecido}
+
+@DATA
+
+'sim',sim
+'positivo',sim
+'claro',sim
+'vou chamar',sim
+'vou chamar ele',sim
+'vou passar para ele',sim
+'vou passar o telefone',sim
+'vou passar o telefone para ele',sim
+'só um instante',sim
+'só um momento',sim
+'só um momentinho',sim
+'só um minuto',sim
+'só um minutinho',sim
+'só um segundo',sim
+'só um segundinho',sim
+'espera',sim
+'espera aí',sim
+'não',nao
+'negativo',nao
+'não quero',nao 
+'não posso chamar',nao
+'sou eu',sou_eu
+'é ele',sou_eu
+'é ela',sou_eu
+'quem está falando',duvida
+'quem fala',duvida
+'quem gostaria de falar com ele',duvida
+'quer falar com quem',duvida
+'deseja falar com quem',duvida
+'você quer falar com quem',duvida
+'você deseja falar com quem',duvida
+'alô quer falar com quem',duvida
+'alô deseja falar com quem',duvida
+'alô você quer falar com quem',duvida
+'alô você deseja falar com quem',duvida
+'quem eu não entendi o nome',duvida
+%'quem',duvida
+'quem é',duvida
+'com quem',duvida
+'está falando com quem',duvida
+'com quem eu falo',duvida
+'não entendi',duvida
+'como é o nome',duvida
+'como é que é',duvida
+'falar com',duvida
+'alô',duvida
+%'quê',duvida
+'o quê',duvida
+'oi',duvida
+'ele está fora',ocupado
+'ela está fora',ocupado
+'ele está ocupado',ocupado
+'ela está ocupada',ocupado
+%'já foi para o trabalho',ocupado
+'ele já foi para o trabalho',ocupado
+'ela já foi para o trabalho',ocupado
+'ele está no trabalho',ocupado
+'ele está trabalhando',ocupado
+'ela está no trabalho',ocupado
+'ela está trabalhando',ocupado
+'ele está no serviço',ocupado
+'ela está no serviço',ocupado
+'ele está na rua',ocupado
+'ela está na rua',ocupado
+'ele foi passear',ocupado
+'ela foi passear',ocupado
+'ele está tomando banho',ocupado
+'ela está tomando banho',ocupado
+'ele está no banheiro',ocupado
+'ela está no banheiro',ocupado
+'ele está dormindo',ocupado
+'ela está dormindo',ocupado
+'ele está almoçando',ocupado
+'ele está no almoço',ocupado
+'ele está no horário de almoço',ocupado
+'ele está jantando',ocupado
+'ela está almoçando',ocupado
+'ela está no almoço',ocupado
+'ela está no horário de almoço',ocupado
+'ela está jantando',ocupado
+'ele dormiu',ocupado
+'ela dormiu',ocupado
+'ele saiu',ocupado
+'ela saiu',ocupado
+'não pode falar',ocupado
+'não pode falar agora',ocupado
+'ele não pode falar',ocupado
+'ela não pode falar',ocupado
+'ele não pode falar agora',ocupado
+'ela não pode falar agora',ocupado
+'não está aqui',ocupado
+'não está no momento',ocupado
+'não está aqui no momento',ocupado
+'ele não está',ocupado
+'ele não está aqui',ocupado
+'ele não está no momento',ocupado
+'ele não está aqui no momento',ocupado
+'ela não está',ocupado
+'ela não está aqui',ocupado
+'ela não está no momento',ocupado
+'ela não está aqui no momento',ocupado
+'não está em casa',ocupado
+'não está em casa no momento',ocupado
+'ele não está em casa',ocupado
+'ele não está em casa no momento',ocupado
+'ela não está em casa',ocupado
+'ela não está em casa no momento',ocupado
+'não se encontra',ocupado
+'não se encontra no momento',ocupado
+'ele não se encontra',ocupado
+'ele não se encontra no momento',ocupado
+'ela não se encontra',ocupado
+'ela não se encontra no momento',ocupado
+'só vai estar aqui depois das',ocupado
+'ele só vai estar aqui depois das',ocupado
+'ela só vai estar aqui depois das',ocupado
+'ele está viajando',ocupado2
+'ela está viajando',ocupado2
+'ele está de férias',ocupado2
+'ela está de férias',ocupado2
+'ele está no hospital',ocupado2
+'ela está no hospital',ocupado2
+'ele está doente',ocupado2
+'ela está doente',ocupado2
+'ele está enfermo',ocupado2
+'ela está enferma',ocupado2
+'ele está de cama',ocupado2
+'ela está de cama',ocupado2
+'se mudou',ocupado2
+'ele se mudou',ocupado2
+'ela se mudou',ocupado2
+'ele viajou',ocupado2
+'ela viajou',ocupado2
+'não mora aqui',desconhecido
+'não mora mais aqui',desconhecido
+'ela não mora aqui',desconhecido
+'ela não mora mais aqui',desconhecido
+'ele não mora aqui',desconhecido
+'ele não mora mais aqui',desconhecido
+'não mora neste endereço',desconhecido
+'não mora mais neste endereço',desconhecido
+'ele não mora neste endereço',desconhecido
+'ele não mora mais neste endereço',desconhecido
+'ela não mora neste endereço',desconhecido
+'ela não mora mais neste endereço',desconhecido
+'não conheço ninguém com esse nome',desconhecido
+'não conheço ninguém com esse nome aqui',desconhecido
+'eu não conheço ninguém com esse nome',desconhecido
+'eu não conheço ninguém com esse nome aqui',desconhecido
+'não tem ninguém com esse nome',desconhecido
+'não tem ninguém com esse nome aqui',desconhecido
+'aqui não tem ninguém com esse nome',desconhecido
+'não conheço',desconhecido
+'não conheço essa pessoa',desconhecido
+'não conheço ele',desconhecido
+'não conheço ela',desconhecido
+'eu não conheço',desconhecido
+'eu não conheço essa pessoa',desconhecido
+'eu não conheço ele',desconhecido
+'eu não conheço ela',desconhecido
+'não tem essa pessoa',desconhecido
+'não tem essa pessoa aqui',desconhecido
+'não existe essa pessoa',desconhecido
+'não existe essa pessoa aqui',desconhecido
+'não é esse telefone',desconhecido
+'não é esse número',desconhecido
+'não é esse telefone não',desconhecido
+'não é esse número não',desconhecido
+'não é dele esse telefone',desconhecido
+'não é dele esse número',desconhecido
+'não é dele esse telefone não',desconhecido
+'não é dele esse número não',desconhecido
+'não é dela esse telefone',desconhecido
+'não é dela esse número',desconhecido
+'não é dela esse telefone não',desconhecido
+'não é dela esse número não',desconhecido
+'esse telefone não é dele',desconhecido
+'esse número não é dele',desconhecido
+'esse telefone não é dela',desconhecido
+'esse número não é dela',desconhecido
+'não é aqui',desconhecido
+'não é aqui não',desconhecido
+'não é daqui',desconhecido
+'não é daqui não',desconhecido
+'ele faleceu',falecido
+'ele morreu',falecido
+'ele desencarnou',falecido
+'ele está morto',falecido
+'ela faleceu',falecido
+'ela morreu',falecido
+'ela desencarnou',falecido
+'ela está morta',falecido

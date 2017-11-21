@@ -1,0 +1,32 @@
+@RELATION felicitacao/agendamento
+
+@ATTRIBUTE text string
+@ATTRIBUTE class {manha,almoco,tarde,noite,sabado,nenhum}
+
+@DATA
+
+'amanhã de manhã',manha
+'manhã',manha
+'de dia',manha
+'durante o dia',manha
+'meio-dia',almoco
+'almoço',almoco
+'durante o almoço',almoco
+'de tarde', tarde
+'tarde', tarde
+'durante a tarde', tarde
+'de noite',noite
+'noite',noite
+'durante a noite',noite
+'sábado',sabado
+'durante o sábado',sabado
+'não me ligue mais aqui',nenhum
+'nenhum desses horários',nenhum
+'nenhum horário',nenhum
+'eu não sei',nenhum
+'pare de me ligar',nenhum
+'pare de ligar para mim',nenhum
+'não pode ligar em nenhum horário',nenhum
+'não quero que retorne',nenhum
+'não retorne',nenhum
+'não é para retornar',nenhum
