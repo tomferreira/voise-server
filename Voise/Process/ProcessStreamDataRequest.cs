@@ -11,11 +11,18 @@ namespace Voise.Process
         {
             ILog log = LogManager.GetLogger(typeof(ProcessStreamDataRequest));
 
-            byte[] data = Convert.FromBase64String(request.data);
+            try
+            {
+                byte[] data = Convert.FromBase64String(request.data);
 
-            log.Debug($"Receiving stream data ({data.Length} bytes) at pipeline {client.CurrentPipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
+                log.Debug($"Receiving stream data ({data.Length} bytes) at pipeline {client.CurrentPipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
 
-            client.StreamIn?.Write(data);
+                client.StreamIn?.Write(data);
+            }
+            catch(Exception e)
+            {
+                log.Error($"{e.Message}\nStackTrace: {e.StackTrace}. [Client: {client.RemoteEndPoint().ToString()}]");
+            }
         }
     }
 }

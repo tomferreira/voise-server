@@ -31,7 +31,7 @@ namespace Voise
                 ILog log = LogManager.GetLogger(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-                log.Fatal(e.Message);
+                log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
             }
 #else
             Console.WriteLine("To Start Voise Server, use the Windows Service.");
