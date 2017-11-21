@@ -9,6 +9,8 @@
     <!-- Default: ./classifiers/ -->
     <!--<classifiers_path>./classifiers/</classifiers_path>-->
 
+    <!-- ATENÇÃO: A configuração de log deve ser realizada diretamente no arquivo Log.config -->
+
     <tunning>
         <!-- Default: false -->
         <!-- <enabled>false</enabled> -->

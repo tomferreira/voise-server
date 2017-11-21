@@ -34,7 +34,7 @@ namespace VoiseService.Service
             }
             catch (Exception e)
             {
-                Log.Fatal(e.Message);
+                Log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
 
                 return false;
             }
