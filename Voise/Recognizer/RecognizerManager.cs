@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Voise.Recognizer.Azure;
 using Voise.Recognizer.Google;
 using Voise.Recognizer.Microsoft;
 
@@ -20,6 +21,9 @@ namespace Voise.Recognizer
 
             if (recognizersEnabled.Contains(GoogleRecognizer.ENGINE_IDENTIFIER))
                 _recognizers.Add(GoogleRecognizer.ENGINE_IDENTIFIER, new GoogleRecognizer());
+
+            if (recognizersEnabled.Contains(AzureRecognizer.ENGINE_IDENTIFIER))
+                _recognizers.Add(AzureRecognizer.ENGINE_IDENTIFIER, new AzureRecognizer());
         }
 
         internal Base GetRecognizer(string engineID)

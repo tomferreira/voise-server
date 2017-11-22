@@ -66,20 +66,5 @@ namespace Voise.Recognizer.Microsoft.Job
             if (contexts == null || contexts.Count == 0)
                 throw new System.Exception("Context is not defined. (This is only required to Microsoft engine, for all others this is optional)");
         }
-
-        protected byte[] ConvertAudioToBytes(string audio_base64)
-        {
-            if (audio_base64 == null || audio_base64.Trim() == string.Empty)
-                throw new BadAudioException("Audio is empty.");
-
-            try
-            {
-                return Convert.FromBase64String(audio_base64);
-            }
-            catch (System.Exception e)
-            {
-                throw new BadAudioException("Audio is invalid.", e);
-            }
-        }
     }
 }
