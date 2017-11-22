@@ -1,6 +1,5 @@
 ﻿using Google.Cloud.Speech.V1Beta1;
 using log4net;
-using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Recognition;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,6 @@ namespace Voise.Recognizer.Microsoft.Job
     internal abstract class Base
     {
         protected SpeechRecognitionEngine _engine;
-        protected SpeechAudioFormatInfo _info;
 
         protected bool _completed;
         protected readonly object _monitorCompleted;
