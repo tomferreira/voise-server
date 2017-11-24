@@ -1,6 +1,5 @@
 ﻿using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Synthesis;
-using System;
 using Voise.Synthesizer.Exception;
 
 namespace Voise.Synthesizer.Microsoft

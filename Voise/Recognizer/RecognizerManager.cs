@@ -22,7 +22,11 @@ namespace Voise.Recognizer
                 _recognizers.Add(MicrosoftRecognizer.ENGINE_IDENTIFIER, new MicrosoftRecognizer());
 
             if (recognizersEnabled.Contains(GoogleRecognizer.ENGINE_IDENTIFIER))
-                _recognizers.Add(GoogleRecognizer.ENGINE_IDENTIFIER, new GoogleRecognizer());
+            {
+                string credentialPath = config.GetRecognizerAttribute("google", "credential_path");
+
+                _recognizers.Add(GoogleRecognizer.ENGINE_IDENTIFIER, new GoogleRecognizer(credentialPath));
+            }
 
             if (recognizersEnabled.Contains(AzureRecognizer.ENGINE_IDENTIFIER))
             {

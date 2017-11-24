@@ -8,6 +8,10 @@
         <!--<enabled>me,ge,ze</enabled>-->
 
         <!--
+        <google>
+            <credential_path></credential_path>
+        </google>
+
         <azure>            
             <primarykey></primarykey>
         </azure>
