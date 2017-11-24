@@ -27,7 +27,7 @@ namespace Voise.Classification
 
             lock (_classifiers)
             {
-                if (!_classifiers.ContainsKey(modelName))
+                if (modelName == null || !_classifiers.ContainsKey(modelName))
                     return null;
 
                 classifier = _classifiers[modelName];
