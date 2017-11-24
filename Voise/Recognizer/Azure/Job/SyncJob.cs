@@ -9,7 +9,7 @@ namespace Voise.Recognizer.Azure.Job
     {
         private byte[] _audio;
 
-        internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
+        internal SyncJob(string primaryKey, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
         {
             _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -18,7 +18,7 @@ namespace Voise.Recognizer.Azure.Job
             _recognitionClient = SpeechRecognitionServiceFactory.CreateDataClient(
                 SpeechRecognitionMode.ShortPhrase, // Áudio de até 15 segundos
                 languageCode,
-                "b2abf005d1e24bde8821f26d5cc14710");
+                primaryKey);
 
             _recognitionClient.OnResponseReceived += ResponseReceivedHandler;
             _recognitionClient.OnConversationError += ConversationErrorHandler;

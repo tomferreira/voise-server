@@ -1,5 +1,4 @@
 ﻿using Microsoft.CognitiveServices.SpeechRecognition;
-using System.Collections.Generic;
 using System.Threading;
 using Voise.Synthesizer.Azure;
 using static Voise.AudioStream;
@@ -10,7 +9,7 @@ namespace Voise.Recognizer.Azure.Job
     {
         private AudioStream _streamIn;
 
-        internal StreamingJob(AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        internal StreamingJob(string primaryKey, AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode)
             : base()
         {
             ValidateArguments(encoding, sampleRate, languageCode);
@@ -18,7 +17,7 @@ namespace Voise.Recognizer.Azure.Job
             _recognitionClient = SpeechRecognitionServiceFactory.CreateDataClient(
                 SpeechRecognitionMode.ShortPhrase, // Áudio de até 15 segundos
                 languageCode,
-                "b2abf005d1e24bde8821f26d5cc14710");
+                primaryKey);
 
             _recognitionClient.OnResponseReceived += ResponseReceivedHandler;
             _recognitionClient.OnConversationError += ConversationErrorHandler;

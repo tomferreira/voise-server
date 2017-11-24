@@ -55,17 +55,13 @@ namespace Voise
         {
             get
             {
-                try
-                {
-                    string[] elem = 
-                        _element.SelectSingleNode("recognizers_enabled").InnerText.Split(';', ',');
+                 string value = GetRecognizerAttribute("enabled");
 
-                    return new List<string>(elem);
-                }
-                catch (Exception)
-                {
+                if (value == null)
                     return DEFAULT_RECOGNIZERS_ENABLED;
-                }
+
+                string[] elem = value.Split(';', ',');
+                return new List<string>(elem);
             }
         }
 
@@ -88,14 +84,12 @@ namespace Voise
         {
             get
             {
-                try
-                {
-                    return Convert.ToBoolean(_element.SelectSingleNode("tunning").SelectSingleNode("enabled").InnerText);
-                }
-                catch (Exception)
-                {
+                object value = GetTunningAttribute("enabled");
+
+                if (value == null)
                     return DEFAULT_TUNNING_ENABLED;
-                }
+
+                return Convert.ToBoolean(value);
             }
         }
 
@@ -103,14 +97,39 @@ namespace Voise
         {
             get
             {
-                try
-                {
-                    return _element.SelectSingleNode("tunning").SelectSingleNode("tunning_path").InnerText;
-                }
-                catch(Exception)
-                {
+                string value = GetTunningAttribute("path");
+
+                if (value == null)
                     return DEFAULT_TUNNING_PATH;
-                }
+
+                return value;
+            }
+        }
+
+        internal string GetRecognizerAttribute(params string[] identifiers)
+        {
+            return GetAttribute("recognizers", identifiers);
+        }
+
+        internal string GetTunningAttribute(params string[] identifiers)
+        {
+            return GetAttribute("tunning", identifiers);
+        }
+
+        private string GetAttribute(string parentIdentifier, params string[] identifiers)
+        {
+            try
+            {
+                XmlNode node = _element.SelectSingleNode(parentIdentifier);
+
+                foreach (string identifier in identifiers)
+                    node = node.SelectSingleNode(identifier);
+
+                return node.InnerText;
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
     }

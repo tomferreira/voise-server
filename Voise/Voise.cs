@@ -45,16 +45,15 @@ namespace Voise
 
         public Voise(Config config)
         {
-            ILog log = LogManager.GetLogger(
-                System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            ILog log = LogManager.GetLogger(typeof(Voise));
 
             log.Info($"Initializing Voise Server v{Version.VersionString}.");
 
             _tcpServer = new Server(HandleClientRequest);
 
             // ASR
-            _recognizerManager = new RecognizerManager(config.RecognizersEnabled);
-            _classifierManager = new ClassifierManager(config.ClassifiersPath);
+            _recognizerManager = new RecognizerManager(config);
+            _classifierManager = new ClassifierManager(config);
 
             // TTS
             _synthetizer = new MicrosoftSynthetizer();                

@@ -12,14 +12,13 @@ namespace Voise.Classification
         private ILog _log;
         private Dictionary<string, Base> _classifiers;
 
-        internal ClassifierManager(string classifiersPath)
+        internal ClassifierManager(Config config)
         {
-            _log = LogManager.GetLogger(
-                System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            _log = LogManager.GetLogger(typeof(ClassifierManager));
 
             _classifiers = new Dictionary<string, Base>();
 
-            LoadClassifiers(classifiersPath);
+            LoadClassifiers(config.ClassifiersPath);
         }
 
         internal Dictionary<string, List<string>> GetTrainingList(string modelName)

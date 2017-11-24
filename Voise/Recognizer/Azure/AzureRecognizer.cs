@@ -11,17 +11,23 @@ namespace Voise.Recognizer.Azure
     {
         internal const string ENGINE_IDENTIFIER = "ze";
 
+        private string _primaryKey;
+
         private Dictionary<AudioStream, StreamingJob> _streamingJobs;
 
-        internal AzureRecognizer()
+        internal AzureRecognizer(string primaryKey)
         {
+            if (primaryKey == null)
+                throw new System.Exception("Primary key must be defined for Azure engine.");
+
+            _primaryKey = primaryKey;
             _streamingJobs = new Dictionary<AudioStream, StreamingJob>();
         }
 
         internal override async Task<SpeechRecognitionAlternative> SyncRecognition(string audio_base64, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            SyncJob job = new SyncJob(audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode);
+            SyncJob job = new SyncJob(_primaryKey, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode);
 
             job.Start();
 
@@ -31,7 +37,7 @@ namespace Voise.Recognizer.Azure
         internal override async Task StartStreamingRecognitionAsync(AudioStream streamIn, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            StreamingJob job = new StreamingJob(streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
+            StreamingJob job = new StreamingJob(_primaryKey, streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode);
 
             lock (_streamingJobs)
                 _streamingJobs.Add(streamIn, job);

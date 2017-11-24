@@ -9,8 +9,10 @@ namespace Voise.Recognizer
     {
         private Dictionary<string, Base> _recognizers;
 
-        internal RecognizerManager(List<string> recognizersEnabled)
+        internal RecognizerManager(Config config)
         {
+            List<string> recognizersEnabled = config.RecognizersEnabled;
+
             if (recognizersEnabled.Count == 0)
                 throw new System.Exception("At least one recogning engine must be enabled.");
 
@@ -23,7 +25,11 @@ namespace Voise.Recognizer
                 _recognizers.Add(GoogleRecognizer.ENGINE_IDENTIFIER, new GoogleRecognizer());
 
             if (recognizersEnabled.Contains(AzureRecognizer.ENGINE_IDENTIFIER))
-                _recognizers.Add(AzureRecognizer.ENGINE_IDENTIFIER, new AzureRecognizer());
+            {
+                string primaryKey = config.GetRecognizerAttribute("azure", "primarykey");
+
+                _recognizers.Add(AzureRecognizer.ENGINE_IDENTIFIER, new AzureRecognizer(primaryKey));
+            }
         }
 
         internal Base GetRecognizer(string engineID)
