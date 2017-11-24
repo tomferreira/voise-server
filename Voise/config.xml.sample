@@ -3,8 +3,20 @@
     <!-- Default: 8102 -->
     <!--<port>8102</port>-->
 
-    <!-- Default: me -->
-    <!--<recognizers_enabled>me,ge</recognizers_enabled>-->
+    <recognizers>
+        <!-- Default: me -->
+        <!--<enabled>me,ge,ze</enabled>-->
+
+        <!--
+        <google>
+            <credential_path></credential_path>
+        </google>
+
+        <azure>            
+            <primarykey></primarykey>
+        </azure>
+        -->
+    </recognizers>
 
     <!-- Default: ./classifiers/ -->
     <!--<classifiers_path>./classifiers/</classifiers_path>-->

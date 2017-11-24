@@ -46,7 +46,7 @@ namespace Voise.Recognizer.Microsoft.Job
             }
 
             _engine.SetInputToAudioStream(
-                new MemoryStream(ConvertAudioToBytes(audio_base64)), info);
+                new MemoryStream(Util.ConvertAudioToBytes(audio_base64)), info);
         }
 
         internal void Start()

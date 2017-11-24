@@ -6,7 +6,7 @@ class VoiseClientTest
   VOISE_PORT = 8102
 
   # Buffer size in bytes
-  BYTES_PER_BUFFER = 3200
+  BYTES_PER_BUFFER = 320
 
   # Bytes per sample for LINEAR16 or FLAC
   BYTES_PER_SAMPLE = 2
@@ -19,6 +19,7 @@ class VoiseClientTest
   # client.recognize("FLAC", 16000, "pt-BR", nil, "felicitacao/localizacao", "./alo.flac")
   # client.recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Alo {duvida}.wav")
   # client.recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Sem voz {#NOVOICE}.wav")
+  # client.recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./ela_esta_no_trabalho.wav")
   def recognize(encoding, sample_rate, language_code, context, model_name, audio_file, engine = nil)
     VoiseClientTest::time_method do
       puts @client.recognize(encoding, sample_rate, language_code, context, model_name, audio_file, engine).to_pretty_s
@@ -101,15 +102,14 @@ class VoiseClientTest
   end
 
   # client = VoiseClientTest.new
-  # client.say("Mensagem de teste", "alaw", 8000, "pt-BR", "result.wav")
+  # client.say("Mensagem de teste", "Alaw", 8000, "pt-BR", "output.wav")
+  # client.say("<prosody range=\"x-high\"><prosody pitch=\"x-high\">Mensagem de teste 2</prosody></prosody>", "LINEAR16", 8000, "pt-BR", "output2.wav")
   def say(text, encoding, sample_rate, language_code, filename)
     response, audio_content = @client.say(text, encoding, sample_rate, language_code)
 
-    if response.result.code == 200
-      IO.binwrite(filename, audio_content)
-    else
-      puts response.to_pretty_s
-    end
+    IO.binwrite(filename, audio_content) if response.result.code == 200
+      
+    puts response.to_pretty_s
   end
 
   def close

@@ -15,9 +15,12 @@ namespace Voise.Recognizer.Google
         private Dictionary<AudioStream, StreamingJob> _streamingJobs;
         private string _tunningPath;
 
-        internal GoogleRecognizer()
+        internal GoogleRecognizer(string credentialPath)
         {
-            _recognizer = SpeechRecognizer.Create();
+            if (credentialPath == null)
+                throw new System.Exception("Credential path must be defined for Google engine.");
+
+            _recognizer = SpeechRecognizer.Create(credentialPath);
             _streamingJobs = new Dictionary<AudioStream, StreamingJob>();
             _tunningPath = null;
         }
