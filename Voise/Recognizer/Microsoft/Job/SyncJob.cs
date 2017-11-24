@@ -19,7 +19,7 @@ namespace Voise.Recognizer.Microsoft.Job
 
             ValidateArguments(encoding, sampleRate, languageCode, contexts);
 
-            _info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,
+            SpeechAudioFormatInfo info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,
                 encoding.ChannelCount, sampleRate * encoding.BitsPerSample / 8, encoding.BlockAlign, null);
 
             CultureInfo cultureInfo = new CultureInfo(languageCode);
@@ -46,7 +46,7 @@ namespace Voise.Recognizer.Microsoft.Job
             }
 
             _engine.SetInputToAudioStream(
-                new MemoryStream(Util.ConvertAudioToBytes(audio_base64)), _info);
+                new MemoryStream(Util.ConvertAudioToBytes(audio_base64)), info);
         }
 
         internal void Start()
