@@ -26,7 +26,7 @@ namespace Voise.Process
             return contexts;
         }
 
-        protected static void SendResult(ClientConnection client, SpeechResult result)
+        protected static void SendResult(ClientConnection client, VoiseResult result)
         {
             if (result != null)
             {
@@ -34,14 +34,14 @@ namespace Voise.Process
 
                 switch(result.Mode)
                 {
-                    case SpeechResult.Modes.ASR:
+                    case VoiseResult.Modes.ASR:
                         response.utterance = result.Transcript;
                         response.confidence = result.Confidence;
                         response.intent = result.Intent;
                         response.probability = result.Probability;
                         break;
 
-                    case SpeechResult.Modes.TTS:
+                    case VoiseResult.Modes.TTS:
                         response.audio = new VoiseResponse.VoiseAudio();
                         response.audio.content = result.AudioContent;
                         response.audio.length = result.AudioContent.Length;

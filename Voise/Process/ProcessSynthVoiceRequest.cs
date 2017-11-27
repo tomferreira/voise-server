@@ -37,7 +37,7 @@ namespace Voise.Process
 
                 client.StreamOut.DataAvailable += delegate (object sender, AudioStream.StreamInEventArgs e)
                 {
-                    SpeechResult result = new SpeechResult(SpeechResult.Modes.TTS);
+                    VoiseResult result = new VoiseResult(VoiseResult.Modes.TTS);
                     result.AudioContent = Convert.ToBase64String(e.Buffer);
 
                     log.Debug($"Sending stream data ({e.Buffer.Length} bytes) at pipeline {client.CurrentPipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
@@ -53,7 +53,7 @@ namespace Voise.Process
 
                 SendAccept(client);
 
-                pipeline.SpeechResult = new SpeechResult(SpeechResult.Modes.TTS);
+                pipeline.Result = new VoiseResult(VoiseResult.Modes.TTS);
 
                 synthetizer.Synth(client.StreamOut, request.text);
             }
@@ -79,8 +79,8 @@ namespace Voise.Process
             client.StreamOut = null;
 
             // Send end of stream
-            pipeline.SpeechResult.AudioContent = "";
-            SendResult(client, pipeline.SpeechResult);
+            pipeline.Result.AudioContent = "";
+            SendResult(client, pipeline.Result);
 
             log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
 

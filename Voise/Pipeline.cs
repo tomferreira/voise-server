@@ -18,7 +18,7 @@ namespace Voise
         // Recognizer used in this pipeline (if ASR)
         internal Recognizer.Base Recognizer { get; set; }
 
-        internal SpeechResult SpeechResult { get; set; }
+        internal VoiseResult Result { get; set; }
 
         // Internal async error
         internal Exception AsyncStreamError { get; set; }
