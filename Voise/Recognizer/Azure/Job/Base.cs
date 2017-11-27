@@ -1,5 +1,4 @@
-﻿using Google.Cloud.Speech.V1Beta1;
-using log4net;
+﻿using log4net;
 using Microsoft.CognitiveServices.SpeechRecognition;
 using System.Linq;
 using System.Threading;
@@ -17,7 +16,7 @@ namespace Voise.Recognizer.Azure.Job
 
         protected ILog _log;
 
-        public SpeechRecognitionAlternative BestAlternative { get; protected set; }
+        public SpeechRecognitionResult BestAlternative { get; protected set; }
 
         protected Base()
         {
@@ -25,7 +24,7 @@ namespace Voise.Recognizer.Azure.Job
             _completed = false;
 
             // Set as default alterative
-            BestAlternative = NoResultSpeechRecognitionAlternative.Default;
+            BestAlternative = SpeechRecognitionResult.NoResult;
         }
 
         protected void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode)
@@ -43,9 +42,8 @@ namespace Voise.Recognizer.Azure.Job
             {
                 RecognizedPhrase bestResult = e.PhraseResponse.Results.OrderByDescending(x => (int)x.Confidence).First();
 
-                BestAlternative = new SpeechRecognitionAlternative();
-                BestAlternative.Transcript = bestResult.DisplayText;
-                BestAlternative.Confidence = ConvertConfidence(bestResult.Confidence);
+                BestAlternative = new SpeechRecognitionResult(
+                    bestResult.DisplayText, ConvertConfidence(bestResult.Confidence));
             }
 
             lock (_monitorCompleted)

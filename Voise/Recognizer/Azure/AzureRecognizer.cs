@@ -1,5 +1,4 @@
-﻿using Google.Cloud.Speech.V1Beta1;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voise.Recognizer.Azure.Job;
 using Voise.Synthesizer.Azure;
@@ -24,7 +23,7 @@ namespace Voise.Recognizer.Azure
             _streamingJobs = new Dictionary<AudioStream, StreamingJob>();
         }
 
-        internal override async Task<SpeechRecognitionAlternative> SyncRecognition(string audio_base64, string encoding,
+        internal override async Task<SpeechRecognitionResult> SyncRecognition(string audio_base64, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
             SyncJob job = new SyncJob(_primaryKey, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode);
@@ -45,7 +44,7 @@ namespace Voise.Recognizer.Azure
             job.Start();
         }
 
-        internal override async Task<SpeechRecognitionAlternative> StopStreamingRecognitionAsync(AudioStream streamIn)
+        internal override async Task<SpeechRecognitionResult> StopStreamingRecognitionAsync(AudioStream streamIn)
         {
             StreamingJob job = null;
 

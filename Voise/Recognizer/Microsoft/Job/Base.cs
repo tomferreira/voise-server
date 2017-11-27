@@ -1,7 +1,5 @@
-﻿using Google.Cloud.Speech.V1Beta1;
-using log4net;
+﻿using log4net;
 using Microsoft.Speech.Recognition;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using Voise.Recognizer.Exception;
@@ -18,7 +16,7 @@ namespace Voise.Recognizer.Microsoft.Job
 
         protected ILog _log;
 
-        public SpeechRecognitionAlternative BestAlternative { get; protected set; }
+        public SpeechRecognitionResult BestAlternative { get; protected set; }
 
         protected Base()
         {
@@ -26,7 +24,7 @@ namespace Voise.Recognizer.Microsoft.Job
             _completed = false;
 
             // Set as default alterative
-            BestAlternative = NoResultSpeechRecognitionAlternative.Default;
+            BestAlternative = SpeechRecognitionResult.NoResult;
         }
 
         protected void RecognizeCompleted(object sender, RecognizeCompletedEventArgs e)
@@ -41,9 +39,8 @@ namespace Voise.Recognizer.Microsoft.Job
             }
             else if (e.Result != null)
             {
-                BestAlternative = new SpeechRecognitionAlternative();
-                BestAlternative.Transcript = e.Result.Text;
-                BestAlternative.Confidence = e.Result.Confidence;
+                BestAlternative = new SpeechRecognitionResult(
+                    e.Result.Text, e.Result.Confidence);
             }
 
             lock (_monitorCompleted)

@@ -93,9 +93,9 @@ namespace Voise.Process
             {
                 if (request.Config.model_name != null && pipeline.SpeechResult.Transcript != null)
                 {
-                    if (pipeline.SpeechResult.Transcript == NoResultSpeechRecognitionAlternative.Default.Transcript)
+                    if (pipeline.SpeechResult.Transcript == SpeechRecognitionResult.NoResult.Transcript)
                     {
-                        pipeline.SpeechResult.Intent = NoResultSpeechRecognitionAlternative.Default.Transcript;
+                        pipeline.SpeechResult.Intent = SpeechRecognitionResult.NoResult.Transcript;
                         pipeline.SpeechResult.Probability = 1;
                     }
                     else
