@@ -1,5 +1,4 @@
-﻿using Google.Cloud.Speech.V1Beta1;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voise.Google.Cloud.Speech.V1Beta1;
 using Voise.Recognizer.Google.Job;
@@ -31,7 +30,7 @@ namespace Voise.Recognizer.Google
         }
 
         // Max duration of audio ~60s (https://cloud.google.com/speech/limits)
-        internal override async Task<SpeechRecognitionAlternative> SyncRecognition(string audio_base64, string encoding, 
+        internal override async Task<SpeechRecognitionResult> SyncRecognition(string audio_base64, string encoding, 
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
             SyncJob job = new SyncJob(audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
@@ -52,7 +51,7 @@ namespace Voise.Recognizer.Google
             await job.StartAsync(_recognizer);
         }
 
-        internal override async Task<SpeechRecognitionAlternative> StopStreamingRecognitionAsync(AudioStream streamIn)
+        internal override async Task<SpeechRecognitionResult> StopStreamingRecognitionAsync(AudioStream streamIn)
         {
             StreamingJob job = null;
 

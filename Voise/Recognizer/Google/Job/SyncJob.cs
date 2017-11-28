@@ -40,8 +40,8 @@ namespace Voise.Recognizer.Google.Job
             {
                 foreach (var alternative in result.Alternatives)
                 {
-                    if (BestAlternative == NoResultSpeechRecognitionAlternative.Default || BestAlternative.Confidence < alternative.Confidence)
-                        BestAlternative = alternative;
+                    if (BestAlternative == SpeechRecognitionResult.NoResult || BestAlternative.Confidence < alternative.Confidence)
+                        BestAlternative = new SpeechRecognitionResult(alternative.Transcript, alternative.Confidence);
                 }
             }
         }

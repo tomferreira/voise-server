@@ -23,8 +23,8 @@ namespace Voise.Process
                 var recognition =
                     client.CurrentPipeline.Recognizer.StopStreamingRecognitionAsync(client.StreamIn).Result;
 
-                client.CurrentPipeline.SpeechResult.Transcript = recognition.Transcript;
-                client.CurrentPipeline.SpeechResult.Confidence = recognition.Confidence;
+                client.CurrentPipeline.Result.Transcript = recognition.Transcript;
+                client.CurrentPipeline.Result.Confidence = recognition.Confidence;
             }
             catch (Exception e)
             {

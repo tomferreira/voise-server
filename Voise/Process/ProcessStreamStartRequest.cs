@@ -53,7 +53,7 @@ namespace Voise.Process
 
                 SendAccept(client);
 
-                pipeline.SpeechResult = new SpeechResult(SpeechResult.Modes.ASR);
+                pipeline.Result = new VoiseResult(VoiseResult.Modes.ASR);
             }
             catch (Exception e)
             {
@@ -91,27 +91,27 @@ namespace Voise.Process
 
             try
             {
-                if (request.Config.model_name != null && pipeline.SpeechResult.Transcript != null)
+                if (request.Config.model_name != null && pipeline.Result.Transcript != null)
                 {
-                    if (pipeline.SpeechResult.Transcript == NoResultSpeechRecognitionAlternative.Default.Transcript)
+                    if (pipeline.Result.Transcript == SpeechRecognitionResult.NoResult.Transcript)
                     {
-                        pipeline.SpeechResult.Intent = NoResultSpeechRecognitionAlternative.Default.Transcript;
-                        pipeline.SpeechResult.Probability = 1;
+                        pipeline.Result.Intent = SpeechRecognitionResult.NoResult.Transcript;
+                        pipeline.Result.Probability = 1;
                     }
                     else
                     {
                         var classification = await classifierManager.ClassifyAsync(
                             request.Config.model_name,
-                            pipeline.SpeechResult.Transcript);
+                            pipeline.Result.Transcript);
 
-                        pipeline.SpeechResult.Intent = classification.ClassName;
-                        pipeline.SpeechResult.Probability = classification.Probability;
+                        pipeline.Result.Intent = classification.ClassName;
+                        pipeline.Result.Probability = classification.Probability;
                     }
                 }
 
                 log.Info($"Stream request successful finished at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
 
-                SendResult(client, pipeline.SpeechResult);
+                SendResult(client, pipeline.Result);
             }
             catch (Exception e)
             {

@@ -9,12 +9,12 @@ namespace Voise.Recognizer.Google.Job
 {
     internal abstract class Base
     {
-        public SpeechRecognitionAlternative BestAlternative { get; protected set; }
+        public SpeechRecognitionResult BestAlternative { get; protected set; }
 
         protected Base()
         {
             // Set as default alterative
-            BestAlternative = NoResultSpeechRecognitionAlternative.Default;
+            BestAlternative = SpeechRecognitionResult.NoResult;
         }
 
         protected void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode)

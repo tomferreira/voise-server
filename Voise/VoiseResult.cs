@@ -1,6 +1,6 @@
 ﻿namespace Voise
 {
-    internal class SpeechResult
+    internal class VoiseResult
     {
         internal enum Modes
         {
@@ -19,7 +19,7 @@
         // TTS
         internal string AudioContent { get; set; } // Base64 encoded
 
-        internal SpeechResult(Modes mode)
+        internal VoiseResult(Modes mode)
         {
             Mode = mode;
         }
