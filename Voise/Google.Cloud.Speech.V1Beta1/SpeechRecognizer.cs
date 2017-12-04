@@ -1,8 +1,10 @@
 ﻿using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
+using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Speech.V1Beta1;
+using Grpc.Auth;
 using Grpc.Core;
-using System.Threading;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Voise.Google.Cloud.Speech.V1Beta1
@@ -25,6 +27,20 @@ namespace Voise.Google.Cloud.Speech.V1Beta1
         {
             // TODO: Use a single channel... should be fine when SpeechClient has an OperationsClient.
             return new SpeechRecognizer(SpeechClient.Create(endpoint));
+        }
+
+        public static SpeechRecognizer Create(string credentialPath)
+        {
+            if (!File.Exists(credentialPath))
+                throw new System.Exception($"Credential path '{credentialPath}' not found.");
+
+            var fileStream = new FileStream(credentialPath, FileMode.Open);
+            GoogleCredential googleCredential = GoogleCredential.FromStream(fileStream);
+            ChannelCredentials channelCredentials = GoogleGrpcCredentials.ToChannelCredentials(googleCredential);
+            Channel channel = new Channel("speech.googleapis.com", channelCredentials);
+
+            // TODO: Use a single channel... should be fine when SpeechClient has an OperationsClient.
+            return new SpeechRecognizer(SpeechClient.Create(channel));
         }
 
         public SyncRecognizeResponse Recognize(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)

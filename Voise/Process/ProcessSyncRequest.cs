@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Voise.Classification;
 using Voise.Recognizer;
+using Voise.Recognizer.Exception;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -39,7 +40,14 @@ namespace Voise.Process
             }
             catch (Exception e)
             {
-                log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {client.RemoteEndPoint().ToString()}]");
+                if (e is BadEncodingException || e is BadAudioException)
+                {
+                    log.Info($"{e.Message} [Client: {client.RemoteEndPoint().ToString()}]");
+                }
+                else
+                {
+                    log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {client.RemoteEndPoint().ToString()}]");
+                }
 
                 SendError(client, e);
                 return;

@@ -133,6 +133,10 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SpeechClient, Version=0.0.0.0, Culture=neutral, PublicKeyToken=720c26922c782415, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.ProjectOxford.SpeechRecognition-x64.1.0.0.7\lib\SpeechClient.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -182,6 +186,10 @@
     <Compile Include="Process\ProcessStreamStopRequest.cs" />
     <Compile Include="Process\ProcessSynthVoiceRequest.cs" />
     <Compile Include="Recognizer\Base.cs" />
+    <Compile Include="Recognizer\Azure\AzureRecognizer.cs" />
+    <Compile Include="Recognizer\Azure\Job\Base.cs" />
+    <Compile Include="Recognizer\Azure\Job\StreamingJob.cs" />
+    <Compile Include="Recognizer\Azure\Job\SyncJob.cs" />
     <Compile Include="Recognizer\Exception\BadAudioException.cs" />
     <Compile Include="Recognizer\Exception\BadEncodingException.cs" />
     <Compile Include="Recognizer\Microsoft\Internal\CircularBuffer.cs" />
@@ -197,7 +205,9 @@
     <Compile Include="Recognizer\Microsoft\Job\SyncJob.cs" />
     <Compile Include="Recognizer\Microsoft\MicrosoftRecognizer.cs" />
     <Compile Include="Recognizer\RecognizerManager.cs" />
+    <Compile Include="Recognizer\Util.cs" />
     <Compile Include="ResponseCode.cs" />
+    <Compile Include="Synthesizer\Azure\AudioEncoding.cs" />
     <Compile Include="Synthesizer\Exception\BadEncodingException.cs" />
     <Compile Include="Synthesizer\Exception\BadLanguageException.cs" />
     <Compile Include="Synthesizer\Exception\BadVoiceException.cs" />

@@ -1,6 +1,5 @@
 ﻿using Google.Cloud.Speech.V1Beta1;
 using log4net;
-using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Recognition;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,6 @@ namespace Voise.Recognizer.Microsoft.Job
     internal abstract class Base
     {
         protected SpeechRecognitionEngine _engine;
-        protected SpeechAudioFormatInfo _info;
 
         protected bool _completed;
         protected readonly object _monitorCompleted;
@@ -65,21 +63,6 @@ namespace Voise.Recognizer.Microsoft.Job
 
             if (contexts == null || contexts.Count == 0)
                 throw new System.Exception("Context is not defined. (This is only required to Microsoft engine, for all others this is optional)");
-        }
-
-        protected byte[] ConvertAudioToBytes(string audio_base64)
-        {
-            if (audio_base64 == null || audio_base64.Trim() == string.Empty)
-                throw new BadAudioException("Audio is empty.");
-
-            try
-            {
-                return Convert.FromBase64String(audio_base64);
-            }
-            catch (System.Exception e)
-            {
-                throw new BadAudioException("Audio is invalid.", e);
-            }
         }
     }
 }
