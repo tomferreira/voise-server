@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using Voise.TCP.Request;
 using Voise.TCP.Response;
 using static Voise.TCP.Server;
@@ -92,6 +91,14 @@ namespace Voise.TCP
             }
 
             _log = null;
+
+            // If stream yet is started, abort it.
+            if (StreamIn != null && StreamIn.IsStarted())
+                StreamIn.Abort();
+
+            // If stream yet is started, abort it.
+            if (StreamOut != null && StreamOut.IsStarted())
+                StreamOut.Abort();
 
             Closed?.Invoke(this);
         }
