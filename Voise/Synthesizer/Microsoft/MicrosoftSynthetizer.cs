@@ -41,11 +41,14 @@ namespace Voise.Synthesizer.Microsoft
         {
             switch (encoding.ToLower())
             {
-                case "alaw":
-                    return AudioEncoding.Alaw;
+                case "flac":
+                    throw new System.Exception("Codec 'flac' not supported.");
 
                 case "linear16":
                     return AudioEncoding.Linear16;
+
+                case "alaw":
+                    return AudioEncoding.Alaw;
 
                 case "mulaw":
                     return AudioEncoding.Mulaw;

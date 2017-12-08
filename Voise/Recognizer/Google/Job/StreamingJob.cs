@@ -94,5 +94,19 @@ namespace Voise.Recognizer.Google.Job
             // This will complete when the gRPC stream has completed.
             return _doneTask;
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _recognizerStream.Dispose();
+                _doneTask?.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

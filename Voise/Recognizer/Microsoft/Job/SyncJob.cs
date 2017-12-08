@@ -15,7 +15,7 @@ namespace Voise.Recognizer.Microsoft.Job
         internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base()
         {
-            _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            _log = LogManager.GetLogger(typeof(SyncJob));
 
             ValidateArguments(encoding, sampleRate, languageCode, contexts);
 

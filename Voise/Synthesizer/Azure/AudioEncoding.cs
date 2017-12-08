@@ -4,6 +4,7 @@ namespace Voise.Synthesizer.Azure
 {
     internal class AudioEncoding
     {
+        // TODO: Add other encoding like Siren.
         internal static readonly AudioEncoding Linear16 = new AudioEncoding(AudioCompressionType.PCM, 16, 1, 2);
         internal static readonly AudioEncoding EncodingUnspecified = null;
 

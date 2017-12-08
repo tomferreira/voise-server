@@ -125,10 +125,7 @@ namespace Voise.Recognizer.Microsoft.Internal
             if (disposing)
             {
                 _writeEvent.Close();
-                _writeEvent = null;
-
                 _buffer.Dispose();
-                _buffer = null;
             }
 
             base.Dispose(disposing);
