@@ -27,11 +27,12 @@ namespace Voise.Recognizer.Azure
         internal override async Task<SpeechRecognitionAlternative> SyncRecognition(string audio_base64, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            SyncJob job = new SyncJob(_primaryKey, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode);
+            using (SyncJob job = new SyncJob(_primaryKey, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode))
+            {
+                job.Start();
 
-            job.Start();
-
-            return job.BestAlternative;
+                return job.BestAlternative;
+            }
         }
 
         internal override async Task StartStreamingRecognitionAsync(AudioStream streamIn, string encoding,
@@ -59,10 +60,14 @@ namespace Voise.Recognizer.Azure
 
             job.Stop();
 
+            SpeechRecognitionAlternative result = job.BestAlternative;
+
             lock (_streamingJobs)
                 _streamingJobs.Remove(streamIn);
 
-            return job.BestAlternative;
+            job.Dispose();
+
+            return result;
         }
 
         private AudioEncoding ConvertAudioEncoding(string encoding)

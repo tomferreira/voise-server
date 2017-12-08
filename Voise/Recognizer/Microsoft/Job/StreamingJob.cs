@@ -1,3 +1,4 @@
+using log4net;
 using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Recognition;
 using System;
@@ -13,15 +14,18 @@ namespace Voise.Recognizer.Microsoft.Job
     internal class StreamingJob : Base
     {
         private AudioStream _streamIn;
-
         private SpeechStreamer _ss;
+
+        private SpeechAudioFormatInfo _info;
 
         internal StreamingJob(AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base()
         {
+            _log = LogManager.GetLogger(typeof(StreamingJob));
+
             ValidateArguments(encoding, sampleRate, languageCode, contexts);
 
-            SpeechAudioFormatInfo info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,
+            _info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,
                 encoding.ChannelCount, sampleRate * encoding.BitsPerSample / 8, encoding.BlockAlign, null);
 
             CultureInfo cultureInfo = new CultureInfo(languageCode);
@@ -50,17 +54,16 @@ namespace Voise.Recognizer.Microsoft.Job
             // Prevents the event RecognizeCompleted to be triggered improperly
             _engine.EndSilenceTimeout = TimeSpan.FromSeconds(10);
 
-            _ss = new SpeechStreamer(streamIn.BufferCapacity * 50);
-
             _streamIn = streamIn;
             _streamIn.DataAvailable += ConsumeStreamData;
             _streamIn.StreamingStopped += StreamingStopped;
-
-            _engine.SetInputToAudioStream(_ss, info);
         }
 
         internal void Start()
         {
+            _ss = new SpeechStreamer(_streamIn.BufferCapacity * 50);
+            _engine.SetInputToAudioStream(_ss, _info);
+
             _streamIn.Start();
 
             _engine.RecognizeAsync(RecognizeMode.Single);
@@ -87,8 +90,17 @@ namespace Voise.Recognizer.Microsoft.Job
                 if (!_completed)
                     Monitor.Wait(_monitorCompleted);
             }
+        }
 
-            _ss.Close();
+        protected override void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+                _ss.Close();
+
+            base.Dispose(disposing);
         }
     }
 }
