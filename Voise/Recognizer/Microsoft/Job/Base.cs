@@ -1,5 +1,6 @@
 ﻿using log4net;
 using Microsoft.Speech.Recognition;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Voise.Recognizer.Exception;
@@ -7,7 +8,7 @@ using Voise.Synthesizer.Microsoft;
 
 namespace Voise.Recognizer.Microsoft.Job
 {
-    internal abstract class Base
+    internal abstract class Base : IDisposable
     {
         protected SpeechRecognitionEngine _engine;
 
@@ -16,12 +17,16 @@ namespace Voise.Recognizer.Microsoft.Job
 
         protected ILog _log;
 
+        protected bool _disposed;
+
         public SpeechRecognitionResult BestAlternative { get; protected set; }
 
         protected Base()
         {
             _monitorCompleted = new object();
             _completed = false;
+
+            _disposed = false;
 
             // Set as default alterative
             BestAlternative = SpeechRecognitionResult.NoResult;
@@ -60,6 +65,23 @@ namespace Voise.Recognizer.Microsoft.Job
 
             if (contexts == null || contexts.Count == 0)
                 throw new System.Exception("Context is not defined. (This is only required to Microsoft engine, for all others this is optional)");
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+                _engine.Dispose();
+
+            _disposed = true;
         }
     }
 }

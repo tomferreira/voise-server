@@ -51,7 +51,15 @@ namespace Voise
         /// </summary>
         internal event EventHandler StreamingStopped;
 
-        private bool _started;
+        enum State
+        {
+            Started,
+            Stopped,
+            Aborted
+        }
+
+        private State _state;
+        private object _monitorState;
 
         private Queue<MemoryStream> _buffers;
         private MemoryStream _currentBuffer;
@@ -62,7 +70,8 @@ namespace Voise
         {
             int bytesPerSecond = sampleRate * bytesPerSample;
 
-            _started = false;
+            _state = State.Stopped;
+            _monitorState = new object();
 
             BufferCapacity = bufferMillisec * bytesPerSecond / 1000;            
             _buffers = new Queue<MemoryStream>();
@@ -72,15 +81,19 @@ namespace Voise
 
         internal void Start()
         {
-            _started = true;
+            lock (_monitorState)
+                _state = State.Started;
         }
 
         internal void Stop()
         {
-            if (!_started)
-                return;
+            lock (_monitorState)
+            {
+                if (!IsStarted())
+                    return;
 
-            _started = false;
+                _state = State.Stopped;
+            }
 
             // Enqueue current buffer to be send too
             if (_currentBuffer != null)
@@ -92,6 +105,26 @@ namespace Voise
             Callback(true);
 
             StreamingStopped?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal void Abort()
+        {
+            Stop();
+
+            lock (_monitorState)
+                _state = State.Aborted;
+        }
+
+        internal bool IsStarted()
+        {
+            lock (_monitorState)
+                return _state == State.Started;
+        }
+
+        internal bool IsAborted()
+        {
+            lock (_monitorState)
+                return _state == State.Aborted;
         }
 
         internal void Write(byte[] data)
@@ -116,7 +149,7 @@ namespace Voise
                 length -= count;
             }
 
-            if (_started)
+            if (IsStarted())
                 Callback();
         }
 

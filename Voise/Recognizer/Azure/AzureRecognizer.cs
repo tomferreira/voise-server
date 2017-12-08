@@ -26,11 +26,12 @@ namespace Voise.Recognizer.Azure
         internal override async Task<SpeechRecognitionResult> SyncRecognition(string audio_base64, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            SyncJob job = new SyncJob(_primaryKey, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode);
+            using (SyncJob job = new SyncJob(_primaryKey, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode))
+            {
+                job.Start();
 
-            job.Start();
-
-            return job.BestAlternative;
+                return job.BestAlternative;
+            }
         }
 
         internal override async Task StartStreamingRecognitionAsync(AudioStream streamIn, string encoding,
@@ -58,24 +59,31 @@ namespace Voise.Recognizer.Azure
 
             job.Stop();
 
+            SpeechRecognitionResult result = job.BestAlternative;
+
             lock (_streamingJobs)
                 _streamingJobs.Remove(streamIn);
 
-            return job.BestAlternative;
+            job.Dispose();
+
+            return result;
         }
 
         private AudioEncoding ConvertAudioEncoding(string encoding)
         {
             switch (encoding.ToLower())
             {
-                case "alaw":
-                    throw new System.Exception("Enconding 'alaw' not supported.");
-
-                case "mulaw":
-                    throw new System.Exception("Enconding 'mulaw' not supported.");
+                case "flac":
+                    throw new System.Exception("Codec 'flac' not supported.");
 
                 case "linear16":
                     return AudioEncoding.Linear16;
+
+                case "alaw":
+                    throw new System.Exception("Codec 'alaw' not supported.");
+
+                case "mulaw":
+                    throw new System.Exception("Codec 'mulaw' not supported.");
 
                 default:
                     return AudioEncoding.EncodingUnspecified;

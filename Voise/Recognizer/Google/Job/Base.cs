@@ -7,12 +7,16 @@ using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 
 namespace Voise.Recognizer.Google.Job
 {
-    internal abstract class Base
+    internal abstract class Base: IDisposable
     {
+        protected bool _disposed;
+
         public SpeechRecognitionResult BestAlternative { get; protected set; }
 
         protected Base()
         {
+            _disposed = false;
+
             // Set as default alterative
             BestAlternative = SpeechRecognitionResult.NoResult;
         }
@@ -55,6 +59,22 @@ namespace Voise.Recognizer.Google.Job
             }
 
             return speechContext;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            // Do nothing.
+
+            _disposed = true;
         }
     }
 }

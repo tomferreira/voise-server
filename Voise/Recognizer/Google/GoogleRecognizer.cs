@@ -33,11 +33,12 @@ namespace Voise.Recognizer.Google
         internal override async Task<SpeechRecognitionResult> SyncRecognition(string audio_base64, string encoding, 
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            SyncJob job = new SyncJob(audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
+            using (SyncJob job = new SyncJob(audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts))
+            {
+                await job.StartAsync(_recognizer);
 
-            await job.StartAsync(_recognizer);
-
-            return job.BestAlternative;
+                return job.BestAlternative;
+            }
         }
 
         internal override async Task StartStreamingRecognitionAsync(AudioStream streamIn, string encoding, 
@@ -65,10 +66,14 @@ namespace Voise.Recognizer.Google
 
             await job.Stop();
 
+            SpeechRecognitionResult result = job.BestAlternative;
+
             lock (_streamingJobs)
                 _streamingJobs.Remove(streamIn);
 
-            return job.BestAlternative;
+            job.Dispose();
+
+            return result;
         }
 
         internal static AudioEncoding ConvertAudioEncoding(string encoding)
@@ -80,6 +85,9 @@ namespace Voise.Recognizer.Google
 
                 case "linear16":
                     return AudioEncoding.Linear16;
+
+                case "alaw":
+                    throw new System.Exception("Codec 'alaw' not supported.");
 
                 case "mulaw":
                     return AudioEncoding.Mulaw;

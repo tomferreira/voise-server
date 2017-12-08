@@ -1,5 +1,6 @@
 ﻿using log4net;
 using Microsoft.CognitiveServices.SpeechRecognition;
+using System;
 using System.Linq;
 using System.Threading;
 using Voise.Recognizer.Exception;
@@ -7,7 +8,7 @@ using Voise.Synthesizer.Azure;
 
 namespace Voise.Recognizer.Azure.Job
 {
-    internal abstract class Base
+    internal abstract class Base: IDisposable
     {
         protected DataRecognitionClient _recognitionClient;
 
@@ -16,12 +17,16 @@ namespace Voise.Recognizer.Azure.Job
 
         protected ILog _log;
 
+        protected bool _disposed;
+
         public SpeechRecognitionResult BestAlternative { get; protected set; }
 
         protected Base()
         {
             _monitorCompleted = new object();
             _completed = false;
+
+            _disposed = false;
 
             // Set as default alterative
             BestAlternative = SpeechRecognitionResult.NoResult;
@@ -77,6 +82,23 @@ namespace Voise.Recognizer.Azure.Job
                 default:
                     return 0;
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+                _recognitionClient.Dispose();
+
+            _disposed = true;
         }
     }
 }
