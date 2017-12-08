@@ -72,14 +72,17 @@ namespace Voise.Recognizer.Microsoft
         {
             switch (encoding.ToLower())
             {
+                case "flac":
+                    throw new System.Exception("Codec 'flac' not supported.");
+
+                case "linear16":
+                    return AudioEncoding.Linear16;
+
                 case "alaw":
                     return AudioEncoding.Alaw;
 
                 case "mulaw":
                     return AudioEncoding.Mulaw;
-
-                case "linear16":
-                    return AudioEncoding.Linear16;
 
                 default:
                     return AudioEncoding.EncodingUnspecified;

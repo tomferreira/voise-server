@@ -87,6 +87,9 @@ namespace Voise.Recognizer.Google
                 case "linear16":
                     return AudioEncoding.Linear16;
 
+                case "alaw":
+                    throw new System.Exception("Codec 'alaw' not supported.");
+
                 case "mulaw":
                     return AudioEncoding.Mulaw;
 

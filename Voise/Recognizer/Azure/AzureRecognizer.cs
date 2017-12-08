@@ -74,14 +74,17 @@ namespace Voise.Recognizer.Azure
         {
             switch (encoding.ToLower())
             {
-                case "alaw":
-                    throw new System.Exception("Enconding 'alaw' not supported.");
-
-                case "mulaw":
-                    throw new System.Exception("Enconding 'mulaw' not supported.");
+                case "flac":
+                    throw new System.Exception("Codec 'flac' not supported.");
 
                 case "linear16":
                     return AudioEncoding.Linear16;
+
+                case "alaw":
+                    throw new System.Exception("Codec 'alaw' not supported.");
+
+                case "mulaw":
+                    throw new System.Exception("Codec 'mulaw' not supported.");
 
                 default:
                     return AudioEncoding.EncodingUnspecified;
