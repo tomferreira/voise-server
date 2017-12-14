@@ -1,4 +1,5 @@
-﻿using Microsoft.CognitiveServices.SpeechRecognition;
+﻿using log4net;
+using Microsoft.CognitiveServices.SpeechRecognition;
 using System.Threading;
 using Voise.Recognizer.Common.Job;
 using Voise.Synthesizer.Azure;
@@ -13,6 +14,8 @@ namespace Voise.Recognizer.Azure.Job
         internal StreamingJob(string primaryKey, AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode)
             : base()
         {
+            _log = LogManager.GetLogger(typeof(StreamingJob));
+
             ValidateArguments(encoding, sampleRate, languageCode);
 
             _recognitionClient = SpeechRecognitionServiceFactory.CreateDataClient(

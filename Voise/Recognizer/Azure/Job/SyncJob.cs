@@ -12,7 +12,7 @@ namespace Voise.Recognizer.Azure.Job
 
         internal SyncJob(string primaryKey, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
         {
-            _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            _log = LogManager.GetLogger(typeof(SyncJob));
 
             ValidateArguments(encoding, sampleRate, languageCode);
 
