@@ -11,9 +11,8 @@ namespace Voise.Recognizer.Azure.Job
         private byte[] _audio;
 
         internal SyncJob(string primaryKey, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
+            : base(LogManager.GetLogger(typeof(SyncJob)))
         {
-            _log = LogManager.GetLogger(typeof(SyncJob));
-
             ValidateArguments(encoding, sampleRate, languageCode);
 
             _recognitionClient = SpeechRecognitionServiceFactory.CreateDataClient(

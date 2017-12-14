@@ -21,8 +21,10 @@ namespace Voise.Recognizer.Microsoft.Job
 
         public SpeechRecognitionResult BestAlternative { get; protected set; }
 
-        protected Base()
+        protected Base(ILog log)
         {
+            _log = log;
+
             _monitorCompleted = new object();
             _completed = false;
 

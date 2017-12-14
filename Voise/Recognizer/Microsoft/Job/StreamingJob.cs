@@ -20,10 +20,8 @@ namespace Voise.Recognizer.Microsoft.Job
         private SpeechAudioFormatInfo _info;
 
         internal StreamingJob(AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
-            : base()
+            : base(LogManager.GetLogger(typeof(StreamingJob)))
         {
-            _log = LogManager.GetLogger(typeof(StreamingJob));
-
             ValidateArguments(encoding, sampleRate, languageCode, contexts);
 
             _info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,

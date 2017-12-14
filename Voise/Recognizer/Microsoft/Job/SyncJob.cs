@@ -14,10 +14,8 @@ namespace Voise.Recognizer.Microsoft.Job
     internal class SyncJob : Base, ISyncJob
     {
         internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
-            : base()
+            : base(LogManager.GetLogger(typeof(SyncJob)))
         {
-            _log = LogManager.GetLogger(typeof(SyncJob));
-
             ValidateArguments(encoding, sampleRate, languageCode, contexts);
 
             SpeechAudioFormatInfo info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,

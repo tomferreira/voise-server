@@ -12,10 +12,8 @@ namespace Voise.Recognizer.Azure.Job
         private AudioStream _streamIn;
 
         internal StreamingJob(string primaryKey, AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode)
-            : base()
+            : base(LogManager.GetLogger(typeof(StreamingJob)))
         {
-            _log = LogManager.GetLogger(typeof(StreamingJob));
-
             ValidateArguments(encoding, sampleRate, languageCode);
 
             _recognitionClient = SpeechRecognitionServiceFactory.CreateDataClient(
