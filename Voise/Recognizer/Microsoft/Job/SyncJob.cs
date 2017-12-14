@@ -6,11 +6,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using Voise.Recognizer.Common.Job;
 using Voise.Synthesizer.Microsoft;
 
 namespace Voise.Recognizer.Microsoft.Job
 {
-    internal class SyncJob : Base
+    internal class SyncJob : Base, ISyncJob
     {
         internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base()
@@ -49,7 +50,7 @@ namespace Voise.Recognizer.Microsoft.Job
                 new MemoryStream(Util.ConvertAudioToBytes(audio_base64)), info);
         }
 
-        internal void Start()
+        public void Start()
         {
             _engine.RecognizeAsync();
 

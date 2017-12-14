@@ -1,11 +1,12 @@
 ﻿using Microsoft.CognitiveServices.SpeechRecognition;
 using System.Threading;
+using Voise.Recognizer.Common.Job;
 using Voise.Synthesizer.Azure;
 using static Voise.AudioStream;
 
 namespace Voise.Recognizer.Azure.Job
 {
-    internal class StreamingJob : Base
+    internal class StreamingJob : Base, IStreamingJob
     {
         private AudioStream _streamIn;
 
@@ -38,12 +39,12 @@ namespace Voise.Recognizer.Azure.Job
             _streamIn.DataAvailable += ConsumeStreamData;
         }
 
-        internal void Start()
+        public void Start()
         {
             _streamIn.Start();
         }
 
-        internal void Stop()
+        public void Stop()
         {
             _streamIn.Stop();
 

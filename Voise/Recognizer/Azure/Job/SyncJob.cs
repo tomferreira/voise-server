@@ -1,11 +1,12 @@
 ﻿using log4net;
 using Microsoft.CognitiveServices.SpeechRecognition;
 using System.Threading;
+using Voise.Recognizer.Common.Job;
 using Voise.Synthesizer.Azure;
 
 namespace Voise.Recognizer.Azure.Job
 {
-    internal class SyncJob : Base
+    internal class SyncJob : Base, ISyncJob
     {
         private byte[] _audio;
 
@@ -38,7 +39,7 @@ namespace Voise.Recognizer.Azure.Job
             _recognitionClient.SendAudioFormat(format);
         }
 
-        internal void Start()
+        public void Start()
         {
             _recognitionClient.SendAudio(_audio, _audio.Length);
             _recognitionClient.EndAudio();

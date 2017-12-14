@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Voise.Recognizer.Azure.Job;
+using Voise.Recognizer.Common;
+using Voise.Recognizer.Common.Job;
 using Voise.Synthesizer.Azure;
 
 namespace Voise.Recognizer.Azure
 {
     // Para mais informações leia: https://docs.microsoft.com/pt-pt/azure/cognitive-services/speech/getstarted/getstartedcsharpdesktop
-    internal sealed class AzureRecognizer : Base
+    internal sealed class AzureRecognizer : CommonRecognizer
     {
         internal const string ENGINE_IDENTIFIER = "ze";
 
@@ -23,50 +24,16 @@ namespace Voise.Recognizer.Azure
             _streamingJobs = new Dictionary<AudioStream, StreamingJob>();
         }
 
-        internal override async Task<SpeechRecognitionResult> SyncRecognition(string audio_base64, string encoding,
+        protected override ISyncJob CreateSyncJob(string audio_base64, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            using (SyncJob job = new SyncJob(_primaryKey, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode))
-            {
-                job.Start();
-
-                return job.BestAlternative;
-            }
+            return new SyncJob(_primaryKey, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode);
         }
 
-        internal override async Task StartStreamingRecognitionAsync(AudioStream streamIn, string encoding,
+        protected override IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            StreamingJob job = new StreamingJob(_primaryKey, streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode);
-
-            lock (_streamingJobs)
-                _streamingJobs.Add(streamIn, job);
-
-            job.Start();
-        }
-
-        internal override async Task<SpeechRecognitionResult> StopStreamingRecognitionAsync(AudioStream streamIn)
-        {
-            StreamingJob job = null;
-
-            lock (_streamingJobs)
-            {
-                if (!_streamingJobs.ContainsKey(streamIn))
-                    throw new System.Exception("Job not exists.");
-
-                job = _streamingJobs[streamIn];
-            }
-
-            job.Stop();
-
-            SpeechRecognitionResult result = job.BestAlternative;
-
-            lock (_streamingJobs)
-                _streamingJobs.Remove(streamIn);
-
-            job.Dispose();
-
-            return result;
+            return new StreamingJob(_primaryKey, streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode);
         }
 
         private AudioEncoding ConvertAudioEncoding(string encoding)

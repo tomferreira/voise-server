@@ -1,17 +1,17 @@
 ﻿using Google.Cloud.Speech.V1Beta1;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Voise.Google.Cloud.Speech.V1Beta1;
+using Voise.Recognizer.Common.Job;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 
 namespace Voise.Recognizer.Google.Job
 {
-    internal class SyncJob : Base
+    internal class SyncJob : Base, ISyncJob
     {
         private SyncRecognizeRequest _config;
 
-        internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
-            : base()
+        internal SyncJob(SpeechRecognizer recognizer, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+            : base(recognizer)
         {
             ValidateArguments(encoding, sampleRate, languageCode);
 
@@ -32,9 +32,9 @@ namespace Voise.Recognizer.Google.Job
             };
         }
 
-        internal async Task StartAsync(SpeechRecognizer recognizer)
+        public void Start()
         {
-            SyncRecognizeResponse response = await recognizer.RecognizeAsync(_config.Config, _config.Audio);
+            SyncRecognizeResponse response = _recognizer.RecognizeAsync(_config.Config, _config.Audio).Result;
 
             foreach (var result in response.Results)
             {

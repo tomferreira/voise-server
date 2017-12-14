@@ -5,13 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+using Voise.Recognizer.Common.Job;
 using Voise.Recognizer.Microsoft.Internal;
 using Voise.Synthesizer.Microsoft;
 using static Voise.AudioStream;
 
 namespace Voise.Recognizer.Microsoft.Job
 {
-    internal class StreamingJob : Base
+    internal class StreamingJob : Base, IStreamingJob
     {
         private AudioStream _streamIn;
         private SpeechStreamer _ss;
@@ -59,7 +60,7 @@ namespace Voise.Recognizer.Microsoft.Job
             _streamIn.StreamingStopped += StreamingStopped;
         }
 
-        internal void Start()
+        public void Start()
         {
             _ss = new SpeechStreamer(_streamIn.BufferCapacity * 50);
             _engine.SetInputToAudioStream(_ss, _info);
@@ -79,7 +80,7 @@ namespace Voise.Recognizer.Microsoft.Job
             _ss.Write(e.Buffer, 0, e.BytesStreamed);
         }
 
-        internal void Stop()
+        public void Stop()
         {
             _streamIn.Stop();
 

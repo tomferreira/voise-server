@@ -236,11 +236,13 @@
     <Compile Include="Google.Cloud.Speech.V1Beta1\SpeechRecognizer.cs" />
     <Compile Include="Process\ProcessStreamStopRequest.cs" />
     <Compile Include="Process\ProcessSynthVoiceRequest.cs" />
-    <Compile Include="Recognizer\Base.cs" />
+    <Compile Include="Recognizer\Common\CommonRecognizer.cs" />
     <Compile Include="Recognizer\Azure\AzureRecognizer.cs" />
     <Compile Include="Recognizer\Azure\Job\Base.cs" />
     <Compile Include="Recognizer\Azure\Job\StreamingJob.cs" />
     <Compile Include="Recognizer\Azure\Job\SyncJob.cs" />
+    <Compile Include="Recognizer\Common\Job\IStreamingJob.cs" />
+    <Compile Include="Recognizer\Common\Job\ISyncJob.cs" />
     <Compile Include="Recognizer\Exception\BadAudioException.cs" />
     <Compile Include="Recognizer\Exception\BadEncodingException.cs" />
     <Compile Include="Recognizer\Microsoft\Internal\CircularBuffer.cs" />

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Voise.Classification;
 using Voise.Recognizer;
+using Voise.Recognizer.Common;
 using Voise.Recognizer.Exception;
 using Voise.TCP;
 using Voise.TCP.Request;
@@ -22,7 +23,7 @@ namespace Voise.Process
 
             try
             {
-                Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine_id);
+                CommonRecognizer recognizer = recognizerManager.GetRecognizer(request.Config.engine_id);
 
                 Dictionary<string, List<string>> contexts = GetContexts(request.Config, classifierManager);
 
