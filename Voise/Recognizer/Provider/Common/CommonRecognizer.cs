@@ -1,9 +1,9 @@
 ﻿
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Voise.Recognizer.Common.Job;
+using Voise.Recognizer.Provider.Common.Job;
 
-namespace Voise.Recognizer.Common
+namespace Voise.Recognizer.Provider.Common
 {
     internal abstract class CommonRecognizer
     {

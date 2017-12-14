@@ -6,7 +6,7 @@ using System.Threading;
 using Voise.Recognizer.Exception;
 using Voise.Synthesizer.Azure;
 
-namespace Voise.Recognizer.Azure.Job
+namespace Voise.Recognizer.Provider.Azure.Job
 {
     internal abstract class Base: IDisposable
     {

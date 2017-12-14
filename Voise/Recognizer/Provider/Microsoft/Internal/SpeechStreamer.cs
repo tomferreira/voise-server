@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading;
 
-namespace Voise.Recognizer.Microsoft.Internal
+namespace Voise.Recognizer.Provider.Microsoft.Internal
 {
     // This sets up a circular buffer that never finishes allowing realtime processing of speech.
     // The problem with normal streams is that if they return a fixed length or less bytes than 

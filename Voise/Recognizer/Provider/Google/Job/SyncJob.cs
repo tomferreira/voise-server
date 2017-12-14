@@ -1,10 +1,10 @@
 ﻿using Google.Cloud.Speech.V1Beta1;
 using System.Collections.Generic;
 using Voise.Google.Cloud.Speech.V1Beta1;
-using Voise.Recognizer.Common.Job;
+using Voise.Recognizer.Provider.Common.Job;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 
-namespace Voise.Recognizer.Google.Job
+namespace Voise.Recognizer.Provider.Google.Job
 {
     internal class SyncJob : Base, ISyncJob
     {

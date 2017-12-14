@@ -5,12 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
-using Voise.Recognizer.Common.Job;
-using Voise.Recognizer.Microsoft.Internal;
+using Voise.Recognizer.Provider.Common.Job;
+using Voise.Recognizer.Provider.Microsoft.Internal;
 using Voise.Synthesizer.Microsoft;
 using static Voise.AudioStream;
 
-namespace Voise.Recognizer.Microsoft.Job
+namespace Voise.Recognizer.Provider.Microsoft.Job
 {
     internal class StreamingJob : Base, IStreamingJob
     {

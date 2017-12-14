@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Voise.Google.Cloud.Speech.V1Beta1;
-using Voise.Recognizer.Common.Job;
+using Voise.Recognizer.Provider.Common.Job;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 using static Voise.AudioStream;
 
-namespace Voise.Recognizer.Google.Job
+namespace Voise.Recognizer.Provider.Google.Job
 {
     internal class StreamingJob : Base, IStreamingJob
     {

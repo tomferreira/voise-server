@@ -1,10 +1,10 @@
 ﻿using log4net;
 using Microsoft.CognitiveServices.SpeechRecognition;
 using System.Threading;
-using Voise.Recognizer.Common.Job;
+using Voise.Recognizer.Provider.Common.Job;
 using Voise.Synthesizer.Azure;
 
-namespace Voise.Recognizer.Azure.Job
+namespace Voise.Recognizer.Provider.Azure.Job
 {
     internal class SyncJob : Base, ISyncJob
     {

@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Voise.Recognizer.Common;
-using Voise.Recognizer.Common.Job;
-using Voise.Recognizer.Microsoft.Job;
+using Voise.Recognizer.Provider.Common;
+using Voise.Recognizer.Provider.Common.Job;
+using Voise.Recognizer.Provider.Microsoft.Job;
 using Voise.Synthesizer.Microsoft;
 
-namespace Voise.Recognizer.Microsoft
+namespace Voise.Recognizer.Provider.Microsoft
 {
     internal sealed class MicrosoftRecognizer : CommonRecognizer
     {

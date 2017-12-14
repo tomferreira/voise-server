@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Voise.Recognizer.Azure;
-using Voise.Recognizer.Common;
-using Voise.Recognizer.Google;
-using Voise.Recognizer.Microsoft;
+using Voise.Recognizer.Provider.Azure;
+using Voise.Recognizer.Provider.Common;
+using Voise.Recognizer.Provider.Google;
+using Voise.Recognizer.Provider.Microsoft;
 
 namespace Voise.Recognizer
 {

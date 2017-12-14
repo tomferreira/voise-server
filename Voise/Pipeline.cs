@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Voise.Recognizer.Common;
+using Voise.Recognizer.Provider.Common;
 
 namespace Voise
 {

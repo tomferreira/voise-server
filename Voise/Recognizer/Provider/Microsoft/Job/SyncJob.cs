@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using Voise.Recognizer.Common.Job;
+using Voise.Recognizer.Provider.Common.Job;
 using Voise.Synthesizer.Microsoft;
 
-namespace Voise.Recognizer.Microsoft.Job
+namespace Voise.Recognizer.Provider.Microsoft.Job
 {
     internal class SyncJob : Base, ISyncJob
     {

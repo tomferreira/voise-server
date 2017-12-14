@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Voise.Recognizer.Azure.Job;
-using Voise.Recognizer.Common;
-using Voise.Recognizer.Common.Job;
+using Voise.Recognizer.Provider.Azure.Job;
+using Voise.Recognizer.Provider.Common;
+using Voise.Recognizer.Provider.Common.Job;
 using Voise.Synthesizer.Azure;
 
-namespace Voise.Recognizer.Azure
+namespace Voise.Recognizer.Provider.Azure
 {
     // Para mais informações leia: https://docs.microsoft.com/pt-pt/azure/cognitive-services/speech/getstarted/getstartedcsharpdesktop
     internal sealed class AzureRecognizer : CommonRecognizer

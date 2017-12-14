@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Voise.Classification;
 using Voise.Recognizer;
-using Voise.Recognizer.Common;
+using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Exception;
 using Voise.TCP;
 using Voise.TCP.Request;
