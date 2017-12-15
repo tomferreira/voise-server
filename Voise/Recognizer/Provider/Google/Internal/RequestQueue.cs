@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
-namespace Voise.Recognizer.Provider.Google
+namespace Voise.Recognizer.Provider.Google.Internal
 {
     /// <summary>
     /// A queue for gRPC requests in a streaming API. gRPC only supports a single pending write

@@ -4,7 +4,7 @@ using Grpc.Core;
 using System;
 using System.Threading.Tasks;
 
-namespace Voise.Google.Cloud.Speech.V1Beta1
+namespace Voise.Recognizer.Provider.Google.Internal
 {
     // TODO: It would be nice not to have to do this, but we can't create an AsyncDuplexStreamingCall outselves.
     // This will be a problem if there are utilities over AsyncDuplexStreamingCall that folks want to use...

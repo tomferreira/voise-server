@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Voise.Google.Cloud.Speech.V1Beta1;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
+using Voise.Recognizer.Provider.Google.Internal;
 using Voise.Recognizer.Provider.Google.Job;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 
