@@ -2,16 +2,16 @@
 using weka.classifiers.meta;
 using weka.core;
 
-namespace Voise.Classification
+namespace Voise.Classification.Classifier
 {
     internal class NaiveBayesTextClassifier : Base
     {
-        internal NaiveBayesTextClassifier(string modelName) 
-            : base(modelName)
+        internal NaiveBayesTextClassifier() 
+            : base()
         {
-            _classifier = new NaiveBayesMultinomialText();
+            _wekaClassifier = new NaiveBayesMultinomialText();
 
-            (_classifier as NaiveBayesMultinomialText).setLowercaseTokens(true);
+            (_wekaClassifier as NaiveBayesMultinomialText).setLowercaseTokens(true);
         }
 
         internal override void Train(Instances data)
@@ -36,7 +36,7 @@ namespace Voise.Classification
 
             string[] options = ps.getBestClassifierOptions();
 
-            (_classifier as NaiveBayesMultinomialText).setOptions(options);
+            (_wekaClassifier as NaiveBayesMultinomialText).setOptions(options);
 
             base.Train(_trainingData);
         }

@@ -3,14 +3,14 @@ using weka.core;
 using weka.filters;
 using weka.filters.unsupervised.attribute;
 
-namespace Voise.Classification
+namespace Voise.Classification.Classifier
 {
     internal class J48TextClassifier : Base
     {
-        internal J48TextClassifier(string modelName)
-            : base(modelName)
+        internal J48TextClassifier()
+            : base()
         {
-            _classifier = new J48();
+            _wekaClassifier = new J48();
             _filter = new StringToWordVector();
 
             //_filter.setTokenizer(new NGramTokenizer());

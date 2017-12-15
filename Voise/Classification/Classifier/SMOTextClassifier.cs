@@ -4,14 +4,14 @@ using weka.core;
 using weka.filters;
 using weka.filters.unsupervised.attribute;
 
-namespace Voise.Classification
+namespace Voise.Classification.Classifier
 {
     internal class SMOTextClassifier : Base
     {
-        internal SMOTextClassifier(string modelName)
-            : base(modelName)
+        internal SMOTextClassifier()
+            : base()
         {
-            _classifier = new SMO();
+            _wekaClassifier = new SMO();
             _filter = new StringToWordVector();
 
             _filter.setLowerCaseTokens(true);
@@ -42,7 +42,7 @@ namespace Voise.Classification
             string[] bestOptions = ps.getBestClassifierOptions();
 
             string[] options = new string[4] { "C", Utils.getOption('C', bestOptions), "N", Utils.getOption('N', bestOptions) };
-            (_classifier as SMO).setOptions(options);
+            (_wekaClassifier as SMO).setOptions(options);
 
             base.Train(filteredData);
         }

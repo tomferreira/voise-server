@@ -222,15 +222,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioStream.cs" />
-    <Compile Include="Classification\Base.cs" />
+    <Compile Include="Classification\Classifier\Base.cs" />
     <Compile Include="Classification\ClassifierManager.cs" />
     <Compile Include="Classification\Exception\BadModelException.cs" />
     <Compile Include="Classification\Exception\ClassifiersPathNotFound.cs" />
-    <Compile Include="Classification\LogisticTextClassifier.cs" />
-    <Compile Include="Classification\J48TextClassifier.cs" />
-    <Compile Include="Classification\MultilayerPerceptronTextClassificatier.cs" />
-    <Compile Include="Classification\NaiveBayesTextClassifier.cs" />
-    <Compile Include="Classification\SMOTextClassifier.cs" />
+    <Compile Include="Classification\Classifier\LogisticTextClassifier.cs" />
+    <Compile Include="Classification\Classifier\J48TextClassifier.cs" />
+    <Compile Include="Classification\Classifier\MultilayerPerceptronTextClassificatier.cs" />
+    <Compile Include="Classification\Classifier\NaiveBayesTextClassifier.cs" />
+    <Compile Include="Classification\Classifier\SMOTextClassifier.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Google.Cloud.Speech.V1Beta1\RecognizerStream.cs" />
     <Compile Include="Google.Cloud.Speech.V1Beta1\SpeechRecognizer.cs" />

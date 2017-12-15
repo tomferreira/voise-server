@@ -3,17 +3,15 @@ using weka.core;
 using weka.filters;
 using weka.filters.unsupervised.attribute;
 
-namespace Voise.Classification.Exception
+namespace Voise.Classification.Classifier
 {
-    internal class LogisticTextClassifier : Base
+    internal class MultilayerPerceptronTextClassificatier : Base
     {
-        internal LogisticTextClassifier(string modelName)
-            : base(modelName)
+        internal MultilayerPerceptronTextClassificatier()
+            : base()
         {
-            _classifier = new Logistic();
+            _wekaClassifier = new MultilayerPerceptron();
             _filter = new StringToWordVector();
-
-            _filter.setLowerCaseTokens(true);
         }
 
         internal override void Train(Instances data)

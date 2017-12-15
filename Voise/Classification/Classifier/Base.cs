@@ -2,16 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using weka.classifiers;
 using weka.core;
 using weka.filters.unsupervised.attribute;
 
-namespace Voise.Classification
+namespace Voise.Classification.Classifier
 {
     internal abstract class Base
     {
         protected const double MINUMIN_APRC = 0.9;
+
+        protected const int K_FOLDS = 11;
 
         internal class Result
         {
@@ -25,7 +26,7 @@ namespace Voise.Classification
             }
         };
 
-        protected Classifier _classifier;
+        protected weka.classifiers.Classifier _wekaClassifier;
         protected StringToWordVector _filter;
 
         protected Instances _trainingData;
@@ -35,15 +36,27 @@ namespace Voise.Classification
 
         protected ILog _log;
 
-        internal string ModelName { get; private set; }
+        private string _modelName;
+        internal string ModelName {
+            get
+            {
+                return _modelName;
+            }
 
-        internal Base(string modelName)
+            set
+            {
+                if (_modelName != null)
+                    throw new System.Exception("Model name alread defined.");
+
+                _modelName = value;
+            }
+        }
+
+        internal Base()
         {
-            _log = LogManager.GetLogger(
-                System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            _log = LogManager.GetLogger(typeof(Base));
 
-            ModelName = modelName;
-
+            _modelName = null;
             _trainingList = new Dictionary<string, List<string>>();
         }
 
@@ -54,7 +67,7 @@ namespace Voise.Classification
 
         internal virtual void Train(Instances data)
         {
-            _classifier.buildClassifier(data);
+            _wekaClassifier.buildClassifier(data);
 
             SetTrainText();
 
@@ -62,7 +75,7 @@ namespace Voise.Classification
             Evaluation evaluator = new Evaluation(data);
 
             evaluator.setDiscardPredictions(false);
-            evaluator.crossValidateModel(_classifier, data, 11, new java.util.Random(42));
+            evaluator.crossValidateModel(_wekaClassifier, data, K_FOLDS, new java.util.Random(42));
 
             string summary = evaluator.toSummaryString();
             double waupr = evaluator.weightedAreaUnderPRC();
@@ -127,7 +140,7 @@ namespace Voise.Classification
                 filteredInstance = instance;
             }
 
-            return _classifier.distributionForInstance(filteredInstance);
+            return _wekaClassifier.distributionForInstance(filteredInstance);
         }
 
         protected Instance MakeInstance(string text, Instances data)
