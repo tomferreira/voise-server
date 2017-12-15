@@ -10,20 +10,20 @@ namespace Voise.Classification
     internal class ClassifierManager
     {
         private ILog _log;
-        private Dictionary<string, Base> _classifiers;
+        private Dictionary<string, Classifier.Base> _classifiers;
 
         internal ClassifierManager(Config config)
         {
             _log = LogManager.GetLogger(typeof(ClassifierManager));
 
-            _classifiers = new Dictionary<string, Base>();
+            _classifiers = new Dictionary<string, Classifier.Base>();
 
             LoadClassifiers(config.ClassifiersPath);
         }
 
         internal Dictionary<string, List<string>> GetTrainingList(string modelName)
         {
-            Base classifier = null;
+            Classifier.Base classifier = null;
 
             lock (_classifiers)
             {
@@ -36,12 +36,12 @@ namespace Voise.Classification
             return classifier.GetTrainingList();
         }
 
-        internal async Task<Base.Result> ClassifyAsync(string modelName, string message)
+        internal async Task<Classifier.Base.Result> ClassifyAsync(string modelName, string message)
         {
             if (modelName == null || modelName.Trim() == "")
                 throw new BadModelException("Model name is empty.");
 
-            Base classifier = null;
+            Classifier.Base classifier = null;
 
             lock (_classifiers)
             {
@@ -68,12 +68,12 @@ namespace Voise.Classification
                 IEnumerable<string> files = Directory.EnumerateFiles(directory, "*.arff");
 
                 Parallel.ForEach(files, (file) => {
-                    AddClassifier(file);
+                    AddClassifier(file, new Classifier.LogisticTextClassifier());
                 });
             }
         }
 
-        private void AddClassifier(string path)
+        private void AddClassifier(string path, Classifier.Base classifier)
         {
             Instances trainingData;
 
@@ -85,13 +85,14 @@ namespace Voise.Classification
                 trainingData.setClassIndex(trainingData.numAttributes() - 1);
             }
 
+            classifier.ModelName = trainingData.relationName();
+
             lock (_classifiers)
             {
-                if (_classifiers.ContainsKey(trainingData.relationName()))
-                    throw new System.Exception($"Model is duplicated: '{trainingData.relationName()}'");
+                if (_classifiers.ContainsKey(classifier.ModelName))
+                    throw new System.Exception($"Model is duplicated: '{classifier.ModelName}'");
             }
 
-            Base classifier = new LogisticTextClassifier(trainingData.relationName());
             classifier.Train(trainingData);
 
             lock (_classifiers)
