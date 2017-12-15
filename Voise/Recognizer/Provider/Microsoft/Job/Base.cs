@@ -30,7 +30,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 
             _disposed = false;
 
-            // Set as default alterative
+            // Set as default alternative
             BestAlternative = SpeechRecognitionResult.NoResult;
         }
 
