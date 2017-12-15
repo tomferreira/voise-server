@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Voise.Google.Cloud.Speech.V1Beta1;
+using Voise.Recognizer.Provider.Common.Job;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 using static Voise.AudioStream;
 
-namespace Voise.Recognizer.Google.Job
+namespace Voise.Recognizer.Provider.Google.Job
 {
-    internal class StreamingJob : Base
+    internal class StreamingJob : Base, IStreamingJob
     {
         private StreamingRecognitionConfig _config;
         private RecognizerStream _recognizerStream;
@@ -19,10 +20,12 @@ namespace Voise.Recognizer.Google.Job
 
         private AudioStream _streamIn;
 
-        internal StreamingJob(AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
-            : base()
+        internal StreamingJob(SpeechRecognizer recognizer, AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+            : base(recognizer)
         {
             ValidateArguments(encoding, sampleRate, languageCode);
+
+            _recognizer = recognizer;
 
             _config = new StreamingRecognitionConfig
             {
@@ -42,9 +45,9 @@ namespace Voise.Recognizer.Google.Job
             _streamIn.StreamingStopped += StreamingStopped;
         }
 
-        internal async Task StartAsync(SpeechRecognizer recognizer)
+        public void Start()
         {
-            _recognizerStream = await recognizer.BeginStreamingRecognizeAsync(_config);
+            _recognizerStream = _recognizer.BeginStreamingRecognizeAsync(_config).Result;
             _requestQueue = new RequestQueue<ByteString>(_recognizerStream.RequestStream, 100);
 
             _streamIn.Start();
@@ -87,12 +90,12 @@ namespace Voise.Recognizer.Google.Job
             }
         }
 
-        internal Task Stop()
+        public void Stop()
         {
             _streamIn.Stop();
 
             // This will complete when the gRPC stream has completed.
-            return _doneTask;
+            _doneTask.Wait();
         }
 
         protected override void Dispose(bool disposing)

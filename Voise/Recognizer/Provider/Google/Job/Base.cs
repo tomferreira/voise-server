@@ -2,19 +2,24 @@
 using Google.Protobuf;
 using System;
 using System.Collections.Generic;
+using Voise.Google.Cloud.Speech.V1Beta1;
 using Voise.Recognizer.Exception;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 
-namespace Voise.Recognizer.Google.Job
+namespace Voise.Recognizer.Provider.Google.Job
 {
     internal abstract class Base: IDisposable
     {
+        protected SpeechRecognizer _recognizer;
+
         protected bool _disposed;
 
         public SpeechRecognitionResult BestAlternative { get; protected set; }
 
-        protected Base()
+        protected Base(SpeechRecognizer recognizer)
         {
+            _recognizer = recognizer;
+
             _disposed = false;
 
             // Set as default alterative

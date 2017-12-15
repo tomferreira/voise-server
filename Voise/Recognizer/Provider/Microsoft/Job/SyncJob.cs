@@ -6,17 +6,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using Voise.Recognizer.Provider.Common.Job;
 using Voise.Synthesizer.Microsoft;
 
-namespace Voise.Recognizer.Microsoft.Job
+namespace Voise.Recognizer.Provider.Microsoft.Job
 {
-    internal class SyncJob : Base
+    internal class SyncJob : Base, ISyncJob
     {
         internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
-            : base()
+            : base(LogManager.GetLogger(typeof(SyncJob)))
         {
-            _log = LogManager.GetLogger(typeof(SyncJob));
-
             ValidateArguments(encoding, sampleRate, languageCode, contexts);
 
             SpeechAudioFormatInfo info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,
@@ -49,7 +48,7 @@ namespace Voise.Recognizer.Microsoft.Job
                 new MemoryStream(Util.ConvertAudioToBytes(audio_base64)), info);
         }
 
-        internal void Start()
+        public void Start()
         {
             _engine.RecognizeAsync();
 

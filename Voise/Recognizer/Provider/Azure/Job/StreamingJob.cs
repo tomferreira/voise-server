@@ -1,18 +1,19 @@
 ﻿using log4net;
 using Microsoft.CognitiveServices.SpeechRecognition;
 using System.Threading;
+using Voise.Recognizer.Provider.Common.Job;
 using Voise.Synthesizer.Azure;
+using static Voise.AudioStream;
 
-namespace Voise.Recognizer.Azure.Job
+namespace Voise.Recognizer.Provider.Azure.Job
 {
-    internal class SyncJob : Base
+    internal class StreamingJob : Base, IStreamingJob
     {
-        private byte[] _audio;
+        private AudioStream _streamIn;
 
-        internal SyncJob(string primaryKey, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
+        internal StreamingJob(string primaryKey, AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode)
+            : base(LogManager.GetLogger(typeof(StreamingJob)))
         {
-            _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
             ValidateArguments(encoding, sampleRate, languageCode);
 
             _recognitionClient = SpeechRecognitionServiceFactory.CreateDataClient(
@@ -22,8 +23,6 @@ namespace Voise.Recognizer.Azure.Job
 
             _recognitionClient.OnResponseReceived += ResponseReceivedHandler;
             _recognitionClient.OnConversationError += ConversationErrorHandler;
-
-            _audio = Util.ConvertAudioToBytes(audio_base64);
 
             SpeechAudioFormat format = new SpeechAudioFormat()
             {
@@ -36,11 +35,20 @@ namespace Voise.Recognizer.Azure.Job
             };
 
             _recognitionClient.SendAudioFormat(format);
+
+            _streamIn = streamIn;
+            _streamIn.DataAvailable += ConsumeStreamData;
         }
 
-        internal void Start()
+        public void Start()
         {
-            _recognitionClient.SendAudio(_audio, _audio.Length);
+            _streamIn.Start();
+        }
+
+        public void Stop()
+        {
+            _streamIn.Stop();
+
             _recognitionClient.EndAudio();
 
             lock (_monitorCompleted)
@@ -48,6 +56,11 @@ namespace Voise.Recognizer.Azure.Job
                 if (!_completed)
                     Monitor.Wait(_monitorCompleted);
             }
+        }
+
+        private void ConsumeStreamData(object sender, StreamInEventArgs e)
+        {
+            _recognitionClient.SendAudio(e.Buffer, e.BytesStreamed);
         }
     }
 }

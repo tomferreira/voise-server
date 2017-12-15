@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
-using Voise.Recognizer.Azure;
-using Voise.Recognizer.Google;
-using Voise.Recognizer.Microsoft;
+using Voise.Recognizer.Provider.Azure;
+using Voise.Recognizer.Provider.Common;
+using Voise.Recognizer.Provider.Google;
+using Voise.Recognizer.Provider.Microsoft;
 
 namespace Voise.Recognizer
 {
     internal class RecognizerManager
     {
-        private Dictionary<string, Base> _recognizers;
+        private Dictionary<string, CommonRecognizer> _recognizers;
 
         internal RecognizerManager(Config config)
         {
@@ -16,7 +17,7 @@ namespace Voise.Recognizer
             if (recognizersEnabled.Count == 0)
                 throw new System.Exception("At least one recogning engine must be enabled.");
 
-            _recognizers = new Dictionary<string, Base>();
+            _recognizers = new Dictionary<string, CommonRecognizer>();
 
             if (recognizersEnabled.Contains(MicrosoftRecognizer.ENGINE_IDENTIFIER))
                 _recognizers.Add(MicrosoftRecognizer.ENGINE_IDENTIFIER, new MicrosoftRecognizer());
@@ -36,7 +37,7 @@ namespace Voise.Recognizer
             }
         }
 
-        internal Base GetRecognizer(string engineID)
+        internal CommonRecognizer GetRecognizer(string engineID)
         {
             // Microsoft is the default engine for recognizer.
             if (engineID == null)

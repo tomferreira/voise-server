@@ -1,16 +1,17 @@
-﻿using Microsoft.CognitiveServices.SpeechRecognition;
+﻿using log4net;
+using Microsoft.CognitiveServices.SpeechRecognition;
 using System.Threading;
+using Voise.Recognizer.Provider.Common.Job;
 using Voise.Synthesizer.Azure;
-using static Voise.AudioStream;
 
-namespace Voise.Recognizer.Azure.Job
+namespace Voise.Recognizer.Provider.Azure.Job
 {
-    internal class StreamingJob : Base
+    internal class SyncJob : Base, ISyncJob
     {
-        private AudioStream _streamIn;
+        private byte[] _audio;
 
-        internal StreamingJob(string primaryKey, AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode)
-            : base()
+        internal SyncJob(string primaryKey, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
+            : base(LogManager.GetLogger(typeof(SyncJob)))
         {
             ValidateArguments(encoding, sampleRate, languageCode);
 
@@ -21,6 +22,8 @@ namespace Voise.Recognizer.Azure.Job
 
             _recognitionClient.OnResponseReceived += ResponseReceivedHandler;
             _recognitionClient.OnConversationError += ConversationErrorHandler;
+
+            _audio = Util.ConvertAudioToBytes(audio_base64);
 
             SpeechAudioFormat format = new SpeechAudioFormat()
             {
@@ -33,20 +36,11 @@ namespace Voise.Recognizer.Azure.Job
             };
 
             _recognitionClient.SendAudioFormat(format);
-
-            _streamIn = streamIn;
-            _streamIn.DataAvailable += ConsumeStreamData;
         }
 
-        internal void Start()
+        public void Start()
         {
-            _streamIn.Start();
-        }
-
-        internal void Stop()
-        {
-            _streamIn.Stop();
-
+            _recognitionClient.SendAudio(_audio, _audio.Length);
             _recognitionClient.EndAudio();
 
             lock (_monitorCompleted)
@@ -54,11 +48,6 @@ namespace Voise.Recognizer.Azure.Job
                 if (!_completed)
                     Monitor.Wait(_monitorCompleted);
             }
-        }
-
-        private void ConsumeStreamData(object sender, StreamInEventArgs e)
-        {
-            _recognitionClient.SendAudio(e.Buffer, e.BytesStreamed);
         }
     }
 }

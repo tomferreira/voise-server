@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Voise.Google.Cloud.Speech.V1Beta1;
-using Voise.Recognizer.Google.Job;
+using Voise.Recognizer.Provider.Common;
+using Voise.Recognizer.Provider.Common.Job;
+using Voise.Recognizer.Provider.Google.Job;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 
-namespace Voise.Recognizer.Google
+namespace Voise.Recognizer.Provider.Google
 {
-    internal sealed class GoogleRecognizer : Base
+    internal sealed class GoogleRecognizer : CommonRecognizer
     {
         internal const string ENGINE_IDENTIFIER = "ge";
 
@@ -30,50 +31,16 @@ namespace Voise.Recognizer.Google
         }
 
         // Max duration of audio ~60s (https://cloud.google.com/speech/limits)
-        internal override async Task<SpeechRecognitionResult> SyncRecognition(string audio_base64, string encoding, 
+        protected override ISyncJob CreateSyncJob(string audio_base64, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            using (SyncJob job = new SyncJob(audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts))
-            {
-                await job.StartAsync(_recognizer);
-
-                return job.BestAlternative;
-            }
+            return new SyncJob(_recognizer, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
         }
 
-        internal override async Task StartStreamingRecognitionAsync(AudioStream streamIn, string encoding, 
+        protected override IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            StreamingJob job = new StreamingJob(streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
-
-            lock (_streamingJobs)
-                _streamingJobs.Add(streamIn, job);
-
-            await job.StartAsync(_recognizer);
-        }
-
-        internal override async Task<SpeechRecognitionResult> StopStreamingRecognitionAsync(AudioStream streamIn)
-        {
-            StreamingJob job = null;
-
-            lock (_streamingJobs)
-            {
-                if (!_streamingJobs.ContainsKey(streamIn))
-                    throw new System.Exception("Job not exists.");
-
-                job = _streamingJobs[streamIn];
-            }
-
-            await job.Stop();
-
-            SpeechRecognitionResult result = job.BestAlternative;
-
-            lock (_streamingJobs)
-                _streamingJobs.Remove(streamIn);
-
-            job.Dispose();
-
-            return result;
+            return new StreamingJob(_recognizer, streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
         }
 
         internal static AudioEncoding ConvertAudioEncoding(string encoding)

@@ -6,7 +6,7 @@ using System.Threading;
 using Voise.Recognizer.Exception;
 using Voise.Synthesizer.Microsoft;
 
-namespace Voise.Recognizer.Microsoft.Job
+namespace Voise.Recognizer.Provider.Microsoft.Job
 {
     internal abstract class Base : IDisposable
     {
@@ -21,8 +21,10 @@ namespace Voise.Recognizer.Microsoft.Job
 
         public SpeechRecognitionResult BestAlternative { get; protected set; }
 
-        protected Base()
+        protected Base(ILog log)
         {
+            _log = log;
+
             _monitorCompleted = new object();
             _completed = false;
 

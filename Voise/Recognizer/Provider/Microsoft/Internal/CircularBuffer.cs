@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Voise.Recognizer.Microsoft.Internal
+namespace Voise.Recognizer.Provider.Microsoft.Internal
 {
     /// <summary>
     /// A buffer implemented like a queue with a maximum length that will not allocate
