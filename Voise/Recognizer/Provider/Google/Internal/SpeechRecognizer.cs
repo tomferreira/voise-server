@@ -7,7 +7,7 @@ using Grpc.Core;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Voise.Google.Cloud.Speech.V1Beta1
+namespace Voise.Recognizer.Provider.Google.Internal
 {
     /// <summary>
     /// Wrapper around <see cref="SpeechClient"/>, providing more idiomatic .NET names and better streaming support.

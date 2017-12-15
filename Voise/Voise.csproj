@@ -232,8 +232,8 @@
     <Compile Include="Classification\NaiveBayesTextClassifier.cs" />
     <Compile Include="Classification\SMOTextClassifier.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="Google.Cloud.Speech.V1Beta1\RecognizerStream.cs" />
-    <Compile Include="Google.Cloud.Speech.V1Beta1\SpeechRecognizer.cs" />
+    <Compile Include="Recognizer\Provider\Google\Internal\RecognizerStream.cs" />
+    <Compile Include="Recognizer\Provider\Google\Internal\SpeechRecognizer.cs" />
     <Compile Include="Process\ProcessStreamStopRequest.cs" />
     <Compile Include="Process\ProcessSynthVoiceRequest.cs" />
     <Compile Include="Recognizer\Provider\Common\CommonRecognizer.cs" />
@@ -253,7 +253,7 @@
     <Compile Include="Recognizer\Provider\Google\Job\StreamingJob.cs" />
     <Compile Include="Recognizer\Provider\Google\Job\SyncJob.cs" />
     <Compile Include="Recognizer\Provider\Google\GoogleRecognizer.cs" />
-    <Compile Include="Recognizer\Provider\Google\RequestQueue.cs" />
+    <Compile Include="Recognizer\Provider\Google\Internal\RequestQueue.cs" />
     <Compile Include="Recognizer\Provider\Microsoft\Job\SyncJob.cs" />
     <Compile Include="Recognizer\Provider\Microsoft\MicrosoftRecognizer.cs" />
     <Compile Include="Recognizer\RecognizerManager.cs" />

@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Voise.Google.Cloud.Speech.V1Beta1;
 using Voise.Recognizer.Provider.Common.Job;
+using Voise.Recognizer.Provider.Google.Internal;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 using static Voise.AudioStream;
 
