@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using Voise.Recognizer.Exception;
-using Voise.Synthesizer.Azure;
 
 namespace Voise.Recognizer.Provider.Azure.Job
 {

@@ -2,7 +2,6 @@
 using Voise.Recognizer.Provider.Azure.Job;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
-using Voise.Synthesizer.Azure;
 
 namespace Voise.Recognizer.Provider.Azure
 {
