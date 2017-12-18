@@ -2,7 +2,6 @@
 using Microsoft.CognitiveServices.SpeechRecognition;
 using System.Threading;
 using Voise.Recognizer.Provider.Common.Job;
-using Voise.Synthesizer.Azure;
 using static Voise.AudioStream;
 
 namespace Voise.Recognizer.Provider.Azure.Job
@@ -17,7 +16,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
             ValidateArguments(encoding, sampleRate, languageCode);
 
             _recognitionClient = SpeechRecognitionServiceFactory.CreateDataClient(
-                SpeechRecognitionMode.ShortPhrase, // Áudio de até 15 segundos
+                SpeechRecognitionMode.ShortPhrase, // Audio up to 15 seconds
                 languageCode,
                 primaryKey);
 

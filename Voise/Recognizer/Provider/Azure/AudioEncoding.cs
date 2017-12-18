@@ -1,6 +1,6 @@
 ﻿using Microsoft.CognitiveServices.SpeechRecognition;
 
-namespace Voise.Synthesizer.Azure
+namespace Voise.Recognizer.Provider.Azure
 {
     internal class AudioEncoding
     {

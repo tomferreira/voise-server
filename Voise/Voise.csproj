@@ -260,7 +260,7 @@
     <Compile Include="Recognizer\SpeechRecognitionResult.cs" />
     <Compile Include="Recognizer\Util.cs" />
     <Compile Include="ResponseCode.cs" />
-    <Compile Include="Synthesizer\Azure\AudioEncoding.cs" />
+    <Compile Include="Recognizer\Provider\Azure\AudioEncoding.cs" />
     <Compile Include="Synthesizer\Exception\BadEncodingException.cs" />
     <Compile Include="Synthesizer\Exception\BadLanguageException.cs" />
     <Compile Include="Synthesizer\Exception\BadVoiceException.cs" />

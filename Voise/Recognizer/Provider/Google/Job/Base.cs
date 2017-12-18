@@ -22,7 +22,7 @@ namespace Voise.Recognizer.Provider.Google.Job
 
             _disposed = false;
 
-            // Set as default alterative
+            // Set as default alternative
             BestAlternative = SpeechRecognitionResult.NoResult;
         }
 

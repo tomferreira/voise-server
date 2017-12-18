@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using Voise.Recognizer.Exception;
-using Voise.Synthesizer.Azure;
 
 namespace Voise.Recognizer.Provider.Azure.Job
 {
@@ -30,7 +29,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
 
             _disposed = false;
 
-            // Set as default alterative
+            // Set as default alternative
             BestAlternative = SpeechRecognitionResult.NoResult;
         }
 
