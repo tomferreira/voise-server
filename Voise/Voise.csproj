@@ -232,6 +232,7 @@
     <Compile Include="Classification\Classifier\NaiveBayesTextClassifier.cs" />
     <Compile Include="Classification\Classifier\SMOTextClassifier.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Process\ProcessFactory.cs" />
     <Compile Include="Recognizer\Provider\Google\Internal\RecognizerStream.cs" />
     <Compile Include="Recognizer\Provider\Google\Internal\SpeechRecognizer.cs" />
     <Compile Include="Process\ProcessStreamStopRequest.cs" />

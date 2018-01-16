@@ -43,9 +43,7 @@ namespace Voise
 
         private Server _tcpServer;
         private Config _config;
-        private RecognizerManager _recognizerManager;
-        private MicrosoftSynthetizer _synthetizer;
-        private ClassifierManager _classifierManager;
+        private ProcessFactory _processFactory;
 
         public Voise(Config config)
         {
@@ -58,11 +56,14 @@ namespace Voise
             _tcpServer = new Server(HandleClientRequest);
 
             // ASR
-            _recognizerManager = new RecognizerManager(_config);
-            _classifierManager = new ClassifierManager(_config);
+            RecognizerManager recognizerManager = new RecognizerManager(_config);
+            ClassifierManager classifierManager = new ClassifierManager(_config);
 
             // TTS
-            _synthetizer = new MicrosoftSynthetizer();
+            MicrosoftSynthetizer synthetizer = new MicrosoftSynthetizer();
+
+            _processFactory = new ProcessFactory(
+                recognizerManager, synthetizer, classifierManager);
         }
 
         public void Start()
@@ -78,33 +79,7 @@ namespace Voise
 
         private async Task HandleClientRequest(ClientConnection client, VoiseRequest request)
         {
-            ProcessBase process = null;
-
-            if (request.SyncRequest != null)
-            {
-                process = new ProcessSyncRequest(
-                    client, request.SyncRequest, _recognizerManager, _classifierManager);
-            }
-            else if (request.StreamStartRequest != null)
-            {
-                process = new ProcessStreamStartRequest(
-                    client, request.StreamStartRequest, _recognizerManager, _classifierManager);
-            }
-            else if (request.StreamDataRequest != null)
-            {
-                process = new ProcessStreamDataRequest(
-                    client, request.StreamDataRequest);
-            }
-            else if (request.StreamStopRequest != null)
-            {
-                process = new ProcessStreamStopRequest(
-                    client, request.StreamStopRequest, _recognizerManager);
-            }
-            else if (request.SynthVoiceRequest != null)
-            {
-                process = new ProcessSynthVoiceRequest(
-                    client, request.SynthVoiceRequest, _synthetizer);
-            }
+            ProcessBase process = _processFactory.createProcess(client, request);
 
             if (process != null)
                 await process.ExecuteAsync();
