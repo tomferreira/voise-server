@@ -71,19 +71,12 @@ namespace Voise.Classification.Classifier
 
             SetTrainText();
 
-            // TODO: Resolver se irei usar isso para verificar a "qualidade" do modelo.
             Evaluation evaluator = new Evaluation(data);
 
             evaluator.setDiscardPredictions(false);
             evaluator.crossValidateModel(_wekaClassifier, data, K_FOLDS, new java.util.Random(42));
 
-            string summary = evaluator.toSummaryString();
             double waupr = evaluator.weightedAreaUnderPRC();
-
-            double aupr0 = evaluator.areaUnderPRC(0);
-            double aupr1 = evaluator.areaUnderPRC(1);
-
-            string matrix = evaluator.toMatrixString();
 
             if (waupr < MINUMIN_APRC)
             {
