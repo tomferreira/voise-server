@@ -3,6 +3,7 @@ using Microsoft.CognitiveServices.SpeechRecognition;
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Voise.Recognizer.Exception;
 
 namespace Voise.Recognizer.Provider.Azure.Job
@@ -120,7 +121,11 @@ namespace Voise.Recognizer.Provider.Azure.Job
                 return;
 
             if (disposing)
-                _recognitionClient.Dispose();
+            {
+                // FIXME: This isn't the best approach, but the Dispose method 
+                // is take 2 sec, and its very slow.
+                Task.Run(() => _recognitionClient.Dispose());
+            }
 
             _disposed = true;
         }
