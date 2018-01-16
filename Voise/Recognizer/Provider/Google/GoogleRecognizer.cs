@@ -13,7 +13,6 @@ namespace Voise.Recognizer.Provider.Google
 
         private SpeechRecognizer _recognizer;
         private Dictionary<AudioStream, StreamingJob> _streamingJobs;
-        private string _tunningPath;
 
         internal GoogleRecognizer(string credentialPath)
         {
@@ -22,12 +21,6 @@ namespace Voise.Recognizer.Provider.Google
 
             _recognizer = SpeechRecognizer.Create(credentialPath);
             _streamingJobs = new Dictionary<AudioStream, StreamingJob>();
-            _tunningPath = null;
-        }
-
-        internal void EnableTunnig(string path)
-        {
-            _tunningPath = path;
         }
 
         // Max duration of audio ~60s (https://cloud.google.com/speech/limits)
