@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Voise.Recognizer.Provider.Common.Job
 {
@@ -6,6 +7,6 @@ namespace Voise.Recognizer.Provider.Common.Job
     {
         SpeechRecognitionResult BestAlternative { get; }
 
-        void Start();
+        Task StartAsync();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using log4net;
 using Microsoft.CognitiveServices.SpeechRecognition;
 using System.Threading;
+using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
 using static Voise.AudioStream;
 
@@ -39,22 +40,25 @@ namespace Voise.Recognizer.Provider.Azure.Job
             _streamIn.DataAvailable += ConsumeStreamData;
         }
 
-        public void Start()
+        public async Task StartAsync()
         {
-            _streamIn.Start();
+            await Task.Run(() => _streamIn.Start() );
         }
 
-        public void Stop()
+        public async Task StopAsync()
         {
-            _streamIn.Stop();
-
-            _recognitionClient.EndAudio();
-
-            lock (_monitorCompleted)
+            await Task.Run(() =>
             {
-                if (!_completed)
-                    Monitor.Wait(_monitorCompleted);
-            }
+                _streamIn.Stop();
+
+                _recognitionClient.EndAudio();
+
+                lock (_monitorCompleted)
+                {
+                    if (!_completed)
+                        Monitor.Wait(_monitorCompleted);
+                }
+            });
         }
 
         private void ConsumeStreamData(object sender, StreamInEventArgs e)

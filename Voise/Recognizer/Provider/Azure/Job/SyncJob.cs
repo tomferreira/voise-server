@@ -1,6 +1,7 @@
 ﻿using log4net;
 using Microsoft.CognitiveServices.SpeechRecognition;
 using System.Threading;
+using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
 
 namespace Voise.Recognizer.Provider.Azure.Job
@@ -37,16 +38,19 @@ namespace Voise.Recognizer.Provider.Azure.Job
             _recognitionClient.SendAudioFormat(format);
         }
 
-        public void Start()
+        public async Task StartAsync()
         {
-            _recognitionClient.SendAudio(_audio, _audio.Length);
-            _recognitionClient.EndAudio();
-
-            lock (_monitorCompleted)
+            await Task.Run(() =>
             {
-                if (!_completed)
-                    Monitor.Wait(_monitorCompleted);
-            }
+                _recognitionClient.SendAudio(_audio, _audio.Length);
+                _recognitionClient.EndAudio();
+
+                lock (_monitorCompleted)
+                {
+                    if (!_completed)
+                        Monitor.Wait(_monitorCompleted);
+                }
+            });
         }
     }
 }

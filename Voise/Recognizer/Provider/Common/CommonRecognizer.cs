@@ -14,7 +14,7 @@ namespace Voise.Recognizer.Provider.Common
         {
             using (ISyncJob job = CreateSyncJob(audio_base64, encoding, sampleRate, languageCode, contexts))
             {
-                job.Start();
+                await job.StartAsync();
 
                 return job.BestAlternative;
             }
@@ -28,7 +28,7 @@ namespace Voise.Recognizer.Provider.Common
             lock (_streamingJobs)
                 _streamingJobs.Add(streamIn, job);
 
-            job.Start();
+            await job.StartAsync();
         }
 
         internal async Task<SpeechRecognitionResult> StopStreamingRecognitionAsync(AudioStream streamIn)
@@ -43,7 +43,7 @@ namespace Voise.Recognizer.Provider.Common
                 job = _streamingJobs[streamIn];
             }
 
-            job.Stop();
+            await job.StopAsync();
 
             SpeechRecognitionResult result = job.BestAlternative;
 

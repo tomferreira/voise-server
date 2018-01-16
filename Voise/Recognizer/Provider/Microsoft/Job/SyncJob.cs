@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Synthesizer.Microsoft;
 
@@ -48,15 +49,18 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                 new MemoryStream(Util.ConvertAudioToBytes(audio_base64)), info);
         }
 
-        public void Start()
+        public async Task StartAsync()
         {
-            _engine.RecognizeAsync();
-
-            lock (_monitorCompleted)
+            await Task.Run(() => 
             {
-                if (!_completed)
-                    Monitor.Wait(_monitorCompleted);
-            }
+                _engine.RecognizeAsync();
+
+                lock (_monitorCompleted)
+                {
+                    if (!_completed)
+                        Monitor.Wait(_monitorCompleted);
+                }
+            });
         }
     }
 }

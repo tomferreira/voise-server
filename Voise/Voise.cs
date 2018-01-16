@@ -2,6 +2,7 @@
 using log4net.Config;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Voise.Classification;
 using Voise.Process;
 using Voise.Recognizer;
@@ -21,7 +22,9 @@ namespace Voise
             try
             {
                 Config config = new Config();
-                new Voise(config);
+
+                Voise voise = new Voise(config);
+                voise.Start();
 
                 while (true)
                     Thread.Sleep(100);
@@ -39,6 +42,7 @@ namespace Voise
         }
 
         private Server _tcpServer;
+        private Config _config;
         private RecognizerManager _recognizerManager;
         private MicrosoftSynthetizer _synthetizer;
         private ClassifierManager _classifierManager;
@@ -49,16 +53,21 @@ namespace Voise
 
             log.Info($"Initializing Voise Server v{Version.VersionString}.");
 
+            _config = config;
+
             _tcpServer = new Server(HandleClientRequest);
 
             // ASR
-            _recognizerManager = new RecognizerManager(config);
-            _classifierManager = new ClassifierManager(config);
+            _recognizerManager = new RecognizerManager(_config);
+            _classifierManager = new ClassifierManager(_config);
 
             // TTS
-            _synthetizer = new MicrosoftSynthetizer();                
+            _synthetizer = new MicrosoftSynthetizer();
+        }
 
-            _tcpServer.Start(config.Port);
+        public void Start()
+        {
+            _tcpServer.StartAsync(_config.Port);
         }
 
         public void Stop()
@@ -67,33 +76,38 @@ namespace Voise
                 _tcpServer.Stop();
         }
 
-        private void HandleClientRequest(ClientConnection client, VoiseRequest request)
+        private async Task HandleClientRequest(ClientConnection client, VoiseRequest request)
         {
+            ProcessBase process = null;
+
             if (request.SyncRequest != null)
             {
-                ProcessSyncRequest.Execute(
+                process = new ProcessSyncRequest(
                     client, request.SyncRequest, _recognizerManager, _classifierManager);
             }
             else if (request.StreamStartRequest != null)
             {
-                ProcessStreamStartRequest.Execute(
+                process = new ProcessStreamStartRequest(
                     client, request.StreamStartRequest, _recognizerManager, _classifierManager);
             }
             else if (request.StreamDataRequest != null)
             {
-                ProcessStreamDataRequest.Execute(
+                process = new ProcessStreamDataRequest(
                     client, request.StreamDataRequest);
             }
             else if (request.StreamStopRequest != null)
             {
-                ProcessStreamStopRequest.Execute(
+                process = new ProcessStreamStopRequest(
                     client, request.StreamStopRequest, _recognizerManager);
             }
             else if (request.SynthVoiceRequest != null)
             {
-                ProcessSynthVoiceRequest.Execute(
+                process = new ProcessSynthVoiceRequest(
                     client, request.SynthVoiceRequest, _synthetizer);
             }
+
+            if (process != null)
+                await process.ExecuteAsync();
         }
     }
 }
