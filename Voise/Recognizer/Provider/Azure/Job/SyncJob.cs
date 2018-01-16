@@ -1,5 +1,4 @@
 ﻿using log4net;
-using Microsoft.CognitiveServices.SpeechRecognition;
 using System.Threading;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
@@ -15,27 +14,9 @@ namespace Voise.Recognizer.Provider.Azure.Job
         {
             ValidateArguments(encoding, sampleRate, languageCode);
 
-            _recognitionClient = SpeechRecognitionServiceFactory.CreateDataClient(
-                SpeechRecognitionMode.ShortPhrase, // Audio up to 15 seconds
-                languageCode,
-                primaryKey);
-
-            _recognitionClient.OnResponseReceived += ResponseReceivedHandler;
-            _recognitionClient.OnConversationError += ConversationErrorHandler;
+            InitClient(primaryKey, encoding, sampleRate, languageCode);
 
             _audio = Util.ConvertAudioToBytes(audio_base64);
-
-            SpeechAudioFormat format = new SpeechAudioFormat()
-            {
-                EncodingFormat = encoding.Format,
-                SamplesPerSecond = sampleRate,
-                BitsPerSample = encoding.BitsPerSample,
-                ChannelCount = encoding.ChannelCount,
-                AverageBytesPerSecond = sampleRate * encoding.BitsPerSample / 8,
-                BlockAlign = encoding.BlockAlign
-            };
-
-            _recognitionClient.SendAudioFormat(format);
         }
 
         public async Task StartAsync()

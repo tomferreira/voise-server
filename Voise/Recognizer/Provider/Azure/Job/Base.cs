@@ -42,6 +42,29 @@ namespace Voise.Recognizer.Provider.Azure.Job
                 throw new BadEncodingException("Sample rate is invalid.");
         }
 
+        protected void InitClient(string primaryKey, AudioEncoding encoding, int sampleRate, string languageCode)
+        {
+            _recognitionClient = SpeechRecognitionServiceFactory.CreateDataClient(
+                SpeechRecognitionMode.ShortPhrase, // Audio up to 15 seconds
+                languageCode,
+                primaryKey);
+
+            _recognitionClient.OnResponseReceived += ResponseReceivedHandler;
+            _recognitionClient.OnConversationError += ConversationErrorHandler;
+
+            SpeechAudioFormat format = new SpeechAudioFormat()
+            {
+                EncodingFormat = encoding.Format,
+                SamplesPerSecond = sampleRate,
+                BitsPerSample = encoding.BitsPerSample,
+                ChannelCount = encoding.ChannelCount,
+                AverageBytesPerSecond = sampleRate * encoding.BitsPerSample / 8,
+                BlockAlign = encoding.BlockAlign
+            };
+
+            _recognitionClient.SendAudioFormat(format);
+        }
+
         protected void ResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
             if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.RecognitionSuccess)
