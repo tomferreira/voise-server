@@ -10,6 +10,9 @@ namespace Voise.Recognizer
     {
         private Dictionary<string, CommonRecognizer> _recognizers;
 
+        // Microsoft is the default engine for recognizer.
+        private const string DEFAULT_ENGINE_IDENTIFIER = MicrosoftRecognizer.ENGINE_IDENTIFIER;
+
         internal RecognizerManager(Config config)
         {
             List<string> recognizersEnabled = config.RecognizersEnabled;
@@ -39,14 +42,12 @@ namespace Voise.Recognizer
 
         internal CommonRecognizer GetRecognizer(string engineID)
         {
-            // Microsoft is the default engine for recognizer.
-            if (engineID == null)
-                engineID = MicrosoftRecognizer.ENGINE_IDENTIFIER;
+            string finalEngineID = (engineID != null) ? engineID : DEFAULT_ENGINE_IDENTIFIER;
 
-            if (!_recognizers.ContainsKey(engineID.ToLower()))
-                throw new System.Exception($"Recogning engine '{engineID}' disabled or invalid.");
+            if (!_recognizers.ContainsKey(finalEngineID.ToLower()))
+                throw new System.Exception($"Recogning engine '{finalEngineID}' disabled or invalid.");
 
-            return _recognizers[engineID.ToLower()];
+            return _recognizers[finalEngineID.ToLower()];
         }
     }
 }
