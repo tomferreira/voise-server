@@ -1,5 +1,6 @@
 ﻿using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Synthesis;
+using System.Threading.Tasks;
 using Voise.Synthesizer.Exception;
 
 namespace Voise.Synthesizer.Microsoft
@@ -30,26 +31,29 @@ namespace Voise.Synthesizer.Microsoft
             _speechSynthesizer.SelectVoice(voice.VoiceInfo.Name);
         }
 
-        internal void Synth(string text)
+        internal async Task SynthAsync(string text)
         {
-            _streamOut.Start();
+            await Task.Run(() =>
+            {
+                _streamOut.Start();
 
-            WaveStream waveStream = new WaveStream();
+                WaveStream waveStream = new WaveStream();
 
-            _speechSynthesizer.SetOutputToAudioStream(waveStream, _info);
+                _speechSynthesizer.SetOutputToAudioStream(waveStream, _info);
 
-            string script = string.Format(
-                "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"{0}\">{1}</speak>", 
-                _speechSynthesizer.Voice.Culture.Name, text);
+                string script = string.Format(
+                    "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"{0}\">{1}</speak>",
+                    _speechSynthesizer.Voice.Culture.Name, text);
 
-            Prompt prompt = new Prompt(script, SynthesisTextFormat.Ssml);
+                Prompt prompt = new Prompt(script, SynthesisTextFormat.Ssml);
 
-            waveStream.Progress += WaveStream_Progress;
+                waveStream.Progress += WaveStream_Progress;
 
-            _speechSynthesizer.Speak(prompt);
-            _speechSynthesizer.SetOutputToNull();
+                _speechSynthesizer.Speak(prompt);
+                _speechSynthesizer.SetOutputToNull();
 
-            _streamOut.Stop();
+                _streamOut.Stop();
+            });
         }
 
         private void WaveStream_Progress(object sender, WaveStream.ProgressEventArgs e)

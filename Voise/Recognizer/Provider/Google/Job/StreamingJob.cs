@@ -45,9 +45,9 @@ namespace Voise.Recognizer.Provider.Google.Job
             _streamIn.StreamingStopped += StreamingStopped;
         }
 
-        public void Start()
+        public async Task StartAsync()
         {
-            _recognizerStream = _recognizer.BeginStreamingRecognizeAsync(_config).Result;
+            _recognizerStream = await _recognizer.BeginStreamingRecognizeAsync(_config);
             _requestQueue = new RequestQueue<ByteString>(_recognizerStream.RequestStream, 100);
 
             _streamIn.Start();
@@ -90,12 +90,12 @@ namespace Voise.Recognizer.Provider.Google.Job
             }
         }
 
-        public void Stop()
+        public async Task StopAsync()
         {
             _streamIn.Stop();
 
             // This will complete when the gRPC stream has completed.
-            _doneTask.Wait();
+            await _doneTask;
         }
 
         protected override void Dispose(bool disposing)

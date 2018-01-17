@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Microsoft.Internal;
 using Voise.Synthesizer.Microsoft;
@@ -58,14 +59,17 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             _streamIn.StreamingStopped += StreamingStopped;
         }
 
-        public void Start()
+        public async Task StartAsync()
         {
-            _ss = new SpeechStreamer(_streamIn.BufferCapacity * 50);
-            _engine.SetInputToAudioStream(_ss, _info);
+            await Task.Run(() =>
+            {
+                _ss = new SpeechStreamer(_streamIn.BufferCapacity * 50);
+                _engine.SetInputToAudioStream(_ss, _info);
 
-            _streamIn.Start();
+                _streamIn.Start();
 
-            _engine.RecognizeAsync(RecognizeMode.Single);
+                _engine.RecognizeAsync(RecognizeMode.Single);
+            });
         }
 
         private void StreamingStopped(object sender, EventArgs e)
@@ -78,17 +82,20 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             _ss.Write(e.Buffer, 0, e.BytesStreamed);
         }
 
-        public void Stop()
+        public async Task StopAsync()
         {
-            _streamIn.Stop();
-
-            _engine.RecognizeAsyncStop();
-
-            lock (_monitorCompleted)
+            await Task.Run(() =>
             {
-                if (!_completed)
-                    Monitor.Wait(_monitorCompleted);
-            }
+                _streamIn.Stop();
+
+                _engine.RecognizeAsyncStop();
+
+                lock (_monitorCompleted)
+                {
+                    if (!_completed)
+                        Monitor.Wait(_monitorCompleted);
+                }
+            });
         }
 
         protected override void Dispose(bool disposing)

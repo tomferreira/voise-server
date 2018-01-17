@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Voise.Synthesizer.Microsoft
 {
@@ -19,7 +20,7 @@ namespace Voise.Synthesizer.Microsoft
                 _streamingJobs.Add(streamOut, job);
         }
 
-        internal void Synth(AudioStream streamOut, string text)
+        internal async Task SynthAsync(AudioStream streamOut, string text)
         {
             Job job = null;
 
@@ -31,7 +32,7 @@ namespace Voise.Synthesizer.Microsoft
                 job = _streamingJobs[streamOut];
             }
 
-            job.Synth(text);
+            await job.SynthAsync(text);
 
             lock (_streamingJobs)
                 _streamingJobs.Remove(streamOut);

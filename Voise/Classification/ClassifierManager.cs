@@ -51,7 +51,7 @@ namespace Voise.Classification
                 classifier = _classifiers[modelName];
             }
 
-            return classifier.Classify(message);
+            return await Task.Run(() => classifier.Classify(message) );
         }
 
         private void LoadClassifiers(string classifiersPath)

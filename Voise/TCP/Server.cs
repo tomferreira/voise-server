@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Voise.TCP.Request;
 
 namespace Voise.TCP
 {
     internal class Server
     {
-        internal delegate void HandlerRequest(ClientConnection client, VoiseRequest request);
+        internal delegate Task HandlerRequest(ClientConnection client, VoiseRequest request);
 
         private Socket _listenSocket;
         private SocketAsyncEventArgs _acceptAsyncArgs;
@@ -28,7 +29,7 @@ namespace Voise.TCP
 
         internal bool IsOpen { get; private set; }
 
-        internal void Start(int port)
+        internal void StartAsync(int port)
         {
             _listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 

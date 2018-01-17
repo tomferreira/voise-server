@@ -29,6 +29,7 @@ namespace VoiseService.Service
                 Voise.Config config = new Voise.Config();
 
                 _voise = new Voise.Voise(config);
+                _voise.Start();
 
                 return true;
             }

@@ -3,6 +3,7 @@ using Microsoft.CognitiveServices.SpeechRecognition;
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Voise.Recognizer.Exception;
 
 namespace Voise.Recognizer.Provider.Azure.Job
@@ -40,6 +41,29 @@ namespace Voise.Recognizer.Provider.Azure.Job
 
             if (sampleRate < 8000 || sampleRate > 48000)
                 throw new BadEncodingException("Sample rate is invalid.");
+        }
+
+        protected void InitClient(string primaryKey, AudioEncoding encoding, int sampleRate, string languageCode)
+        {
+            _recognitionClient = SpeechRecognitionServiceFactory.CreateDataClient(
+                SpeechRecognitionMode.ShortPhrase, // Audio up to 15 seconds
+                languageCode,
+                primaryKey);
+
+            _recognitionClient.OnResponseReceived += ResponseReceivedHandler;
+            _recognitionClient.OnConversationError += ConversationErrorHandler;
+
+            SpeechAudioFormat format = new SpeechAudioFormat()
+            {
+                EncodingFormat = encoding.Format,
+                SamplesPerSecond = sampleRate,
+                BitsPerSample = encoding.BitsPerSample,
+                ChannelCount = encoding.ChannelCount,
+                AverageBytesPerSecond = sampleRate * encoding.BitsPerSample / 8,
+                BlockAlign = encoding.BlockAlign
+            };
+
+            _recognitionClient.SendAudioFormat(format);
         }
 
         protected void ResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
@@ -97,7 +121,11 @@ namespace Voise.Recognizer.Provider.Azure.Job
                 return;
 
             if (disposing)
-                _recognitionClient.Dispose();
+            {
+                // FIXME: This isn't the best approach, but the Dispose method 
+                // is take 2 sec, and its very slow.
+                Task.Run(() => _recognitionClient.Dispose());
+            }
 
             _disposed = true;
         }

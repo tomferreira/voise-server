@@ -1,5 +1,6 @@
 ﻿using Google.Cloud.Speech.V1Beta1;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Google.Internal;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
@@ -32,9 +33,9 @@ namespace Voise.Recognizer.Provider.Google.Job
             };
         }
 
-        public void Start()
+        public async Task StartAsync()
         {
-            SyncRecognizeResponse response = _recognizer.RecognizeAsync(_config.Config, _config.Audio).Result;
+            SyncRecognizeResponse response = await _recognizer.RecognizeAsync(_config.Config, _config.Audio);
 
             foreach (var result in response.Results)
             {

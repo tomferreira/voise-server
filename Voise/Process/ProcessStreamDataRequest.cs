@@ -1,5 +1,6 @@
 ﻿using log4net;
 using System;
+using System.Threading.Tasks;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -7,22 +8,33 @@ namespace Voise.Process
 {
     internal class ProcessStreamDataRequest : ProcessBase
     {
-        internal static async void Execute(ClientConnection client, VoiseStreamRecognitionDataRequest request)
+        private VoiseStreamRecognitionDataRequest _request;
+
+        internal ProcessStreamDataRequest(ClientConnection client, VoiseStreamRecognitionDataRequest request)
+            : base(client)
         {
-            ILog log = LogManager.GetLogger(typeof(ProcessStreamDataRequest));
+            _request = request;
+        }
 
-            try
+        internal override async Task ExecuteAsync()
+        {
+            await Task.Run(() =>
             {
-                byte[] data = Convert.FromBase64String(request.data);
+                ILog log = LogManager.GetLogger(typeof(ProcessStreamDataRequest));
 
-                log.Debug($"Receiving stream data ({data.Length} bytes) at pipeline {client.CurrentPipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
+                try
+                {
+                    byte[] data = Convert.FromBase64String(_request.data);
 
-                client.StreamIn?.Write(data);
-            }
-            catch(Exception e)
-            {
-                log.Error($"{e.Message}\nStackTrace: {e.StackTrace}. [Client: {client.RemoteEndPoint().ToString()}]");
-            }
+                    log.Debug($"Receiving stream data ({data.Length} bytes) at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint().ToString()}]");
+
+                    _client.StreamIn?.Write(data);
+                }
+                catch (Exception e)
+                {
+                    log.Error($"{e.Message}\nStackTrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                }
+            });
         }
     }
 }
