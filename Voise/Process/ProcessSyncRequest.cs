@@ -32,7 +32,7 @@ namespace Voise.Process
 
             var pipeline = _client.CurrentPipeline = new Pipeline();
 
-            log.Info($"Starting request with engine '{_request.Config.engine_id}' at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint().ToString()}]");
+            log.Info($"Starting request with engine '{_request.Config.engine_id}' at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             try
             {
@@ -56,11 +56,11 @@ namespace Voise.Process
             {
                 if (e is BadEncodingException || e is BadAudioException)
                 {
-                    log.Info($"{e.Message} [Client: {_client.RemoteEndPoint().ToString()}]");
+                    log.Info($"{e.Message} [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
                 else
                 {
-                    log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                    log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
 
                 SendError(e);
@@ -87,13 +87,13 @@ namespace Voise.Process
                     }
                 }
 
-                log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendResult(pipeline.Result);
             }
             catch (Exception e)
             {
-                log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(e);
             }

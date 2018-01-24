@@ -28,7 +28,7 @@ namespace Voise.Process
             // This client already is receiving stream.
             if (_client.StreamOut != null)
             {
-                log.Error($"Client already is receiving stream. [Client: {_client.RemoteEndPoint().ToString()}]");
+                log.Error($"Client already is receiving stream. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(new Exception("Client already is receiving stream."));
                 return;
@@ -36,7 +36,7 @@ namespace Voise.Process
 
             var pipeline = _client.CurrentPipeline = new Pipeline();
 
-            log.Info($"Starting synth request at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint().ToString()}]");
+            log.Info($"Starting synth request at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             try
             {
@@ -51,7 +51,7 @@ namespace Voise.Process
                     VoiseResult result = new VoiseResult(VoiseResult.Modes.TTS);
                     result.AudioContent = Convert.ToBase64String(e.Buffer);
 
-                    log.Debug($"Sending stream data ({e.Buffer.Length} bytes) at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                    log.Debug($"Sending stream data ({e.Buffer.Length} bytes) at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                     SendResult(result);
                 };
@@ -75,11 +75,11 @@ namespace Voise.Process
 
                 if (e is BadEncodingException)
                 {
-                    log.Info($"{e.Message} [Client: {_client.RemoteEndPoint().ToString()}]");
+                    log.Info($"{e.Message} [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
                 else
                 {
-                    log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                    log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
 
                 SendError(e);
@@ -93,7 +93,7 @@ namespace Voise.Process
             pipeline.Result.AudioContent = "";
             SendResult(pipeline.Result);
 
-            log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint().ToString()}]");
+            log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             pipeline = _client.CurrentPipeline = null;
         }
