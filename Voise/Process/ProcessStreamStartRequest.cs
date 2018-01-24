@@ -125,19 +125,22 @@ namespace Voise.Process
 
                 log.Info($"Stream request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
+                // Cleanup streamIn
+                _client.StreamIn = null;
+
                 SendResult(pipeline.Result);
             }
             catch (Exception e)
             {
+                // Cleanup streamIn
+                _client.StreamIn = null;
+
                 log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(e);
             }
             finally
             {
-                // Cleanup streamIn
-                _client.StreamIn = null;
-
                 pipeline = _client.CurrentPipeline = null;
             }
         }
