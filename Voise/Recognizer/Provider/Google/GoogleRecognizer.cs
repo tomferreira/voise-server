@@ -12,7 +12,6 @@ namespace Voise.Recognizer.Provider.Google
         internal const string ENGINE_IDENTIFIER = "ge";
 
         private SpeechRecognizer _recognizer;
-        private Dictionary<AudioStream, StreamingJob> _streamingJobs;
 
         internal GoogleRecognizer(string credentialPath)
         {
@@ -20,7 +19,6 @@ namespace Voise.Recognizer.Provider.Google
                 throw new System.Exception("Credential path must be defined for Google engine.");
 
             _recognizer = SpeechRecognizer.Create(credentialPath);
-            _streamingJobs = new Dictionary<AudioStream, StreamingJob>();
         }
 
         // Max duration of audio ~60s (https://cloud.google.com/speech/limits)

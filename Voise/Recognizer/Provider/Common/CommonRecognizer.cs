@@ -7,7 +7,12 @@ namespace Voise.Recognizer.Provider.Common
 {
     internal abstract class CommonRecognizer
     {
-        private Dictionary<AudioStream, IStreamingJob> _streamingJobs = new Dictionary<AudioStream, IStreamingJob>();
+        protected Dictionary<AudioStream, IStreamingJob> _streamingJobs;
+
+        internal CommonRecognizer()
+        {
+            _streamingJobs = new Dictionary<AudioStream, IStreamingJob>();
+        }
 
         internal async Task<SpeechRecognitionResult> SyncRecognition(string audio_base64, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)

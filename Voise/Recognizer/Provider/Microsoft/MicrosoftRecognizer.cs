@@ -14,12 +14,8 @@ namespace Voise.Recognizer.Provider.Microsoft
 
         private const int TIMEOUT_TASK_REMOVE_JOBS_ABORTED = 5 * 60 * 1000; // 5 minutes
 
-        private Dictionary<AudioStream, StreamingJob> _streamingJobs;
-
         internal MicrosoftRecognizer()
         {
-            _streamingJobs = new Dictionary<AudioStream, StreamingJob>();
-
             InitRemoveJobsWithAbortedStream();
         }
 
