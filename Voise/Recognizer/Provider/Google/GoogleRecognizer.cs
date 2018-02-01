@@ -3,7 +3,7 @@ using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Google.Internal;
 using Voise.Recognizer.Provider.Google.Job;
-using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
+using static Google.Cloud.Speech.V1.RecognitionConfig.Types;
 
 namespace Voise.Recognizer.Provider.Google
 {
