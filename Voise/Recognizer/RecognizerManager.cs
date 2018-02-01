@@ -38,6 +38,12 @@ namespace Voise.Recognizer
 
                 _recognizers.Add(AzureRecognizer.ENGINE_IDENTIFIER, new AzureRecognizer(primaryKey));
             }
+
+            if (config.TuningEnabled)
+            {
+                foreach (CommonRecognizer recognizer in _recognizers.Values)
+                    recognizer.EnableTuning(config.TuningPath);
+            }
         }
 
         internal CommonRecognizer GetRecognizer(string engineID)

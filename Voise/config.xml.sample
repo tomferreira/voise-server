@@ -23,11 +23,11 @@
 
     <!-- ATENÇÃO: A configuração de log deve ser realizada diretamente no arquivo Log.config -->
 
-    <tunning>
+    <tuning>
         <!-- Default: false -->
         <!-- <enabled>false</enabled> -->
 
-        <!-- Default: ./tunning/ -->
-        <!-- <path>./tunning/</path> -->
-    </tunning>
+        <!-- Default: ./tuning/ -->
+        <!-- <path>./tuning/</path> -->
+    </tuning>
 </config>

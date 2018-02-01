@@ -20,9 +20,9 @@ namespace Voise
         // Classifier
         private static string DEFAULT_CLASSIFIERS_PATH = "./classifiers/";
 
-        // Tunning
-        private static bool DEFAULT_TUNNING_ENABLED = false;
-        private static string DEFAULT_TUNNING_PATH = "./tunning/";
+        // Tuning
+        private static bool DEFAULT_TUNING_ENABLED = false;
+        private static string DEFAULT_TUNING_PATH = "./tuning/";
 
         private XmlElement _element;
 
@@ -80,27 +80,27 @@ namespace Voise
             }
         }
 
-        internal bool TunningEnabled
+        internal bool TuningEnabled
         {
             get
             {
-                object value = GetTunningAttribute("enabled");
+                object value = GetTuningAttribute("enabled");
 
                 if (value == null)
-                    return DEFAULT_TUNNING_ENABLED;
+                    return DEFAULT_TUNING_ENABLED;
 
                 return Convert.ToBoolean(value);
             }
         }
 
-        internal string TunningPath
+        internal string TuningPath
         {
             get
             {
-                string value = GetTunningAttribute("path");
+                string value = GetTuningAttribute("path");
 
                 if (value == null)
-                    return DEFAULT_TUNNING_PATH;
+                    return DEFAULT_TUNING_PATH;
 
                 return value;
             }
@@ -111,9 +111,9 @@ namespace Voise
             return GetAttribute("recognizers", identifiers);
         }
 
-        internal string GetTunningAttribute(params string[] identifiers)
+        internal string GetTuningAttribute(params string[] identifiers)
         {
-            return GetAttribute("tunning", identifiers);
+            return GetAttribute("tuning", identifiers);
         }
 
         private string GetAttribute(string parentIdentifier, params string[] identifiers)

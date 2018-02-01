@@ -64,10 +64,14 @@ namespace Voise
         private Queue<MemoryStream> _buffers;
         private MemoryStream _currentBuffer;
 
+        private Tuning.Base _tuning;
+
         internal int BufferCapacity { get; private set; }
 
         internal AudioStream(int bufferMillisec, int sampleRate, int bytesPerSample)
         {
+            _tuning = null;
+
             int bytesPerSecond = sampleRate * bytesPerSample;
 
             _state = State.Stopped;
@@ -79,8 +83,10 @@ namespace Voise
             CreateBuffer();
         }
 
-        internal void Start()
+        internal void Start(Tuning.Base tuning)
         {
+            _tuning = tuning;
+
             lock (_monitorState)
                 _state = State.Started;
         }
@@ -105,6 +111,13 @@ namespace Voise
             Callback(true);
 
             StreamingStopped?.Invoke(this, EventArgs.Empty);
+
+            /*if (_recording != null)
+            {
+                _recording.Close();
+                _recording.Dispose();
+                _recording = null;
+            }*/
         }
 
         internal void Abort()
@@ -144,6 +157,9 @@ namespace Voise
 
                 int count = Math.Min(remmaing, length);
                 _currentBuffer.Write(data, offset, count);
+
+                //
+                _tuning?.WriteRecording(data, offset, count);
 
                 offset += count;
                 length -= count;

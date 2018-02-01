@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
+using Voise.Tuning;
 
 namespace Voise.Recognizer.Provider.Azure.Job
 {
@@ -19,8 +20,11 @@ namespace Voise.Recognizer.Provider.Azure.Job
             _audio = Util.ConvertAudioToBytes(audio_base64);
         }
 
-        public async Task StartAsync()
+        public async Task StartAsync(TuningIn tuning)
         {
+            _tuning = tuning;
+            _tuning?.WriteRecording(_audio, 0, _audio.Length);
+
             await Task.Run(() =>
             {
                 _recognitionClient.SendAudio(_audio, _audio.Length);
@@ -31,6 +35,8 @@ namespace Voise.Recognizer.Provider.Azure.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
+
+                _tuning?.SaveSpeechRecognitionResult(BestAlternative);
             });
         }
     }

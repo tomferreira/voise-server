@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Google.Internal;
+using Voise.Tuning;
 using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
 
 namespace Voise.Recognizer.Provider.Google.Job
@@ -11,6 +12,7 @@ namespace Voise.Recognizer.Provider.Google.Job
     internal abstract class Base: IDisposable
     {
         protected SpeechRecognizer _recognizer;
+        protected TuningIn _tuning;
 
         protected bool _disposed;
 

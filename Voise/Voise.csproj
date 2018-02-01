@@ -259,6 +259,8 @@
     <Compile Include="Recognizer\Provider\Microsoft\MicrosoftRecognizer.cs" />
     <Compile Include="Recognizer\RecognizerManager.cs" />
     <Compile Include="Recognizer\SpeechRecognitionResult.cs" />
+    <Compile Include="Tuning\TuningIn.cs" />
+    <Compile Include="Tuning\Base.cs" />
     <Compile Include="Recognizer\Util.cs" />
     <Compile Include="ResponseCode.cs" />
     <Compile Include="Recognizer\Provider\Azure\AudioEncoding.cs" />

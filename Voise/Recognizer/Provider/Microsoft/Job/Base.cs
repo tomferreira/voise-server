@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Threading;
 using Voise.Recognizer.Exception;
 using Voise.Synthesizer.Microsoft;
+using Voise.Tuning;
 
 namespace Voise.Recognizer.Provider.Microsoft.Job
 {
     internal abstract class Base : IDisposable
     {
         protected SpeechRecognitionEngine _engine;
+        protected TuningIn _tuning;
 
         protected bool _completed;
         protected readonly object _monitorCompleted;
