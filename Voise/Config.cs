@@ -15,7 +15,7 @@ namespace Voise
 
         // Recognizer
         private static List<string> DEFAULT_RECOGNIZERS_ENABLED = 
-            new List<string>() { Recognizer.Microsoft.MicrosoftRecognizer.ENGINE_IDENTIFIER };
+            new List<string>() { Recognizer.Provider.Microsoft.MicrosoftRecognizer.ENGINE_IDENTIFIER };
 
         // Classifier
         private static string DEFAULT_CLASSIFIERS_PATH = "./classifiers/";

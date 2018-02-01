@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
-using Voise.Recognizer.Azure;
-using Voise.Recognizer.Google;
-using Voise.Recognizer.Microsoft;
+using Voise.Recognizer.Provider.Azure;
+using Voise.Recognizer.Provider.Common;
+using Voise.Recognizer.Provider.Google;
+using Voise.Recognizer.Provider.Microsoft;
 
 namespace Voise.Recognizer
 {
     internal class RecognizerManager
     {
-        private Dictionary<string, Base> _recognizers;
+        private Dictionary<string, CommonRecognizer> _recognizers;
+
+        // Microsoft is the default engine for recognizer.
+        private const string DEFAULT_ENGINE_IDENTIFIER = MicrosoftRecognizer.ENGINE_IDENTIFIER;
 
         internal RecognizerManager(Config config)
         {
@@ -16,7 +20,7 @@ namespace Voise.Recognizer
             if (recognizersEnabled.Count == 0)
                 throw new System.Exception("At least one recogning engine must be enabled.");
 
-            _recognizers = new Dictionary<string, Base>();
+            _recognizers = new Dictionary<string, CommonRecognizer>();
 
             if (recognizersEnabled.Contains(MicrosoftRecognizer.ENGINE_IDENTIFIER))
                 _recognizers.Add(MicrosoftRecognizer.ENGINE_IDENTIFIER, new MicrosoftRecognizer());
@@ -36,16 +40,14 @@ namespace Voise.Recognizer
             }
         }
 
-        internal Base GetRecognizer(string engineID)
+        internal CommonRecognizer GetRecognizer(string engineID)
         {
-            // Microsoft is the default engine for recognizer.
-            if (engineID == null)
-                engineID = MicrosoftRecognizer.ENGINE_IDENTIFIER;
+            string finalEngineID = (engineID != null) ? engineID : DEFAULT_ENGINE_IDENTIFIER;
 
-            if (!_recognizers.ContainsKey(engineID.ToLower()))
-                throw new System.Exception($"Recogning engine '{engineID}' disabled or invalid.");
+            if (!_recognizers.ContainsKey(finalEngineID.ToLower()))
+                throw new System.Exception($"Recogning engine '{finalEngineID}' disabled or invalid.");
 
-            return _recognizers[engineID.ToLower()];
+            return _recognizers[finalEngineID.ToLower()];
         }
     }
 }

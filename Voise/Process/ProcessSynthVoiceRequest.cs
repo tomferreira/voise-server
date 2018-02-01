@@ -1,5 +1,6 @@
 ﻿using log4net;
 using System;
+using System.Threading.Tasks;
 using Voise.Synthesizer.Exception;
 using Voise.Synthesizer.Microsoft;
 using Voise.TCP;
@@ -7,84 +8,94 @@ using Voise.TCP.Request;
 
 namespace Voise.Process
 {
-    class ProcessSynthVoiceRequest : ProcessBase
+    internal class ProcessSynthVoiceRequest : ProcessBase
     {
+        private VoiseSynthVoiceRequest _request;
+        private MicrosoftSynthetizer _synthetizer;
+
+        internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, MicrosoftSynthetizer synthetizer)
+            : base(client)
+        {
+            _request = request;
+            _synthetizer = synthetizer;
+        }
+
         // For while, its only implemented Microsoft Synthetizer
-        internal static async void Execute(ClientConnection client, VoiseSynthVoiceRequest request, MicrosoftSynthetizer synthetizer)
+        internal override async Task ExecuteAsync()
         {
             ILog log = LogManager.GetLogger(typeof(ProcessSynthVoiceRequest));
 
             // This client already is receiving stream.
-            if (client.StreamOut != null)
+            if (_client.StreamOut != null)
             {
-                log.Error($"Client already is receiving stream. [Client: {client.RemoteEndPoint().ToString()}]");
+                log.Error($"Client already is receiving stream. [Client: {_client.RemoteEndPoint.ToString()}]");
 
-                SendError(client, new Exception("Client already is receiving stream."));
+                SendError(new Exception("Client already is receiving stream."));
                 return;
             }
 
-            var pipeline = client.CurrentPipeline = new Pipeline();
+            var pipeline = _client.CurrentPipeline = new Pipeline();
 
-            log.Info($"Starting synth request at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
+            log.Info($"Starting synth request at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             try
             {
-                var encoding = MicrosoftSynthetizer.ConvertAudioEncoding(request.Config.encoding);
+                var encoding = MicrosoftSynthetizer.ConvertAudioEncoding(_request.Config.encoding);
 
                 int bytesPerSample = encoding != AudioEncoding.EncodingUnspecified ? encoding.BitsPerSample / 8 : 1;
 
-                client.StreamOut = new AudioStream(20, request.Config.sample_rate, bytesPerSample);
+                _client.StreamOut = new AudioStream(20, _request.Config.sample_rate, bytesPerSample);
 
-                client.StreamOut.DataAvailable += delegate (object sender, AudioStream.StreamInEventArgs e)
+                _client.StreamOut.DataAvailable += delegate (object sender, AudioStream.StreamInEventArgs e)
                 {
-                    SpeechResult result = new SpeechResult(SpeechResult.Modes.TTS);
+                    VoiseResult result = new VoiseResult(VoiseResult.Modes.TTS);
                     result.AudioContent = Convert.ToBase64String(e.Buffer);
 
-                    log.Debug($"Sending stream data ({e.Buffer.Length} bytes) at pipeline {client.CurrentPipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
+                    log.Debug($"Sending stream data ({e.Buffer.Length} bytes) at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
-                    SendResult(client, result);
+                    SendResult(result);
                 };
 
-                synthetizer.Create(
-                    client.StreamOut, 
+                _synthetizer.Create(
+                    _client.StreamOut, 
                     encoding,
-                    request.Config.sample_rate,
-                    request.Config.language_code);
+                    _request.Config.sample_rate,
+                    _request.Config.language_code);
 
-                SendAccept(client);
+                SendAccept();
 
-                pipeline.SpeechResult = new SpeechResult(SpeechResult.Modes.TTS);
+                pipeline.Result = new VoiseResult(VoiseResult.Modes.TTS);
 
-                synthetizer.Synth(client.StreamOut, request.text);
+                await _synthetizer.SynthAsync(_client.StreamOut, _request.text);
             }
             catch (Exception e)
             {
                 // Cleanup streamOut
-                client.StreamOut = null;
+                _client.StreamOut = null;
 
                 if (e is BadEncodingException)
                 {
-                    log.Info($"{e.Message} [Client: {client.RemoteEndPoint().ToString()}]");
+                    log.Info($"{e.Message} [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
                 else
                 {
-                    log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {client.RemoteEndPoint().ToString()}]");
+                    log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
 
-                SendError(client, e);
+                SendError(e);
                 return;
             }
 
             // Cleanup streamOut
-            client.StreamOut = null;
+            _client.StreamOut = null;
 
             // Send end of stream
-            pipeline.SpeechResult.AudioContent = "";
-            SendResult(client, pipeline.SpeechResult);
+            pipeline.Result.AudioContent = "";
+            SendResult(pipeline.Result);
 
-            log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
+            log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
-            pipeline = client.CurrentPipeline = null;
+            pipeline = _client.CurrentPipeline = null;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Voise.Classification;
 using Voise.TCP;
 using Voise.TCP.Request;
@@ -9,7 +10,16 @@ namespace Voise.Process
 {
     internal abstract class ProcessBase
     {
-        protected static Dictionary<string, List<string>> GetContexts(VoiseConfig config, ClassifierManager classifierManager)
+        protected ClientConnection _client;
+
+        internal ProcessBase(ClientConnection client)
+        {
+            _client = client;
+        }
+
+        internal abstract Task ExecuteAsync();
+
+        protected Dictionary<string, List<string>> GetContexts(VoiseConfig config, ClassifierManager classifierManager)
         {
             Dictionary<string, List<string>> contexts = null;
 
@@ -26,7 +36,7 @@ namespace Voise.Process
             return contexts;
         }
 
-        protected static void SendResult(ClientConnection client, SpeechResult result)
+        protected void SendResult(VoiseResult result)
         {
             if (result != null)
             {
@@ -34,14 +44,14 @@ namespace Voise.Process
 
                 switch(result.Mode)
                 {
-                    case SpeechResult.Modes.ASR:
+                    case VoiseResult.Modes.ASR:
                         response.utterance = result.Transcript;
                         response.confidence = result.Confidence;
                         response.intent = result.Intent;
                         response.probability = result.Probability;
                         break;
 
-                    case SpeechResult.Modes.TTS:
+                    case VoiseResult.Modes.TTS:
                         response.audio = new VoiseResponse.VoiseAudio();
                         response.audio.content = result.AudioContent;
                         response.audio.length = result.AudioContent.Length;
@@ -51,25 +61,25 @@ namespace Voise.Process
                         throw new Exception("Invalid mode result.");
                 }
 
-                client?.SendResponse(response);
+                _client?.SendResponse(response);
             }
             else
             {
                 var response = new VoiseResponse(ResponseCode.NORESULT);
-                client?.SendResponse(response);
+                _client?.SendResponse(response);
             }            
         }
 
-        protected static void SendAccept(ClientConnection client)
+        protected void SendAccept()
         {
             var response = new VoiseResponse(ResponseCode.ACCEPTED);
-            client?.SendResponse(response);
+            _client?.SendResponse(response);
         }
 
-        protected static void SendError(ClientConnection client, Exception e)
+        protected void SendError(Exception e)
         {
             var response = new VoiseResponse(ResponseCode.ERROR, e.Message);
-            client?.SendResponse(response);
+            _client?.SendResponse(response);
         }
     }
 }

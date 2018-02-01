@@ -33,6 +33,8 @@ namespace Voise.TCP
 
         internal Pipeline CurrentPipeline { get; set; }
 
+        internal System.Net.EndPoint RemoteEndPoint { get; private set; }
+
         internal ClientConnection(Socket acceptedSocket, HandlerRequest hr)
         {
             _log = LogManager.GetLogger(
@@ -45,6 +47,8 @@ namespace Voise.TCP
 
             _socket = acceptedSocket;
             _hr = hr;
+
+            RemoteEndPoint = _socket.RemoteEndPoint;
 
             _readEventArgs = new SocketAsyncEventArgs();
             _readEventArgs.Completed += SockAsyncEventArgs_Completed;
@@ -60,12 +64,6 @@ namespace Voise.TCP
         {
             lock (_socket)
                 return _socket.Connected;
-        }
-
-        internal System.Net.EndPoint RemoteEndPoint()
-        {
-            lock (_socket)
-                return _socket.RemoteEndPoint;
         }
 
         private void CloseConnection()

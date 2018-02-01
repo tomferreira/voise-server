@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Voise.Recognizer.Provider.Common;
 
 namespace Voise
 {
@@ -16,9 +17,9 @@ namespace Voise
         internal long Id { get; private set; }
 
         // Recognizer used in this pipeline (if ASR)
-        internal Recognizer.Base Recognizer { get; set; }
+        internal CommonRecognizer Recognizer { get; set; }
 
-        internal SpeechResult SpeechResult { get; set; }
+        internal VoiseResult Result { get; set; }
 
         // Internal async error
         internal Exception AsyncStreamError { get; set; }

@@ -1,5 +1,6 @@
 ﻿using log4net;
 using System;
+using System.Threading.Tasks;
 using Voise.Recognizer;
 using Voise.TCP;
 using Voise.TCP.Request;
@@ -8,34 +9,44 @@ namespace Voise.Process
 {
     internal class ProcessStreamStopRequest : ProcessBase
     {
-        internal static async void Execute(ClientConnection client, VoiseStreamRecognitionStopRequest request,
+        private VoiseStreamRecognitionStopRequest _request;
+        private RecognizerManager _recognizerManager;
+
+        internal ProcessStreamStopRequest(ClientConnection client, VoiseStreamRecognitionStopRequest request,
             RecognizerManager recognizerManager)
+            : base(client)
+        {
+            _request = request;
+            _recognizerManager = recognizerManager;
+        }
+
+        internal override async Task ExecuteAsync()
         {
             ILog log = LogManager.GetLogger(typeof(ProcessStreamStopRequest));
 
-            log.Info($"Stoping stream request at pipeline {client.CurrentPipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
+            log.Info($"Stoping stream request at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             try
             {
-                if (client.CurrentPipeline.Recognizer == null)
+                if (_client.CurrentPipeline.Recognizer == null)
                     throw new Exception("Engine not defined.");
 
                 var recognition =
-                    client.CurrentPipeline.Recognizer.StopStreamingRecognitionAsync(client.StreamIn).Result;
+                    await _client.CurrentPipeline.Recognizer.StopStreamingRecognitionAsync(_client.StreamIn);
 
-                client.CurrentPipeline.SpeechResult.Transcript = recognition.Transcript;
-                client.CurrentPipeline.SpeechResult.Confidence = recognition.Confidence;
+                _client.CurrentPipeline.Result.Transcript = recognition.Transcript;
+                _client.CurrentPipeline.Result.Confidence = recognition.Confidence;
             }
             catch (Exception e)
             {
                 Exception deepestException = e.InnerException ?? e;
 
-                client.CurrentPipeline.AsyncStreamError = deepestException;
-                log.Error($"{deepestException?.Message} [Client: {client.RemoteEndPoint().ToString()}]");
+                _client.CurrentPipeline.AsyncStreamError = deepestException;
+                log.Error($"{deepestException?.Message} [Client: {_client.RemoteEndPoint.ToString()}]");
             }
 
             // Avisa à pipeline que pode continuar.
-            client.CurrentPipeline.ReleaseMutex();
+            _client.CurrentPipeline.ReleaseMutex();
         }
     }
 }

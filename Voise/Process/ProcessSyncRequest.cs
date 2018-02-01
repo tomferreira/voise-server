@@ -1,9 +1,11 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Voise.Classification;
 using Voise.Recognizer;
 using Voise.Recognizer.Exception;
+using Voise.Recognizer.Provider.Common;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -11,81 +13,93 @@ namespace Voise.Process
 {
     internal class ProcessSyncRequest : ProcessBase
     {
-        internal static async void Execute(ClientConnection client, VoiseSyncRecognitionRequest request,
+        private VoiseSyncRecognitionRequest _request;
+        private RecognizerManager _recognizerManager;
+        private ClassifierManager _classifierManager;
+
+        internal ProcessSyncRequest(ClientConnection client, VoiseSyncRecognitionRequest request,
             RecognizerManager recognizerManager, ClassifierManager classifierManager)
+            : base(client)
+        {
+            _request = request;
+            _recognizerManager = recognizerManager;
+            _classifierManager = classifierManager;
+        }
+
+        internal override async Task ExecuteAsync()
         {
             ILog log = LogManager.GetLogger(typeof(ProcessStreamStartRequest));
 
-            var pipeline = client.CurrentPipeline = new Pipeline();
+            var pipeline = _client.CurrentPipeline = new Pipeline();
 
-            log.Info($"Starting request with engine '{request.Config.engine_id}' at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
+            log.Info($"Starting request with engine '{_request.Config.engine_id}' at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             try
             {
-                Recognizer.Base recognizer = recognizerManager.GetRecognizer(request.Config.engine_id);
+                CommonRecognizer recognizer = _recognizerManager.GetRecognizer(_request.Config.engine_id);
 
-                Dictionary<string, List<string>> contexts = GetContexts(request.Config, classifierManager);
+                Dictionary<string, List<string>> contexts = GetContexts(_request.Config, _classifierManager);
 
                 var recognition = await recognizer.SyncRecognition(
-                    request.audio,
-                    request.Config.encoding,
-                    request.Config.sample_rate,
-                    request.Config.language_code,
+                    _request.audio,
+                    _request.Config.encoding,
+                    _request.Config.sample_rate,
+                    _request.Config.language_code,
                     contexts);
 
                 //
-                pipeline.SpeechResult = new SpeechResult(SpeechResult.Modes.ASR);
-                pipeline.SpeechResult.Transcript = recognition.Transcript;
-                pipeline.SpeechResult.Confidence = recognition.Confidence;
+                pipeline.Result = new VoiseResult(VoiseResult.Modes.ASR);
+                pipeline.Result.Transcript = recognition.Transcript;
+                pipeline.Result.Confidence = recognition.Confidence;
             }
             catch (Exception e)
             {
                 if (e is BadEncodingException || e is BadAudioException)
                 {
-                    log.Info($"{e.Message} [Client: {client.RemoteEndPoint().ToString()}]");
+                    log.Info($"{e.Message} [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
                 else
                 {
-                    log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {client.RemoteEndPoint().ToString()}]");
+                    log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
 
-                SendError(client, e);
+                SendError(e);
                 return;
             }
 
             try
             {
-                if (request.Config.model_name != null && pipeline.SpeechResult.Transcript != null)
+                if (_request.Config.model_name != null && pipeline.Result.Transcript != null)
                 {
-                    if (pipeline.SpeechResult.Transcript == NoResultSpeechRecognitionAlternative.Default.Transcript)
+                    if (pipeline.Result.Transcript == SpeechRecognitionResult.NoResult.Transcript)
                     {
-                        pipeline.SpeechResult.Intent = NoResultSpeechRecognitionAlternative.Default.Transcript;
-                        pipeline.SpeechResult.Probability = 1;
+                        pipeline.Result.Intent = SpeechRecognitionResult.NoResult.Transcript;
+                        pipeline.Result.Probability = 1;
                     }
                     else
                     {
-                        var classification = await classifierManager.ClassifyAsync(
-                            request.Config.model_name,
-                            pipeline.SpeechResult.Transcript);
+                        var classification = await _classifierManager.ClassifyAsync(
+                            _request.Config.model_name,
+                            pipeline.Result.Transcript);
 
-                        pipeline.SpeechResult.Intent = classification.ClassName;
-                        pipeline.SpeechResult.Probability = classification.Probability;
+                        pipeline.Result.Intent = classification.ClassName;
+                        pipeline.Result.Probability = classification.Probability;
                     }
                 }
 
-                log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {client.RemoteEndPoint().ToString()}]");
+                log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
-                SendResult(client, pipeline.SpeechResult);
+                SendResult(pipeline.Result);
             }
             catch (Exception e)
             {
-                log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {client.RemoteEndPoint().ToString()}]");
+                log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
-                SendError(client, e);
+                SendError(e);
             }
             finally
             {
-                pipeline = client.CurrentPipeline = null;
+                pipeline = _client.CurrentPipeline = null;
             }
         }
     }
