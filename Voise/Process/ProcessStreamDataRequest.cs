@@ -26,13 +26,13 @@ namespace Voise.Process
                 {
                     byte[] data = Convert.FromBase64String(_request.data);
 
-                    log.Debug($"Receiving stream data ({data.Length} bytes) at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                    log.Debug($"Receiving stream data ({data.Length} bytes) at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                     _client.StreamIn?.Write(data);
                 }
                 catch (Exception e)
                 {
-                    log.Error($"{e.Message}\nStackTrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                    log.Error($"{e.Message}\nStackTrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
             });
         }

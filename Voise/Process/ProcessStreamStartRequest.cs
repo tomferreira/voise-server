@@ -33,7 +33,7 @@ namespace Voise.Process
             // This client already is streaming audio.
             if (_client.StreamIn != null)
             {
-                log.Error($"Client already is streaming audio. [Client: {_client.RemoteEndPoint().ToString()}]");
+                log.Error($"Client already is streaming audio. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(new Exception("Client already is streaming audio."));
                 return;
@@ -41,7 +41,7 @@ namespace Voise.Process
 
             var pipeline = _client.CurrentPipeline = new Pipeline();
 
-            log.Info($"Starting stream request with engine '{_request.Config.engine_id}' at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint().ToString()}]");
+            log.Info($"Starting stream request with engine '{_request.Config.engine_id}' at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             try
             {
@@ -76,11 +76,11 @@ namespace Voise.Process
 
                 if (e is BadEncodingException || e is BadAudioException)
                 {
-                    log.Info($"{e.Message} [Client: {_client.RemoteEndPoint().ToString()}]");
+                    log.Info($"{e.Message} [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
                 else
                 {
-                    log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                    log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
 
                 SendError(e);
@@ -97,7 +97,7 @@ namespace Voise.Process
                 // Cleanup streamIn
                 _client.StreamIn = null;
 
-                log.Error($"{pipeline.AsyncStreamError.Message}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                log.Error($"{pipeline.AsyncStreamError.Message}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(pipeline.AsyncStreamError);
                 return;
@@ -123,21 +123,24 @@ namespace Voise.Process
                     }
                 }
 
-                log.Info($"Stream request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                log.Info($"Stream request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
+
+                // Cleanup streamIn
+                _client.StreamIn = null;
 
                 SendResult(pipeline.Result);
             }
             catch (Exception e)
             {
-                log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint().ToString()}]");
+                // Cleanup streamIn
+                _client.StreamIn = null;
+
+                log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(e);
             }
             finally
             {
-                // Cleanup streamIn
-                _client.StreamIn = null;
-
                 pipeline = _client.CurrentPipeline = null;
             }
         }

@@ -24,7 +24,7 @@ namespace Voise.Process
         {
             ILog log = LogManager.GetLogger(typeof(ProcessStreamStopRequest));
 
-            log.Info($"Stoping stream request at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint().ToString()}]");
+            log.Info($"Stoping stream request at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             try
             {
@@ -42,7 +42,7 @@ namespace Voise.Process
                 Exception deepestException = e.InnerException ?? e;
 
                 _client.CurrentPipeline.AsyncStreamError = deepestException;
-                log.Error($"{deepestException?.Message} [Client: {_client.RemoteEndPoint().ToString()}]");
+                log.Error($"{deepestException?.Message} [Client: {_client.RemoteEndPoint.ToString()}]");
             }
 
             // Avisa à pipeline que pode continuar.
