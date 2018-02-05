@@ -28,7 +28,7 @@ namespace Voise.Process
             // This client already is receiving stream.
             if (_client.StreamOut != null)
             {
-                log.Error($"Client already is receiving stream. [Client: {_client.RemoteEndPoint.ToString()}]");
+                log.Warn($"Client already is receiving stream. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(new Exception("Client already is receiving stream."));
                 return;
