@@ -85,7 +85,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
 
         protected void ConversationErrorHandler(object sender, SpeechErrorEventArgs e)
         {
-            _log.Error($"{e.SpeechErrorText} Code: {e.SpeechErrorCode.ToString()}");
+            _log.Error($"{e.SpeechErrorText} [Code: {e.SpeechErrorCode.ToString()}]");
 
             lock (_monitorCompleted)
             {
@@ -124,7 +124,17 @@ namespace Voise.Recognizer.Provider.Azure.Job
             {
                 // FIXME: This isn't the best approach, but the Dispose method 
                 // is take 2 sec, and its very slow.
-                Task.Run(() => _recognitionClient.Dispose());
+                Task.Run(() => {
+                    try
+                    {
+                        _recognitionClient.Dispose();
+                    }
+                    catch
+                    {
+                        // Do nothing.
+                    }
+                });
+
             }
 
             _disposed = true;

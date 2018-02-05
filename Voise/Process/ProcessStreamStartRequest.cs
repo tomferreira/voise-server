@@ -33,7 +33,7 @@ namespace Voise.Process
             // This client already is streaming audio.
             if (_client.StreamIn != null)
             {
-                log.Error($"Client already is streaming audio. [Client: {_client.RemoteEndPoint.ToString()}]");
+                log.Warn($"Client already is streaming audio. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(new Exception("Client already is streaming audio."));
                 return;
