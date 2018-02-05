@@ -79,7 +79,14 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 
         private void ConsumeStreamData(object sender, StreamInEventArgs e)
         {
-            _ss.Write(e.Buffer, 0, e.BytesStreamed);
+            try
+            {
+                _ss.Write(e.Buffer, 0, e.BytesStreamed);
+            }
+            catch(System.Exception ex)
+            {
+                _log.Error($"There was a problem writing the chunck of audio on the speach streamer: {ex.Message}");
+            }
         }
 
         public async Task StopAsync()
