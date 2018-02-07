@@ -16,7 +16,7 @@ namespace Voise
     {
         public static void Main(string[] args)
         {
-#if DEBUG
+//#if DEBUG
             BasicConfigurator.Configure();
 
             try
@@ -36,9 +36,9 @@ namespace Voise
 
                 log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
             }
-#else
-            Console.WriteLine("To Start Voise Server, use the Windows Service.");
-#endif
+//#else
+            //Console.WriteLine("To Start Voise Server, use the Windows Service.");
+//#endif
         }
 
         private Server _tcpServer;

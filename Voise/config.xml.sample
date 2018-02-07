@@ -5,7 +5,7 @@
 
     <recognizers>
         <!-- Default: me -->
-        <!--<enabled>me,ge,ze</enabled>-->
+        <!--<enabled>me,ge,ze,ce</enabled>-->
 
         <!--
         <google>
@@ -15,6 +15,12 @@
         <azure>            
             <primarykey></primarykey>
         </azure>
+		
+		    <cpqd>
+		        <userName></userName>
+            <password></password>
+            <host></host>
+		    </cpqd>
         -->
     </recognizers>
 
