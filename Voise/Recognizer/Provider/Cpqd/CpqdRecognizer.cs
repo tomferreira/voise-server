@@ -17,14 +17,14 @@ namespace Voise.Recognizer.Provider.Cpqd
         private readonly LanguageModelList _modelList;
 
 
-        public CpqdRecognizer(string userName, string password, string host)
+        public CpqdRecognizer(string username, string password, string host)
         {
             _config = new ClientConfig
             {
                 ServerUrl = host,
                 Credentials = new Credentials
                 {
-                    UserName = userName,
+                    UserName = username,
                     Password = password
                 },
                 RecogConfig = new RecognitionConfig

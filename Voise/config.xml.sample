@@ -12,15 +12,15 @@
             <credential_path></credential_path>
         </google>
 
-        <azure>            
+        <azure>
             <primarykey></primarykey>
         </azure>
-		
-		    <cpqd>
-		        <userName></userName>
+        
+        <cpqd>
+            <username></username>
             <password></password>
             <host></host>
-		    </cpqd>
+        </cpqd>
         -->
     </recognizers>
 

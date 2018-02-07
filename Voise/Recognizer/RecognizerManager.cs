@@ -42,11 +42,11 @@ namespace Voise.Recognizer
 
             if (recognizersEnabled.Contains(CpqdRecognizer.ENGINE_IDENTIFIER))
             {
-                var userName = config.GetRecognizerAttribute("cpqd", "userName");
+                var username = config.GetRecognizerAttribute("cpqd", "username");
                 var password = config.GetRecognizerAttribute("cpqd", "password");
                 var host = config.GetRecognizerAttribute("cpqd", "host");
 
-                _recognizers.Add(CpqdRecognizer.ENGINE_IDENTIFIER, new CpqdRecognizer(userName, password, host));
+                _recognizers.Add(CpqdRecognizer.ENGINE_IDENTIFIER, new CpqdRecognizer(username, password, host));
             }
         }
 
