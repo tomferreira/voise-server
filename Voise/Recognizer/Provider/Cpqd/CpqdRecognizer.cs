@@ -12,10 +12,8 @@ namespace Voise.Recognizer.Provider.Cpqd
     {
         internal const string ENGINE_IDENTIFIER = "ce";
 
-
         private readonly ClientConfig _config;
         private readonly LanguageModelList _modelList;
-
 
         public CpqdRecognizer(string username, string password, string host)
         {
@@ -41,7 +39,6 @@ namespace Voise.Recognizer.Provider.Cpqd
 
             _modelList = new LanguageModelList();
             _modelList.AddFromUri("builtin:slm/general");
-            
         }
 
         protected override ISyncJob CreateSyncJob(string audio_base64, string encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)

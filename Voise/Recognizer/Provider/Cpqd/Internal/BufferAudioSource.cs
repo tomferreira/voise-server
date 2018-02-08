@@ -12,8 +12,6 @@ namespace Voise.Recognizer.Provider.Cpqd.Internal
 
         private AutoResetEvent _writeEvent;
 
-        
-
         public BufferAudioSource()
         {
             _writeEvent = new AutoResetEvent(false);

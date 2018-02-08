@@ -17,7 +17,6 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
             _streamIn = streamIn;
             _streamIn.DataAvailable += ConsumeStreamData;
             _streamIn.StreamingStopped += StreamingStopped;
-
         }
 
         public Task StartAsync()
@@ -31,8 +30,6 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
                 _streamIn.Start();
             });
         }
-
-
 
         public Task StopAsync()
         {

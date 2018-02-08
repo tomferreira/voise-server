@@ -89,8 +89,7 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
 
             _speechRecognizer?.Dispose();
 
-            _disposed = true;
-            
+            _disposed = true;   
         }
     }
 
