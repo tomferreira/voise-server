@@ -42,6 +42,12 @@
       <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CPqDAsr, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CPqDAsr.1.0.0\lib\netstandard2.0\CPqDAsr.dll</HintPath>
+    </Reference>
+    <Reference Include="CPqDWebSocketStandard, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CPqDWebSocketStandard.1.0.0\lib\netstandard2.0\CPqDWebSocketStandard.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Api.CommonProtos, Version=1.1.0.0, Culture=neutral, PublicKeyToken=3ec5ea7f18953e47, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Api.CommonProtos.1.1.0\lib\net45\Google.Api.CommonProtos.dll</HintPath>
       <Private>True</Private>
@@ -174,11 +180,11 @@
       <HintPath>..\packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime.InteropServices, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="System.Runtime.InteropServices, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.InteropServices.4.3.0\lib\net462\System.Runtime.InteropServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
       <Private>True</Private>
     </Reference>
@@ -233,6 +239,12 @@
     <Compile Include="Classification\Classifier\SMOTextClassifier.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Process\ProcessFactory.cs" />
+    <Compile Include="Recognizer\Provider\Cpqd\AudioEncoding.cs" />
+    <Compile Include="Recognizer\Provider\Cpqd\CpqdRecognizer.cs" />
+    <Compile Include="Recognizer\Provider\Cpqd\Internal\BufferAudioSource.cs" />
+    <Compile Include="Recognizer\Provider\Cpqd\Job\Base.cs" />
+    <Compile Include="Recognizer\Provider\Cpqd\Job\StreamingJob.cs" />
+    <Compile Include="Recognizer\Provider\Cpqd\Job\SyncJob.cs" />
     <Compile Include="Recognizer\Provider\Google\Internal\RecognizerStream.cs" />
     <Compile Include="Recognizer\Provider\Google\Internal\SpeechRecognizer.cs" />
     <Compile Include="Process\ProcessStreamStopRequest.cs" />

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Voise.Recognizer.Provider.Azure;
 using Voise.Recognizer.Provider.Common;
+using Voise.Recognizer.Provider.Cpqd;
 using Voise.Recognizer.Provider.Google;
 using Voise.Recognizer.Provider.Microsoft;
 
@@ -37,6 +38,15 @@ namespace Voise.Recognizer
                 string primaryKey = config.GetRecognizerAttribute("azure", "primarykey");
 
                 _recognizers.Add(AzureRecognizer.ENGINE_IDENTIFIER, new AzureRecognizer(primaryKey));
+            }
+
+            if (recognizersEnabled.Contains(CpqdRecognizer.ENGINE_IDENTIFIER))
+            {
+                var username = config.GetRecognizerAttribute("cpqd", "username");
+                var password = config.GetRecognizerAttribute("cpqd", "password");
+                var host = config.GetRecognizerAttribute("cpqd", "host");
+
+                _recognizers.Add(CpqdRecognizer.ENGINE_IDENTIFIER, new CpqdRecognizer(username, password, host));
             }
         }
 

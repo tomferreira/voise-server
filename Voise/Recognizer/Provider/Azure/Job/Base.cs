@@ -16,7 +16,6 @@ namespace Voise.Recognizer.Provider.Azure.Job
         protected readonly object _monitorCompleted;
 
         protected ILog _log;
-
         protected bool _disposed;
 
         public SpeechRecognitionResult BestAlternative { get; protected set; }
