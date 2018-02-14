@@ -124,17 +124,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
             {
                 // FIXME: This isn't the best approach, but the Dispose method 
                 // is take 2 sec, and its very slow.
-                Task.Run(() => {
-                    try
-                    {
-                        _recognitionClient.Dispose();
-                    }
-                    catch
-                    {
-                        // Do nothing.
-                    }
-                });
-
+                // _recognitionClient.Dispose();
             }
 
             _disposed = true;
