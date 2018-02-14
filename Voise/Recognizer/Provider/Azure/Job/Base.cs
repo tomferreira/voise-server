@@ -69,10 +69,11 @@ namespace Voise.Recognizer.Provider.Azure.Job
         {
             if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.RecognitionSuccess)
             {
-                RecognizedPhrase bestResult = e.PhraseResponse.Results.OrderByDescending(x => (int)x.Confidence).First();
+                RecognizedPhrase alternative = 
+                    e.PhraseResponse.Results.OrderByDescending(x => (int)x.Confidence).First();
 
                 BestAlternative = new SpeechRecognitionResult(
-                    bestResult.DisplayText, ConvertConfidence(bestResult.Confidence));
+                    alternative.DisplayText, ConvertConfidence(alternative.Confidence));
             }
 
             lock (_monitorCompleted)
