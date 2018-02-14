@@ -239,6 +239,7 @@
     <Compile Include="Classification\Classifier\SMOTextClassifier.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Process\ProcessFactory.cs" />
+    <Compile Include="Recognizer\Provider\Cpqd\AudioEncoding.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\CpqdRecognizer.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\Internal\BufferAudioSource.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\Job\Base.cs" />

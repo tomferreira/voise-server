@@ -11,9 +11,11 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
     {
         private readonly AudioStream _streamIn;
 
-        public StreamingJob(ClientConfig config, AudioStream streamIn, LanguageModelList modelList)
-        : base(config, modelList)
+        public StreamingJob(ClientConfig config, AudioStream streamIn, LanguageModelList modelList, AudioEncoding encoding, int sampleRate, string languageCode)
+            : base(config, modelList)
         {
+            ValidateArguments(encoding, sampleRate, languageCode);
+
             _streamIn = streamIn;
             _streamIn.DataAvailable += ConsumeStreamData;
             _streamIn.StreamingStopped += StreamingStopped;

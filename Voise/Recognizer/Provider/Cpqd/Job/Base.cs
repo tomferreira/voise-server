@@ -41,6 +41,16 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
             BestAlternative = SpeechRecognitionResult.NoResult;
         }
 
+        protected void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode)
+        {
+            if (encoding == AudioEncoding.EncodingUnspecified)
+                throw new BadEncodingException("Encoding is invalid.");
+
+            // For while, only sample rate of 8000 Hz is accept by CPqD server.
+            if (sampleRate != 8000)
+                throw new BadEncodingException("Sample rate is invalid.");
+        }
+
         private void OnError()
         {
             _log.Error("There was occurred a unknowed error.");

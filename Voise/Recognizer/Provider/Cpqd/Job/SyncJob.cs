@@ -8,11 +8,11 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
 {
     internal class SyncJob : Base, ISyncJob
     {
-        public SyncJob(ClientConfig config,
-                       LanguageModelList modelList,
-                       string audio_base64)
-        :base (config, modelList)
+        public SyncJob(ClientConfig config, LanguageModelList modelList, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
+            : base (config, modelList)
         {
+            ValidateArguments(encoding, sampleRate, languageCode);
+
             var audioBytes = Util.ConvertAudioToBytes(audio_base64);
             _audioSource = new Internal.BufferAudioSource(audioBytes);
         }
