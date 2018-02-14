@@ -1,5 +1,6 @@
 ﻿using CPqDAsr.ASR;
 using CPqDASR.Config;
+using log4net;
 using System.Threading;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
@@ -9,7 +10,7 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
     internal class SyncJob : Base, ISyncJob
     {
         public SyncJob(ClientConfig config, LanguageModelList modelList, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
-            : base (config, modelList)
+            : base (LogManager.GetLogger(typeof(SyncJob)), config, modelList)
         {
             ValidateArguments(encoding, sampleRate, languageCode);
 

@@ -1,5 +1,6 @@
 ﻿using CPqDAsr.ASR;
 using CPqDASR.Config;
+using log4net;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
         private readonly AudioStream _streamIn;
 
         public StreamingJob(ClientConfig config, AudioStream streamIn, LanguageModelList modelList, AudioEncoding encoding, int sampleRate, string languageCode)
-            : base(config, modelList)
+            : base(LogManager.GetLogger(typeof(StreamingJob)), config, modelList)
         {
             ValidateArguments(encoding, sampleRate, languageCode);
 

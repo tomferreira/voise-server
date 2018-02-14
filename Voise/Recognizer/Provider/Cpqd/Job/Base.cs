@@ -5,7 +5,6 @@ using CPqDASR.Config;
 using CPqDASR.Entities;
 using log4net;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Voise.Recognizer.Exception;
@@ -26,8 +25,10 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
 
         public SpeechRecognitionResult BestAlternative { get; private set; }
 
-        internal Base(ClientConfig config, LanguageModelList modelList)
+        internal Base(ILog log, ClientConfig config, LanguageModelList modelList)
         {
+            _log = log;
+
             _monitorCompleted = new object();
             _completed = false;
 
