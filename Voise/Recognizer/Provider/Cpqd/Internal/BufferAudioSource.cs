@@ -20,7 +20,8 @@ namespace Voise.Recognizer.Provider.Cpqd.Internal
             _monitorFinished = new object();
         }
 
-        public BufferAudioSource(byte[] bytes) : this()
+        public BufferAudioSource(byte[] bytes) 
+            : this()
         {
             _buffer.Enqueue(bytes);
         }
@@ -54,7 +55,7 @@ namespace Voise.Recognizer.Provider.Cpqd.Internal
                         return _buffer.Dequeue();
                 }
 
-                // If not closed, wait for a buffered write
+                // If not finished, wait for a buffered write
                 _writeEvent.WaitOne(50, true);
             }
         }

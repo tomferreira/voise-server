@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using CPqDAsr.ASR;
+﻿using CPqDAsr.ASR;
 using CPqDASR;
 using CPqDASR.ASR;
 using CPqDASR.Config;
 using CPqDASR.Entities;
-using BufferAudioSource = Voise.Recognizer.Provider.Cpqd.Internal.BufferAudioSource;
+using log4net;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Voise.Recognizer.Exception;
 
 namespace Voise.Recognizer.Provider.Cpqd.Job
 {
@@ -15,10 +16,12 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
     {
         protected readonly SpeechRecognizer _speechRecognizer;
         protected LanguageModelList _modelList;
-        protected BufferAudioSource _audioSource;
+        protected Internal.BufferAudioSource _audioSource;
 
         protected object _monitorCompleted;
         protected bool _completed;
+
+        protected ILog _log;
         private bool _disposed;
 
         public SpeechRecognitionResult BestAlternative { get; private set; }
@@ -33,46 +36,31 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
             _speechRecognizer.OnError += OnError;
 
             _modelList = modelList;
+
+            // Set as default alternative
+            BestAlternative = SpeechRecognitionResult.NoResult;
         }
 
         private void OnError()
         {
-            throw new System.NotImplementedException();
+            _log.Error("There was occurred a unknowed error.");
         }
 
         private void OnRecognitionResult(RecognitionResult result)
         {
-            GetResult(new List<RecognitionResult> { result });
+            if (result.ResultCode.HasValue && result.ResultCode.Value == RecognitionResultCode.RECOGNIZED)
+            {
+                RecognitionAlternative bestResult =
+                    result.Alternatives.OrderByDescending(x => x.Confidence).First();
+
+                BestAlternative = new SpeechRecognitionResult(
+                    bestResult.Text, (float)bestResult.Confidence / 100);
+            }
 
             lock (_monitorCompleted)
             {
                 _completed = true;
                 Monitor.Pulse(_monitorCompleted);
-            }
-        }
-
-        private void GetResult(List<RecognitionResult> recognitionResults)
-        {
-            if (!recognitionResults.Any(x => x.ResultCode.HasValue && x.ResultCode.Value == RecognitionResultCode.RECOGNIZED))
-            {
-                BestAlternative = SpeechRecognitionResult.NoResult;
-                return;
-            }
-
-            BestAlternative = new SpeechRecognitionResult("", 0);
-
-            foreach (var recognitionResult in recognitionResults.Where(x => x.ResultCode.HasValue && x.ResultCode.Value == RecognitionResultCode.RECOGNIZED))
-            {
-                foreach (var alternative in recognitionResult.Alternatives)
-                {
-                    if ((float)alternative.Confidence / 100 > BestAlternative.Confidence)
-                    {
-                        var speechRecognitionResult =
-                            new SpeechRecognitionResult(recognitionResult.Alternatives[0].Text,
-                                (float)recognitionResult.Alternatives[0].Confidence / 100);
-                        BestAlternative = speechRecognitionResult;
-                    }
-                }
             }
         }
 
