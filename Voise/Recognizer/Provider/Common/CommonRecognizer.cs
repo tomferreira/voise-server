@@ -1,5 +1,5 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
 
@@ -7,11 +7,15 @@ namespace Voise.Recognizer.Provider.Common
 {
     internal abstract class CommonRecognizer
     {
+        private const int TIMEOUT_TASK_REMOVE_JOBS_ABORTED = 5 * 60 * 1000; // 5 minutes
+
         protected Dictionary<AudioStream, IStreamingJob> _streamingJobs;
 
         internal CommonRecognizer()
         {
             _streamingJobs = new Dictionary<AudioStream, IStreamingJob>();
+
+            InitRemoveJobsWithAbortedStream();
         }
 
         internal async Task<SpeechRecognitionResult> SyncRecognition(string audio_base64, string encoding,
@@ -65,5 +69,36 @@ namespace Voise.Recognizer.Provider.Common
 
         protected abstract IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts);
+
+
+        // This task runs in background mode and its responsible to stop the aborted audio streaming.
+        // The abort can occur when the socket connection is finished during the process of send audio streaming.
+        private void InitRemoveJobsWithAbortedStream()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        IEnumerable<AudioStream> abortedStreams = null;
+
+                        lock (_streamingJobs)
+                            abortedStreams = _streamingJobs.Keys.Where(s => s.IsAborted());
+
+                        foreach (AudioStream stream in abortedStreams)
+                            await StopStreamingRecognitionAsync(stream);
+                    }
+                    catch
+                    {
+                        // Ignore any exception
+                    }
+                    finally
+                    {
+                        await Task.Delay(TIMEOUT_TASK_REMOVE_JOBS_ABORTED);
+                    }
+                }
+            });
+        }
     }
 }
