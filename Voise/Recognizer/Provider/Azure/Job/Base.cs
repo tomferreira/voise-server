@@ -112,7 +112,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
+            // GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -125,6 +125,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
                 // FIXME: This isn't the best approach, but the Dispose method 
                 // is take 2 sec, and its very slow.
                 // _recognitionClient.Dispose();
+                _recognitionClient = null;
             }
 
             _disposed = true;
