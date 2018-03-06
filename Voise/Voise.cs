@@ -34,7 +34,15 @@ namespace Voise
                 ILog log = LogManager.GetLogger(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-                log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
+                if (e is AggregateException)
+                {
+                    foreach (var ie in (e as AggregateException).InnerExceptions)
+                        log.Fatal($"{ie.Message}\nStacktrace: {ie.StackTrace}");
+                }
+                else
+                {
+                    log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
+                }
             }
 #else
             Console.WriteLine("To Start Voise Server, use the Windows Service.");
