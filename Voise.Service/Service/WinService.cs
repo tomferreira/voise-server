@@ -35,7 +35,15 @@ namespace VoiseService.Service
             }
             catch (Exception e)
             {
-                Log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
+                if (e is AggregateException)
+                {
+                    foreach (var ie in (e as AggregateException).InnerExceptions)
+                        Log.Fatal($"{ie.Message}\nStacktrace: {ie.StackTrace}");
+                }
+                else
+                {
+                    Log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
+                }
 
                 return false;
             }
