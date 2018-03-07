@@ -74,7 +74,7 @@ namespace Voise.Classification.Classifier
             Evaluation evaluator = new Evaluation(data);
 
             evaluator.setDiscardPredictions(false);
-            evaluator.crossValidateModel(_wekaClassifier, data, K_FOLDS, new java.util.Random(42));
+            evaluator.crossValidateModel(_wekaClassifier, data, Math.Min(K_FOLDS, data.numInstances()), new java.util.Random(42));
 
             double waupr = evaluator.weightedAreaUnderPRC();
 

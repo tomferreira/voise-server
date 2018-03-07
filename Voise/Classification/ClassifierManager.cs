@@ -1,4 +1,6 @@
 ﻿using log4net;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -63,14 +65,27 @@ namespace Voise.Classification
 
             IEnumerable<string> directories = Directory.EnumerateDirectories(classifiersPath);
 
-            foreach(var directory in directories)
+            ConcurrentQueue<System.Exception> exceptions = new ConcurrentQueue<System.Exception>();
+
+            foreach (var directory in directories)
             {
                 IEnumerable<string> files = Directory.EnumerateFiles(directory, "*.arff");
 
-                Parallel.ForEach(files, (file) => {
-                    AddClassifier(file, new Classifier.LogisticTextClassifier());
+                Parallel.ForEach(files, (file) =>
+                {
+                    try
+                    {
+                        AddClassifier(file, new Classifier.LogisticTextClassifier());
+                    }
+                    catch(System.Exception e)
+                    {
+                        exceptions.Enqueue(e);
+                    }
                 });
             }
+
+            if (!exceptions.IsEmpty)
+                throw new AggregateException(exceptions);
         }
 
         private void AddClassifier(string path, Classifier.Base classifier)
