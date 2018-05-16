@@ -35,12 +35,21 @@ namespace VoiseService
 
                     // optional, when shutdown is supported
                     sc.WhenShutdown((s, hostControl) => s.Shutdown(hostControl));
-
                 });
 
                 x.RunAsLocalSystem();
 
                 x.StartAutomaticallyDelayed();
+
+                x.EnableServiceRecovery(r => {
+                    //
+                    r.RestartService(0);
+
+                    r.OnCrashOnly();
+
+                    // Number of days until the error count resets
+                    r.SetResetPeriod(1);
+                });
 
                 // Specifies that the service supports the shutdown service command.
                 x.EnableShutdown(); 

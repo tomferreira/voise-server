@@ -61,11 +61,11 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
         {
             if (result.ResultCode.HasValue && result.ResultCode.Value == RecognitionResultCode.RECOGNIZED)
             {
-                RecognitionAlternative bestResult =
+                RecognitionAlternative alternative =
                     result.Alternatives.OrderByDescending(x => x.Confidence).First();
 
                 BestAlternative = new SpeechRecognitionResult(
-                    bestResult.Text, (float)bestResult.Confidence / 100);
+                    alternative.Text, (float)alternative.Confidence / 100);
             }
 
             lock (_monitorCompleted)
