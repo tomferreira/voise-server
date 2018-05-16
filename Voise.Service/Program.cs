@@ -8,7 +8,7 @@ namespace VoiseService
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             // This will ensure that future calls to Directory.GetCurrentDirectory()
             // returns the actual executable directory and not something like C:\Windows\System32 
