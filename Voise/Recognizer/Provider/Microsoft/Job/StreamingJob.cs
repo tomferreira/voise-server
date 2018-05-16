@@ -69,7 +69,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                 _streamIn.Start();
 
                 _engine.RecognizeAsync(RecognizeMode.Single);
-            });
+            }).ConfigureAwait(false);
         }
 
         private void StreamingStopped(object sender, EventArgs e)
@@ -102,7 +102,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         protected override void Dispose(bool disposing)

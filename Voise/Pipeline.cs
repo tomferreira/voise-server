@@ -34,7 +34,7 @@ namespace Voise
 
         internal async Task WaitAsync()
         {
-            await _mutex.WaitAsync();
+            await _mutex.WaitAsync().ConfigureAwait(false);
         }
 
         internal void ReleaseMutex()

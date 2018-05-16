@@ -47,7 +47,9 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         public async Task StartAsync()
         {
-            _recognizerStream = await _recognizer.BeginStreamingRecognizeAsync(_config);
+            _recognizerStream = 
+                await _recognizer.BeginStreamingRecognizeAsync(_config);
+
             _requestQueue = new RequestQueue<ByteString>(_recognizerStream.RequestStream, 100);
 
             _streamIn.Start();
@@ -56,7 +58,7 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         private async void StreamingStopped(object sender, EventArgs e)
         {
-            await _requestQueue.CompleteAsync();
+            await _requestQueue.CompleteAsync().ConfigureAwait(false);
         }
 
         private void ConsumeStreamData(object sender, StreamInEventArgs e)

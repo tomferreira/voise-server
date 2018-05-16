@@ -53,7 +53,7 @@ namespace Voise.Synthesizer.Microsoft
                 _speechSynthesizer.SetOutputToNull();
 
                 _streamOut.Stop();
-            });
+            }).ConfigureAwait(false);
         }
 
         private void WaveStream_Progress(object sender, WaveStream.ProgressEventArgs e)

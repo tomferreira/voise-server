@@ -31,7 +31,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
-            });
+            }).ConfigureAwait(false);
         }
     }
 }

@@ -95,7 +95,7 @@ namespace Voise.Recognizer.Provider.Common
                     }
                     finally
                     {
-                        await Task.Delay(TIMEOUT_TASK_REMOVE_JOBS_ABORTED);
+                        await Task.Delay(TIMEOUT_TASK_REMOVE_JOBS_ABORTED).ConfigureAwait(false);
                     }
                 }
             });

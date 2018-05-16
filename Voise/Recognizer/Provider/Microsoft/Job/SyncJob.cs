@@ -60,7 +60,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
-            });
+            }).ConfigureAwait(false);
         }
     }
 }

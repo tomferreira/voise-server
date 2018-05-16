@@ -90,7 +90,7 @@ namespace Voise
             ProcessBase process = _processFactory.createProcess(client, request);
 
             if (process != null)
-                await process.ExecuteAsync();
+                await process.ExecuteAsync().ConfigureAwait(false);
         }
     }
 }
