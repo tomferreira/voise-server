@@ -32,7 +32,7 @@ namespace Voise.Synthesizer.Microsoft
                 job = _streamingJobs[streamOut];
             }
 
-            await job.SynthAsync(text);
+            await job.SynthAsync(text).ConfigureAwait(false);
 
             lock (_streamingJobs)
                 _streamingJobs.Remove(streamOut);

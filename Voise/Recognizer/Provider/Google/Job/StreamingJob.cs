@@ -47,8 +47,8 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         public async Task StartAsync()
         {
-            _recognizerStream = 
-                await _recognizer.BeginStreamingRecognizeAsync(_config);
+            _recognizerStream =
+                await _recognizer.BeginStreamingRecognizeAsync(_config).ConfigureAwait(false);
 
             _requestQueue = new RequestQueue<ByteString>(_recognizerStream.RequestStream, 100);
 
@@ -71,7 +71,7 @@ namespace Voise.Recognizer.Provider.Google.Job
         {
             var responses = _recognizerStream.ResponseStream;
 
-            while (await responses.MoveNext())
+            while (await responses.MoveNext().ConfigureAwait(false))
             {
                 var response = responses.Current;
 

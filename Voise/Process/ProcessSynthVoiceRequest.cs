@@ -66,7 +66,7 @@ namespace Voise.Process
 
                 pipeline.Result = new VoiseResult(VoiseResult.Modes.TTS);
 
-                await _synthetizer.SynthAsync(_client.StreamOut, _request.text);
+                await _synthetizer.SynthAsync(_client.StreamOut, _request.text).ConfigureAwait(false);
             }
             catch (Exception e)
             {
