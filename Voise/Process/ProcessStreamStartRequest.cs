@@ -24,7 +24,7 @@ namespace Voise.Process
             _request = request;
             _recognizerManager = recognizerManager;
             _classifierManager = classifierManager;
-    }
+        }
 
         internal override async Task ExecuteAsync()
         {

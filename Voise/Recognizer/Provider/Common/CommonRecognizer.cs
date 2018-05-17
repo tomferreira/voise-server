@@ -70,7 +70,6 @@ namespace Voise.Recognizer.Provider.Common
         protected abstract IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts);
 
-
         // This task runs in background mode and its responsible to stop the aborted audio streaming.
         // The abort can occur when the socket connection is finished during the process of send audio streaming.
         private void InitRemoveJobsWithAbortedStream()

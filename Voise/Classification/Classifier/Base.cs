@@ -37,7 +37,8 @@ namespace Voise.Classification.Classifier
         protected ILog _log;
 
         private string _modelName;
-        internal string ModelName {
+        internal string ModelName
+        {
             get
             {
                 return _modelName;
@@ -98,7 +99,7 @@ namespace Voise.Classification.Classifier
             Result result = InnerClassify(message);
 
             if (result != null)
-              return result;
+                return result;
 
             double[] probabilities = Distribution(message);
 

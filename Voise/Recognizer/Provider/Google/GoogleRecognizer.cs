@@ -59,7 +59,7 @@ namespace Voise.Recognizer.Provider.Google
         {
             var enc = ConvertAudioEncoding(encoding);
 
-            switch(enc)
+            switch (enc)
             {
                 case AudioEncoding.Flac:
                 case AudioEncoding.Linear16:

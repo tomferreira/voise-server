@@ -25,7 +25,7 @@ namespace Voise.Synthesizer.Microsoft
             Job job = null;
 
             lock (_streamingJobs)
-            { 
+            {
                 if (!_streamingJobs.ContainsKey(streamOut))
                     throw new System.Exception("Job not exists.");
 

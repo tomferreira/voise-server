@@ -29,7 +29,7 @@ namespace Voise
                 while (true)
                     Thread.Sleep(100);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ILog log = LogManager.GetLogger(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

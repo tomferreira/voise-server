@@ -3,12 +3,11 @@ using Microsoft.CognitiveServices.SpeechRecognition;
 using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Voise.Recognizer.Exception;
 
 namespace Voise.Recognizer.Provider.Azure.Job
 {
-    internal abstract class Base: IDisposable
+    internal abstract class Base : IDisposable
     {
         protected DataRecognitionClient _recognitionClient;
 

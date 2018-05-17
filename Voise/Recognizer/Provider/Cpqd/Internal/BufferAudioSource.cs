@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using CPqDASR.ASR;
+using System.Collections.Generic;
 using System.Threading;
-using CPqDASR.ASR;
 
 namespace Voise.Recognizer.Provider.Cpqd.Internal
 {
@@ -20,7 +20,7 @@ namespace Voise.Recognizer.Provider.Cpqd.Internal
             _monitorFinished = new object();
         }
 
-        public BufferAudioSource(byte[] bytes) 
+        public BufferAudioSource(byte[] bytes)
             : this()
         {
             _buffer.Enqueue(bytes);

@@ -57,7 +57,7 @@ namespace Voise.Process
                 };
 
                 _synthetizer.Create(
-                    _client.StreamOut, 
+                    _client.StreamOut,
                     encoding,
                     _request.Config.sample_rate,
                     _request.Config.language_code);
@@ -90,7 +90,7 @@ namespace Voise.Process
             _client.StreamOut = null;
 
             // Send end of stream
-            pipeline.Result.AudioContent = "";
+            pipeline.Result.AudioContent = string.Empty;
             SendResult(pipeline.Result);
 
             log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");

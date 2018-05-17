@@ -48,7 +48,7 @@ namespace Voise.TCP
         {
             IsOpen = false;
 
-            _listenSocket.Close();            
+            _listenSocket.Close();
             _listenSocket = null;
 
             lock (_connections)

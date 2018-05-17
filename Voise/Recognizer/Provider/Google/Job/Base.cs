@@ -8,7 +8,7 @@ using static Google.Cloud.Speech.V1.RecognitionConfig.Types;
 
 namespace Voise.Recognizer.Provider.Google.Job
 {
-    internal abstract class Base: IDisposable
+    internal abstract class Base : IDisposable
     {
         protected SpeechRecognizer _recognizer;
 

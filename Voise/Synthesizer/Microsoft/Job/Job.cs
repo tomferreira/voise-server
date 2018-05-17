@@ -20,7 +20,7 @@ namespace Voise.Synthesizer.Microsoft
             _streamOut = streamOut;
 
             _info = new SpeechAudioFormatInfo(
-                encoding.Format, sampleRate, encoding.BitsPerSample, 
+                encoding.Format, sampleRate, encoding.BitsPerSample,
                 encoding.ChannelCount, sampleRate * encoding.BitsPerSample / 8, encoding.BlockAlign, null);
 
             InstalledVoice voice = GetVoise(languageCode);

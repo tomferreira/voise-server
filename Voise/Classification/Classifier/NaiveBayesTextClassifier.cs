@@ -6,7 +6,7 @@ namespace Voise.Classification.Classifier
 {
     internal class NaiveBayesTextClassifier : Base
     {
-        internal NaiveBayesTextClassifier() 
+        internal NaiveBayesTextClassifier()
             : base()
         {
             _wekaClassifier = new NaiveBayesMultinomialText();

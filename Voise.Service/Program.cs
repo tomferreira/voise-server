@@ -43,7 +43,7 @@ namespace VoiseService
                 x.StartAutomaticallyDelayed();
 
                 // Specifies that the service supports the shutdown service command.
-                x.EnableShutdown(); 
+                x.EnableShutdown();
 
                 x.SetDescription(description);
                 x.SetDisplayName(displayName);
