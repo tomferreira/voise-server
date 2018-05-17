@@ -99,7 +99,8 @@ namespace Voise.Process
             }
             finally
             {
-                pipeline = _client.CurrentPipeline = null;
+                _client.CurrentPipeline.Dispose();
+                _client.CurrentPipeline = null;
             }
         }
     }

@@ -5,7 +5,7 @@ using Voise.Recognizer.Provider.Common;
 
 namespace Voise
 {
-    internal class Pipeline
+    internal class Pipeline : IDisposable
     {
         private static long _nextId = 1;
         private static object _lockNextId = new object();
@@ -39,6 +39,20 @@ namespace Voise
         internal void ReleaseMutex()
         {
             _mutex.Release();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _mutex.Dispose();
+            }
         }
     }
 }

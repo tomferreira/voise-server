@@ -36,6 +36,8 @@ namespace Voise.Synthesizer.Microsoft
 
             lock (_streamingJobs)
                 _streamingJobs.Remove(streamOut);
+
+            job.Dispose();
         }
 
         internal static AudioEncoding ConvertAudioEncoding(string encoding)

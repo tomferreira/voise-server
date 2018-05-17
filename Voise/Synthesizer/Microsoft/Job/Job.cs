@@ -1,11 +1,12 @@
 ﻿using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Synthesis;
+using System;
 using System.Threading.Tasks;
 using Voise.Synthesizer.Exception;
 
 namespace Voise.Synthesizer.Microsoft
 {
-    internal class Job
+    internal class Job : IDisposable
     {
         private SpeechSynthesizer _speechSynthesizer;
         private SpeechAudioFormatInfo _info;
@@ -53,6 +54,7 @@ namespace Voise.Synthesizer.Microsoft
                 _speechSynthesizer.SetOutputToNull();
 
                 _streamOut.Stop();
+                waveStream.Dispose();
             }).ConfigureAwait(false);
         }
 
@@ -79,6 +81,20 @@ namespace Voise.Synthesizer.Microsoft
             }
 
             return null;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _speechSynthesizer.Dispose();
+            }
         }
     }
 }

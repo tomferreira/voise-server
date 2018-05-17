@@ -95,7 +95,8 @@ namespace Voise.Process
 
             log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
-            pipeline = _client.CurrentPipeline = null;
+            _client.CurrentPipeline.Dispose();
+            _client.CurrentPipeline = null;
         }
     }
 }

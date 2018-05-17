@@ -91,6 +91,8 @@ namespace Voise.TCP
 
         private void ClearClientConnection(ClientConnection client)
         {
+            client.Dispose();
+
             lock (_connections)
             {
                 // Remove closed client

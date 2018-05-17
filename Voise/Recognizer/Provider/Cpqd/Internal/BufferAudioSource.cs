@@ -1,10 +1,11 @@
 ﻿using CPqDASR.ASR;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace Voise.Recognizer.Provider.Cpqd.Internal
 {
-    public class BufferAudioSource : IAudioSource
+    public class BufferAudioSource : IAudioSource, IDisposable
     {
         private Queue<byte[]> _buffer;
         private bool _finished;
@@ -71,6 +72,20 @@ namespace Voise.Recognizer.Provider.Cpqd.Internal
             {
                 _finished = true;
                 Close();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _writeEvent.Dispose();
             }
         }
     }

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Voise
 {
-    internal class AudioStream
+    internal class AudioStream : IDisposable
     {
         /// <summary>
         /// Event Args for StreamIn event
@@ -178,6 +178,20 @@ namespace Voise
             }
 
             _currentBuffer = new MemoryStream(BufferCapacity);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _currentBuffer.Dispose();
+            }
         }
     }
 }
