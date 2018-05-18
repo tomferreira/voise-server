@@ -35,7 +35,8 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         public async Task StartAsync()
         {
-            RecognizeResponse response = await _recognizer.RecognizeAsync(_request.Config, _request.Audio);
+            RecognizeResponse response =
+                await _recognizer.RecognizeAsync(_request.Config, _request.Audio).ConfigureAwait(false);
 
             foreach (var result in response.Results)
             {

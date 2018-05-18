@@ -23,7 +23,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
 
         public async Task StartAsync()
         {
-            await Task.Run(() => _streamIn.Start());
+            await Task.Run(() => _streamIn.Start()).ConfigureAwait(false);
         }
 
         public async Task StopAsync()
@@ -39,7 +39,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         private void ConsumeStreamData(object sender, StreamInEventArgs e)

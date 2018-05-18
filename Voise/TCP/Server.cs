@@ -48,7 +48,7 @@ namespace Voise.TCP
         {
             IsOpen = false;
 
-            _listenSocket.Close();            
+            _listenSocket.Close();
             _listenSocket = null;
 
             lock (_connections)
@@ -91,6 +91,8 @@ namespace Voise.TCP
 
         private void ClearClientConnection(ClientConnection client)
         {
+            client.Dispose();
+
             lock (_connections)
             {
                 // Remove closed client

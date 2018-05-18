@@ -8,21 +8,21 @@ namespace Voise
 {
     public class Config
     {
-        private static string FILENAME_FULLPATH = "./config.xml";
+        private const string FILENAME_FULLPATH = "./config.xml";
 
         // General
-        private static int DEFAULT_PORT = 8102;
+        private const int DEFAULT_PORT = 8102;
 
         // Recognizer
-        private static List<string> DEFAULT_RECOGNIZERS_ENABLED = 
+        private static readonly List<string> DEFAULT_RECOGNIZERS_ENABLED =
             new List<string>() { Recognizer.Provider.Microsoft.MicrosoftRecognizer.ENGINE_IDENTIFIER };
 
         // Classifier
-        private static string DEFAULT_CLASSIFIERS_PATH = "./classifiers/";
+        private const string DEFAULT_CLASSIFIERS_PATH = "./classifiers/";
 
         // Tunning
-        private static bool DEFAULT_TUNNING_ENABLED = false;
-        private static string DEFAULT_TUNNING_PATH = "./tunning/";
+        private const bool DEFAULT_TUNNING_ENABLED = false;
+        private const string DEFAULT_TUNNING_PATH = "./tunning/";
 
         private XmlElement _element;
 
@@ -55,7 +55,7 @@ namespace Voise
         {
             get
             {
-                 string value = GetRecognizerAttribute("enabled");
+                string value = GetRecognizerAttribute("enabled");
 
                 if (value == null)
                     return DEFAULT_RECOGNIZERS_ENABLED;
@@ -73,10 +73,10 @@ namespace Voise
                 {
                     return _element.SelectSingleNode("classifiers_path").InnerText;
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return DEFAULT_CLASSIFIERS_PATH;
-                }                
+                }
             }
         }
 

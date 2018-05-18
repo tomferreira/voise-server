@@ -38,9 +38,9 @@ namespace Voise.Classification
             return classifier.GetTrainingList();
         }
 
-        internal async Task<Classifier.Base.Result> ClassifyAsync(string modelName, string message)
+        internal Task<Classifier.Base.Result> ClassifyAsync(string modelName, string message)
         {
-            if (modelName == null || modelName.Trim() == "")
+            if (modelName == null || modelName.Trim() == string.Empty)
                 throw new BadModelException("Model name is empty.");
 
             Classifier.Base classifier = null;
@@ -53,7 +53,7 @@ namespace Voise.Classification
                 classifier = _classifiers[modelName];
             }
 
-            return await Task.Run(() => classifier.Classify(message) );
+            return Task.Run(() => classifier.Classify(message));
         }
 
         private void LoadClassifiers(string classifiersPath)
@@ -77,7 +77,7 @@ namespace Voise.Classification
                     {
                         AddClassifier(file, new Classifier.LogisticTextClassifier());
                     }
-                    catch(System.Exception e)
+                    catch (System.Exception e)
                     {
                         exceptions.Enqueue(e);
                     }

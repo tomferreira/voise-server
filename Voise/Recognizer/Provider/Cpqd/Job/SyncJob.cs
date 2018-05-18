@@ -10,7 +10,7 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
     internal class SyncJob : Base, ISyncJob
     {
         public SyncJob(ClientConfig config, LanguageModelList modelList, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
-            : base (LogManager.GetLogger(typeof(SyncJob)), config, modelList)
+            : base(LogManager.GetLogger(typeof(SyncJob)), config, modelList)
         {
             ValidateArguments(encoding, sampleRate, languageCode);
 

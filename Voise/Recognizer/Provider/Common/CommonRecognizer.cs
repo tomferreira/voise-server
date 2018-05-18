@@ -23,7 +23,7 @@ namespace Voise.Recognizer.Provider.Common
         {
             using (ISyncJob job = CreateSyncJob(audio_base64, encoding, sampleRate, languageCode, contexts))
             {
-                await job.StartAsync();
+                await job.StartAsync().ConfigureAwait(false);
 
                 return job.BestAlternative;
             }
@@ -37,7 +37,7 @@ namespace Voise.Recognizer.Provider.Common
             lock (_streamingJobs)
                 _streamingJobs.Add(streamIn, job);
 
-            await job.StartAsync();
+            await job.StartAsync().ConfigureAwait(false);
         }
 
         internal async Task<SpeechRecognitionResult> StopStreamingRecognitionAsync(AudioStream streamIn)
@@ -52,7 +52,7 @@ namespace Voise.Recognizer.Provider.Common
                 job = _streamingJobs[streamIn];
             }
 
-            await job.StopAsync();
+            await job.StopAsync().ConfigureAwait(false);
 
             SpeechRecognitionResult result = job.BestAlternative;
 
@@ -70,7 +70,6 @@ namespace Voise.Recognizer.Provider.Common
         protected abstract IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts);
 
-
         // This task runs in background mode and its responsible to stop the aborted audio streaming.
         // The abort can occur when the socket connection is finished during the process of send audio streaming.
         private void InitRemoveJobsWithAbortedStream()
@@ -87,7 +86,7 @@ namespace Voise.Recognizer.Provider.Common
                             abortedStreams = _streamingJobs.Keys.Where(s => s.IsAborted());
 
                         foreach (AudioStream stream in abortedStreams)
-                            await StopStreamingRecognitionAsync(stream);
+                            await StopStreamingRecognitionAsync(stream).ConfigureAwait(false);
                     }
                     catch
                     {
@@ -95,7 +94,7 @@ namespace Voise.Recognizer.Provider.Common
                     }
                     finally
                     {
-                        await Task.Delay(TIMEOUT_TASK_REMOVE_JOBS_ABORTED);
+                        await Task.Delay(TIMEOUT_TASK_REMOVE_JOBS_ABORTED).ConfigureAwait(false);
                     }
                 }
             });

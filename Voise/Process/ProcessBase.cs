@@ -42,7 +42,7 @@ namespace Voise.Process
             {
                 var response = new VoiseResponse(ResponseCode.OK);
 
-                switch(result.Mode)
+                switch (result.Mode)
                 {
                     case VoiseResult.Modes.ASR:
                         response.utterance = result.Transcript;
@@ -67,7 +67,7 @@ namespace Voise.Process
             {
                 var response = new VoiseResponse(ResponseCode.NORESULT);
                 _client?.SendResponse(response);
-            }            
+            }
         }
 
         protected void SendAccept()
