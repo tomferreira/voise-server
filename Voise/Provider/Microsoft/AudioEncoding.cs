@@ -1,6 +1,6 @@
 ﻿using Microsoft.Speech.AudioFormat;
 
-namespace Voise.Synthesizer.Microsoft
+namespace Voise.Provider.Microsoft
 {
     internal class AudioEncoding
     {

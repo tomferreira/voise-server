@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Voise.Classification;
 using Voise.Process;
 using Voise.Recognizer;
-using Voise.Synthesizer.Microsoft;
+using Voise.Synthesizer;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -68,10 +68,10 @@ namespace Voise
             ClassifierManager classifierManager = new ClassifierManager(_config);
 
             // TTS
-            MicrosoftSynthetizer synthetizer = new MicrosoftSynthetizer();
+            SynthetizerManager synthetizerManager = new SynthetizerManager(_config);
 
             _processFactory = new ProcessFactory(
-                recognizerManager, synthetizer, classifierManager);
+                recognizerManager, synthetizerManager, classifierManager);
         }
 
         public void Start()

@@ -2,11 +2,13 @@
 using Microsoft.Speech.Synthesis;
 using System;
 using System.Threading.Tasks;
+using Voise.Provider.Microsoft;
 using Voise.Synthesizer.Exception;
+using Voise.Synthesizer.Provider.Common.Job;
 
-namespace Voise.Synthesizer.Microsoft
+namespace Voise.Synthesizer.Provider.Microsoft
 {
-    internal class Job : IDisposable
+    internal class Job : IJob
     {
         private SpeechSynthesizer _speechSynthesizer;
         private SpeechAudioFormatInfo _info;
@@ -32,7 +34,7 @@ namespace Voise.Synthesizer.Microsoft
             _speechSynthesizer.SelectVoice(voice.VoiceInfo.Name);
         }
 
-        internal async Task SynthAsync(string text)
+        public async Task SynthAsync(string text)
         {
             await Task.Run(() =>
             {

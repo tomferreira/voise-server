@@ -17,6 +17,10 @@ namespace Voise
         private static readonly List<string> DEFAULT_RECOGNIZERS_ENABLED =
             new List<string>() { Recognizer.Provider.Microsoft.MicrosoftRecognizer.ENGINE_IDENTIFIER };
 
+        // Synthetizer
+        private static readonly List<string> DEFAULT_SYNTHETIZERS_ENABLED =
+            new List<string>() { Synthesizer.Provider.Microsoft.MicrosoftSynthetizer.ENGINE_IDENTIFIER };
+
         // Classifier
         private const string DEFAULT_CLASSIFIERS_PATH = "./classifiers/";
 
@@ -59,6 +63,20 @@ namespace Voise
 
                 if (value == null)
                     return DEFAULT_RECOGNIZERS_ENABLED;
+
+                string[] elem = value.Split(';', ',');
+                return new List<string>(elem);
+            }
+        }
+
+        internal List<string> SynthetizersEnabled
+        {
+            get
+            {
+                string value = GetSynthetizerAttribute("enabled");
+
+                if (value == null)
+                    return DEFAULT_SYNTHETIZERS_ENABLED;
 
                 string[] elem = value.Split(';', ',');
                 return new List<string>(elem);
@@ -109,6 +127,11 @@ namespace Voise
         internal string GetRecognizerAttribute(params string[] identifiers)
         {
             return GetAttribute("recognizers", identifiers);
+        }
+
+        internal string GetSynthetizerAttribute(params string[] identifiers)
+        {
+            return GetAttribute("synthetizers", identifiers);
         }
 
         internal string GetTunningAttribute(params string[] identifiers)

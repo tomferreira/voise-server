@@ -7,8 +7,8 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Voise.Provider.Microsoft;
 using Voise.Recognizer.Provider.Common.Job;
-using Voise.Synthesizer.Microsoft;
 
 namespace Voise.Recognizer.Provider.Microsoft.Job
 {

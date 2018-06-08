@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using Voise.Provider.Microsoft;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Microsoft.Job;
-using Voise.Synthesizer.Microsoft;
 
 namespace Voise.Recognizer.Provider.Microsoft
 {

@@ -1,7 +1,7 @@
 ﻿
 using Voise.Classification;
 using Voise.Recognizer;
-using Voise.Synthesizer.Microsoft;
+using Voise.Synthesizer;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -10,13 +10,13 @@ namespace Voise.Process
     internal class ProcessFactory
     {
         private RecognizerManager _recognizerManager;
-        private MicrosoftSynthetizer _synthetizer;
+        private SynthetizerManager _synthetizerManager;
         private ClassifierManager _classifierManager;
 
-        internal ProcessFactory(RecognizerManager recognizerManager, MicrosoftSynthetizer synthetizer, ClassifierManager classifierManager)
+        internal ProcessFactory(RecognizerManager recognizerManager, SynthetizerManager synthetizerManager, ClassifierManager classifierManager)
         {
             _recognizerManager = recognizerManager;
-            _synthetizer = synthetizer;
+            _synthetizerManager = synthetizerManager;
             _classifierManager = classifierManager;
         }
 
@@ -49,7 +49,7 @@ namespace Voise.Process
             if (request.SynthVoiceRequest != null)
             {
                 return new ProcessSynthVoiceRequest(
-                    client, request.SynthVoiceRequest, _synthetizer);
+                    client, request.SynthVoiceRequest, _synthetizerManager);
             }
 
             return null;

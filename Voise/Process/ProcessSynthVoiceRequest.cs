@@ -1,8 +1,9 @@
 ﻿using log4net;
 using System;
 using System.Threading.Tasks;
+using Voise.Synthesizer;
 using Voise.Synthesizer.Exception;
-using Voise.Synthesizer.Microsoft;
+using Voise.Synthesizer.Provider.Common;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -11,13 +12,13 @@ namespace Voise.Process
     internal class ProcessSynthVoiceRequest : ProcessBase
     {
         private VoiseSynthVoiceRequest _request;
-        private MicrosoftSynthetizer _synthetizer;
+        private SynthetizerManager _synthetizerManager;
 
-        internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, MicrosoftSynthetizer synthetizer)
+        internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, SynthetizerManager synthetizerManager)
             : base(client)
         {
             _request = request;
-            _synthetizer = synthetizer;
+            _synthetizerManager = synthetizerManager;
         }
 
         // For while, its only implemented Microsoft Synthetizer
@@ -40,9 +41,11 @@ namespace Voise.Process
 
             try
             {
-                var encoding = MicrosoftSynthetizer.ConvertAudioEncoding(_request.Config.encoding);
+                CommonSynthetizer synthetizer = _synthetizerManager.GetSynthetizer(_request.Config.engine_id);
 
-                int bytesPerSample = encoding != AudioEncoding.EncodingUnspecified ? encoding.BitsPerSample / 8 : 1;
+                //var encoding = MicrosoftSynthetizer.ConvertAudioEncoding(_request.Config.encoding);
+                //int bytesPerSample = encoding != AudioEncoding.EncodingUnspecified ? encoding.BitsPerSample / 8 : 1;
+                int bytesPerSample = 2;
 
                 _client.StreamOut = new AudioStream(20, _request.Config.sample_rate, bytesPerSample);
 
@@ -56,17 +59,17 @@ namespace Voise.Process
                     SendResult(result);
                 };
 
-                _synthetizer.Create(
+                var job = synthetizer.SetSynth(
                     _client.StreamOut,
-                    encoding,
+                    _request.Config.encoding,
                     _request.Config.sample_rate,
                     _request.Config.language_code);
 
                 SendAccept();
 
-                pipeline.Result = new VoiseResult(VoiseResult.Modes.TTS);
+                await synthetizer.SynthAsync(job, _request.text).ConfigureAwait(false);
 
-                await _synthetizer.SynthAsync(_client.StreamOut, _request.text).ConfigureAwait(false);
+                pipeline.Result = new VoiseResult(VoiseResult.Modes.TTS);
             }
             catch (Exception e)
             {

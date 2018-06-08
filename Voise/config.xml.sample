@@ -24,6 +24,11 @@
         -->
     </recognizers>
 
+    <synthetizers>
+        <!-- Default: me -->
+        <!--<enabled>me</enabled>-->
+    </synthetizers>
+
     <!-- Default: ./classifiers/ -->
     <!--<classifiers_path>./classifiers/</classifiers_path>-->
 
