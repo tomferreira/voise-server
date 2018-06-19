@@ -32,7 +32,7 @@ namespace Voise.Process
                     throw new Exception("Engine not defined.");
 
                 var recognition =
-                    await _client.CurrentPipeline.Recognizer.StopStreamingRecognitionAsync(_client.StreamIn);
+                    await _client.CurrentPipeline.Recognizer.StopStreamingRecognitionAsync(_client.StreamIn).ConfigureAwait(false);
 
                 _client.CurrentPipeline.Result.Transcript = recognition.Transcript;
                 _client.CurrentPipeline.Result.Confidence = recognition.Confidence;

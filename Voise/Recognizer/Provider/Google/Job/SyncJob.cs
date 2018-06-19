@@ -1,30 +1,30 @@
-﻿using Google.Cloud.Speech.V1Beta1;
+﻿using Google.Cloud.Speech.V1;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Google.Internal;
-using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
+using static Google.Cloud.Speech.V1.RecognitionConfig.Types;
 
 namespace Voise.Recognizer.Provider.Google.Job
 {
     internal class SyncJob : Base, ISyncJob
     {
-        private SyncRecognizeRequest _config;
+        private RecognizeRequest _request;
 
         internal SyncJob(SpeechRecognizer recognizer, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base(recognizer)
         {
             ValidateArguments(encoding, sampleRate, languageCode);
 
-            _config = new SyncRecognizeRequest
+            _request = new RecognizeRequest
             {
                 Config = new RecognitionConfig
                 {
                     Encoding = encoding,
-                    SampleRate = sampleRate,
+                    SampleRateHertz = sampleRate,
                     MaxAlternatives = 5,
                     LanguageCode = languageCode,
-                    SpeechContext = CreateSpeechContext(contexts)
+                    SpeechContexts = { CreateSpeechContext(contexts) }
                 },
                 Audio = new RecognitionAudio()
                 {
@@ -35,7 +35,8 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         public async Task StartAsync()
         {
-            SyncRecognizeResponse response = await _recognizer.RecognizeAsync(_config.Config, _config.Audio);
+            RecognizeResponse response =
+                await _recognizer.RecognizeAsync(_request.Config, _request.Audio).ConfigureAwait(false);
 
             foreach (var result in response.Results)
             {

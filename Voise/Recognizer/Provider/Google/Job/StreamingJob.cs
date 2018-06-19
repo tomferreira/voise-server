@@ -1,4 +1,4 @@
-﻿using Google.Cloud.Speech.V1Beta1;
+﻿using Google.Cloud.Speech.V1;
 using Google.Protobuf;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Google.Internal;
-using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
+using static Google.Cloud.Speech.V1.RecognitionConfig.Types;
 using static Voise.AudioStream;
 
 namespace Voise.Recognizer.Provider.Google.Job
@@ -32,10 +32,10 @@ namespace Voise.Recognizer.Provider.Google.Job
                 Config = new RecognitionConfig
                 {
                     Encoding = encoding,
-                    SampleRate = sampleRate,
+                    SampleRateHertz = sampleRate,
                     MaxAlternatives = 5,
                     LanguageCode = languageCode,
-                    SpeechContext = CreateSpeechContext(contexts)
+                    SpeechContexts = { CreateSpeechContext(contexts) }
                 },
                 InterimResults = true
             };
@@ -47,7 +47,9 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         public async Task StartAsync()
         {
-            _recognizerStream = await _recognizer.BeginStreamingRecognizeAsync(_config);
+            _recognizerStream =
+                await _recognizer.BeginStreamingRecognizeAsync(_config).ConfigureAwait(false);
+
             _requestQueue = new RequestQueue<ByteString>(_recognizerStream.RequestStream, 100);
 
             _streamIn.Start();
@@ -56,7 +58,7 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         private async void StreamingStopped(object sender, EventArgs e)
         {
-            await _requestQueue.CompleteAsync();
+            await _requestQueue.CompleteAsync().ConfigureAwait(false);
         }
 
         private void ConsumeStreamData(object sender, StreamInEventArgs e)
@@ -69,7 +71,7 @@ namespace Voise.Recognizer.Provider.Google.Job
         {
             var responses = _recognizerStream.ResponseStream;
 
-            while (await responses.MoveNext())
+            while (await responses.MoveNext().ConfigureAwait(false))
             {
                 var response = responses.Current;
 

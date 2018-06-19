@@ -29,7 +29,7 @@ namespace Voise
                 while (true)
                     Thread.Sleep(100);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ILog log = LogManager.GetLogger(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -90,7 +90,7 @@ namespace Voise
             ProcessBase process = _processFactory.createProcess(client, request);
 
             if (process != null)
-                await process.ExecuteAsync();
+                await process.ExecuteAsync().ConfigureAwait(false);
         }
     }
 }

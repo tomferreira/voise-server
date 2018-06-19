@@ -41,12 +41,17 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 
             foreach (var context in contexts)
             {
-                GrammarBuilder gb = new GrammarBuilder();
-                gb.Culture = cultureInfo;
-                gb.Append(new Choices(context.Value.ToArray()));                
+                GrammarBuilder gb = new GrammarBuilder()
+                {
+                    Culture = cultureInfo
+                };
 
-                Grammar gram = new Grammar(gb);
-                gram.Name = context.Key;
+                gb.Append(new Choices(context.Value.ToArray()));
+
+                Grammar gram = new Grammar(gb)
+                {
+                    Name = context.Key
+                };
 
                 _engine.LoadGrammar(gram);
             }
@@ -69,7 +74,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                 _streamIn.Start();
 
                 _engine.RecognizeAsync(RecognizeMode.Single);
-            });
+            }).ConfigureAwait(false);
         }
 
         private void StreamingStopped(object sender, EventArgs e)
@@ -83,7 +88,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             {
                 _ss.Write(e.Buffer, 0, e.BytesStreamed);
             }
-            catch(System.Exception ex)
+            catch (System.Exception ex)
             {
                 _log.Error($"There was a problem writing the chunck of audio on the speach streamer: {ex.Message}");
             }
@@ -102,7 +107,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         protected override void Dispose(bool disposing)

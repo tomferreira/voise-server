@@ -25,17 +25,19 @@ namespace Voise.Synthesizer.Microsoft
             Job job = null;
 
             lock (_streamingJobs)
-            { 
+            {
                 if (!_streamingJobs.ContainsKey(streamOut))
                     throw new System.Exception("Job not exists.");
 
                 job = _streamingJobs[streamOut];
             }
 
-            await job.SynthAsync(text);
+            await job.SynthAsync(text).ConfigureAwait(false);
 
             lock (_streamingJobs)
                 _streamingJobs.Remove(streamOut);
+
+            job.Dispose();
         }
 
         internal static AudioEncoding ConvertAudioEncoding(string encoding)

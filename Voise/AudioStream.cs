@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Voise
 {
-    internal class AudioStream
+    internal class AudioStream : IDisposable
     {
         /// <summary>
         /// Event Args for StreamIn event
@@ -73,7 +73,7 @@ namespace Voise
             _state = State.Stopped;
             _monitorState = new object();
 
-            BufferCapacity = bufferMillisec * bytesPerSecond / 1000;            
+            BufferCapacity = bufferMillisec * bytesPerSecond / 1000;
             _buffers = new Queue<MemoryStream>();
 
             CreateBuffer();
@@ -98,7 +98,7 @@ namespace Voise
             // Enqueue current buffer to be send too
             if (_currentBuffer != null)
             {
-                lock(_buffers)
+                lock (_buffers)
                     _buffers.Enqueue(_currentBuffer);
             }
 
@@ -173,11 +173,25 @@ namespace Voise
         {
             if (_currentBuffer != null)
             {
-                lock(_buffers)
+                lock (_buffers)
                     _buffers.Enqueue(_currentBuffer);
             }
 
-            _currentBuffer = new MemoryStream(BufferCapacity);            
+            _currentBuffer = new MemoryStream(BufferCapacity);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _currentBuffer.Dispose();
+            }
         }
     }
 }

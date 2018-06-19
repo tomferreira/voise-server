@@ -9,7 +9,7 @@ using static Voise.TCP.Server;
 
 namespace Voise.TCP
 {
-    internal class ClientConnection
+    internal class ClientConnection : IDisposable
     {
         private const string DELIMITER = "<EOF>";
 
@@ -77,7 +77,6 @@ namespace Voise.TCP
 
                 _readEventArgs.Completed -= SockAsyncEventArgs_Completed;
                 _readEventArgs.SetBuffer(null, 0, 0);
-                _readEventArgs.Dispose();
 
                 try
                 {
@@ -167,6 +166,21 @@ namespace Voise.TCP
         private void HandleRequest(VoiseRequest request)
         {
             _hr?.Invoke(this, request);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _socket.Dispose();
+                _readEventArgs.Dispose();
+            }
         }
     }
 }

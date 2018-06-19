@@ -1,7 +1,7 @@
 ﻿using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
 using Google.Apis.Auth.OAuth2;
-using Google.Cloud.Speech.V1Beta1;
+using Google.Cloud.Speech.V1;
 using Grpc.Auth;
 using Grpc.Core;
 using System.IO;
@@ -43,14 +43,14 @@ namespace Voise.Recognizer.Provider.Google.Internal
             return new SpeechRecognizer(SpeechClient.Create(channel));
         }
 
-        public SyncRecognizeResponse Recognize(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
-            => _client.SyncRecognize(
+        public RecognizeResponse Recognize(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
+            => _client.Recognize(
                 GaxPreconditions.CheckNotNull(config, nameof(config)),
                 GaxPreconditions.CheckNotNull(audio, nameof(audio)),
                 callSettings);
 
-        public Task<SyncRecognizeResponse> RecognizeAsync(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
-            => _client.SyncRecognizeAsync(
+        public Task<RecognizeResponse> RecognizeAsync(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
+            => _client.RecognizeAsync(
                 GaxPreconditions.CheckNotNull(config, nameof(config)),
                 GaxPreconditions.CheckNotNull(audio, nameof(audio)),
                 callSettings);

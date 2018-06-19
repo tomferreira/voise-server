@@ -10,13 +10,6 @@ namespace Voise.Recognizer.Provider.Microsoft
     {
         internal const string ENGINE_IDENTIFIER = "me";
 
-        private Dictionary<AudioStream, StreamingJob> _streamingJobs;
-
-        internal MicrosoftRecognizer()
-        {
-            _streamingJobs = new Dictionary<AudioStream, StreamingJob>();
-        }
-
         protected override ISyncJob CreateSyncJob(string audio_base64, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {

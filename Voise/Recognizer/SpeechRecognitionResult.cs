@@ -12,7 +12,7 @@
         internal SpeechRecognitionResult(string transcript, float confidence)
         {
             Transcript = transcript;
-            Confidence = confidence;            
+            Confidence = confidence;
         }
     }
 }

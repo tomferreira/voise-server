@@ -51,7 +51,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 
         public async Task StartAsync()
         {
-            await Task.Run(() => 
+            await Task.Run(() =>
             {
                 _engine.RecognizeAsync();
 
@@ -60,7 +60,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
-            });
+            }).ConfigureAwait(false);
         }
     }
 }

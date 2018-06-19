@@ -34,7 +34,7 @@ namespace Voise.Process
                 {
                     log.Error($"{e.Message}\nStackTrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
-            });
+            }).ConfigureAwait(false);
         }
     }
 }

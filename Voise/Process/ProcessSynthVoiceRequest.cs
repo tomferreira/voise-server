@@ -57,7 +57,7 @@ namespace Voise.Process
                 };
 
                 _synthetizer.Create(
-                    _client.StreamOut, 
+                    _client.StreamOut,
                     encoding,
                     _request.Config.sample_rate,
                     _request.Config.language_code);
@@ -66,7 +66,7 @@ namespace Voise.Process
 
                 pipeline.Result = new VoiseResult(VoiseResult.Modes.TTS);
 
-                await _synthetizer.SynthAsync(_client.StreamOut, _request.text);
+                await _synthetizer.SynthAsync(_client.StreamOut, _request.text).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -90,12 +90,13 @@ namespace Voise.Process
             _client.StreamOut = null;
 
             // Send end of stream
-            pipeline.Result.AudioContent = "";
+            pipeline.Result.AudioContent = string.Empty;
             SendResult(pipeline.Result);
 
             log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
-            pipeline = _client.CurrentPipeline = null;
+            _client.CurrentPipeline.Dispose();
+            _client.CurrentPipeline = null;
         }
     }
 }

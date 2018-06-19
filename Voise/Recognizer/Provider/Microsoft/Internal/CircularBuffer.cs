@@ -11,7 +11,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
     /// be enqueued.
     /// </summary>
     /// <typeparam name="T">Type of the elements that will hold the buffer</typeparam>
-    public class CircularBuffer<T> : IEnumerable<T>, IDisposable
+    public class CircularBuffer<T> : IEnumerable<T>
     {
         /// <summary>
         /// Array containing the elements of the buffer
@@ -50,12 +50,6 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         {
             _buffer = new T[capacity];
             _sync = new object();
-        }
-
-        public void Dispose()
-        {
-            _buffer = null;
-            _sync = null;
         }
 
         /// <summary>

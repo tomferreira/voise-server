@@ -3,12 +3,11 @@ using Microsoft.CognitiveServices.SpeechRecognition;
 using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Voise.Recognizer.Exception;
 
 namespace Voise.Recognizer.Provider.Azure.Job
 {
-    internal abstract class Base: IDisposable
+    internal abstract class Base : IDisposable
     {
         protected DataRecognitionClient _recognitionClient;
 
@@ -16,7 +15,6 @@ namespace Voise.Recognizer.Provider.Azure.Job
         protected readonly object _monitorCompleted;
 
         protected ILog _log;
-
         protected bool _disposed;
 
         public SpeechRecognitionResult BestAlternative { get; protected set; }
@@ -70,10 +68,11 @@ namespace Voise.Recognizer.Provider.Azure.Job
         {
             if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.RecognitionSuccess)
             {
-                RecognizedPhrase bestResult = e.PhraseResponse.Results.OrderByDescending(x => (int)x.Confidence).First();
+                RecognizedPhrase alternative = 
+                    e.PhraseResponse.Results.OrderByDescending(x => (int)x.Confidence).First();
 
                 BestAlternative = new SpeechRecognitionResult(
-                    bestResult.DisplayText, ConvertConfidence(bestResult.Confidence));
+                    alternative.DisplayText, ConvertConfidence(alternative.Confidence));
             }
 
             lock (_monitorCompleted)
