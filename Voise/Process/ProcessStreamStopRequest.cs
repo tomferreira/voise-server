@@ -24,7 +24,7 @@ namespace Voise.Process
         {
             ILog log = LogManager.GetLogger(typeof(ProcessStreamStopRequest));
 
-            log.Info($"Stoping stream request at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
+            log.Info($"Stopping stream request at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             try
             {
