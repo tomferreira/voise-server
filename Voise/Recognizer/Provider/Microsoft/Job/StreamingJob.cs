@@ -88,9 +88,9 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             {
                 _ss.Write(e.Buffer, 0, e.BytesStreamed);
             }
-            catch (System.Exception ex)
+            catch (SpeechStreamer.BufferOverwrittenException)
             {
-                _log.Error($"There was a problem writing the chunck of audio on the speach streamer: {ex.Message}");
+                _log.Warn("SpeachStreamer's buffer has overwritten. It's recommended increase buffer size.");
             }
         }
 
@@ -116,7 +116,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                 return;
 
             if (disposing)
-                _ss.Close();
+                _ss.Dispose();
 
             base.Dispose(disposing);
         }
