@@ -97,11 +97,12 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
             {
                 lock (_writeEventObject)
                 {
-                    if (_writeEvent == null)
-                        break;
-
                     if (!_reset && _readposition >= _writeposition)
                     {
+                        // Whether was completed...
+                        if (_writeEvent == null)
+                            break;
+
                         _writeEvent.WaitOne(50, true);
                         continue;
                     }
@@ -119,7 +120,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
                 i++;
             }
 
-            return count;
+            return i;
         }
 
         /// <summary>
