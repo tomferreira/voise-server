@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 
 namespace Voise.Recognizer.Provider.Microsoft.Internal
@@ -8,6 +9,14 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
     // requested the speech recogniser assumes that the stream has finished.
     internal class SpeechStreamer : Stream
     {
+        internal class BufferOverwrittenException : System.Exception
+        {
+            internal BufferOverwrittenException()
+                : base()
+            {
+            }
+        }
+
         /// <summary>
         /// Object for synchronization between read and write
         /// </summary>
@@ -16,18 +25,24 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         /// <summary>
         /// Buffer containing the stream data
         /// </summary>
-        private CircularBuffer<byte> _buffer;
+        private List<byte> _buffer;
 
-        private bool _completed;
-        private object _monitorCompleted;
+        private int _buffersize;
+        private int _readposition;
+        private int _writeposition;
+        private bool _reset;
 
         public SpeechStreamer(int bufferSize)
         {
-            _buffer = new CircularBuffer<byte>(bufferSize);
             _writeEvent = new AutoResetEvent(false);
+            _buffersize = bufferSize;
+            _buffer = new List<byte>(_buffersize);
 
-            _monitorCompleted = new object();
-            _completed = false;
+            for (int i = 0; i < _buffersize; i++)
+                _buffer.Add(new byte());
+
+            _readposition = 0;
+            _writeposition = 0;
         }
 
         public override bool CanRead
@@ -74,27 +89,28 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         /// <returns></returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            while (true)
+            int i = 0;
+            while (i < count && _writeEvent != null)
             {
-                if (_buffer.TryGet(buffer, offset, count))
-                    return count;
-
-                // If completed, reads the rest of buffer
-                lock (_monitorCompleted)
+                if (!_reset && _readposition >= _writeposition)
                 {
-                    if (_completed)
-                    {
-                        count = _buffer.Count;
-                        _buffer.TryGet(buffer, offset, _buffer.Count);
-
-                        return count;
-                    }
+                    _writeEvent.WaitOne(50, true);
+                    continue;
                 }
 
-                // If not closed, wait for a buffered write
-                _writeEvent.WaitOne(50, true);
-                continue;
+                buffer[i] = _buffer[_readposition + offset];
+                _readposition++;
+
+                if (_readposition == _buffersize)
+                {
+                    _readposition = 0;
+                    _reset = false;
+                }
+
+                i++;
             }
+
+            return count;
         }
 
         /// <summary>
@@ -105,10 +121,27 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         /// <param name="count">Amount of bytes that will be written</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (!_buffer.TryAdd(buffer, offset, count))
-                throw new EndOfStreamException("Can not write more values to the Circular stream!");
+            bool overwritten = false;
+
+            for (int i = offset; i < offset + count; i++)
+            {
+                _buffer[_writeposition] = buffer[i];
+                _writeposition++;
+
+                if (_writeposition == _readposition)
+                    overwritten = true;
+
+                if (_writeposition == _buffersize)
+                {
+                    _writeposition = 0;
+                    _reset = true;
+                }
+            }
 
             _writeEvent.Set();
+
+            if (overwritten)
+                throw new BufferOverwrittenException();
         }
 
         /// <summary>
@@ -116,18 +149,17 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         /// </summary>
         public void Complete()
         {
-            lock (_monitorCompleted)
-                _completed = true;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            if (_writeEvent != null)
             {
                 _writeEvent.Close();
+                _writeEvent = null;
             }
+        }
 
-            base.Dispose(disposing);
+        public override void Close()
+        {
+            Complete();
+            base.Close();
         }
 
         public override void Flush()
