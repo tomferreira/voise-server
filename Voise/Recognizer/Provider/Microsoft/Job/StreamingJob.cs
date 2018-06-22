@@ -68,7 +68,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
         {
             await Task.Run(() =>
             {
-                _ss = new SpeechStreamer(_streamIn.BufferCapacity * 100);
+                _ss = new SpeechStreamer(_streamIn.BufferCapacity * 150);
                 _engine.SetInputToAudioStream(_ss, _info);
 
                 _streamIn.Start();
