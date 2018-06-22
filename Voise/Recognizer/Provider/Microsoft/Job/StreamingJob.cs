@@ -90,7 +90,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             }
             catch (SpeechStreamer.BufferOverwrittenException)
             {
-                _log.Warn("SpeachStreamer's buffer has overwritten. It's recommended increase buffer size.");
+                _log.Warn("SpeechStreamer's buffer has overwritten. It's recommended increase buffer size.");
             }
         }
 
