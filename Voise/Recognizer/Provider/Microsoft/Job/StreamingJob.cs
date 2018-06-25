@@ -68,7 +68,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
         {
             await Task.Run(() =>
             {
-                _ss = new SpeechStreamer(_streamIn.BufferCapacity * 50);
+                _ss = new SpeechStreamer(_streamIn.BufferCapacity * 150);
                 _engine.SetInputToAudioStream(_ss, _info);
 
                 _streamIn.Start();
@@ -90,7 +90,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             }
             catch (SpeechStreamer.BufferOverwrittenException)
             {
-                _log.Warn("SpeachStreamer's buffer has overwritten. It's recommended increase buffer size.");
+                _log.Warn("SpeechStreamer's buffer has overwritten. It's recommended increase buffer size.");
             }
         }
 

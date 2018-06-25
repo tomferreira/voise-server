@@ -21,6 +21,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         /// Object for synchronization between read and write
         /// </summary>
         private AutoResetEvent _writeEvent;
+        private object _writeEventObject;
 
         /// <summary>
         /// Buffer containing the stream data
@@ -35,6 +36,8 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         public SpeechStreamer(int bufferSize)
         {
             _writeEvent = new AutoResetEvent(false);
+            _writeEventObject = new object();
+
             _buffersize = bufferSize;
             _buffer = new List<byte>(_buffersize);
 
@@ -90,12 +93,19 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         public override int Read(byte[] buffer, int offset, int count)
         {
             int i = 0;
-            while (i < count && _writeEvent != null)
+            while (i < count)
             {
-                if (!_reset && _readposition >= _writeposition)
+                lock (_writeEventObject)
                 {
-                    _writeEvent.WaitOne(50, true);
-                    continue;
+                    if (!_reset && _readposition >= _writeposition)
+                    {
+                        // Whether was completed...
+                        if (_writeEvent == null)
+                            break;
+
+                        _writeEvent.WaitOne(50, true);
+                        continue;
+                    }
                 }
 
                 buffer[i] = _buffer[_readposition + offset];
@@ -110,7 +120,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
                 i++;
             }
 
-            return count;
+            return i;
         }
 
         /// <summary>
@@ -149,10 +159,13 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         /// </summary>
         public void Complete()
         {
-            if (_writeEvent != null)
+            lock (_writeEventObject)
             {
-                _writeEvent.Close();
-                _writeEvent = null;
+                if (_writeEvent != null)
+                {
+                    _writeEvent.Close();
+                    _writeEvent = null;
+                }
             }
         }
 
