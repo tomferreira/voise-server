@@ -42,7 +42,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             }
             else if (e.InitialSilenceTimeout || e.BabbleTimeout)
             {
-                _log.Error("Initial silence timeout ou babble timeout raised");
+                _log.Info("Initial silence timeout ou babble timeout raised.");
             }
             else if (e.Result != null)
             {
