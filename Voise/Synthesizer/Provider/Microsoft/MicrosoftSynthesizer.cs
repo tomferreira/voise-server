@@ -4,7 +4,7 @@ using Voise.Synthesizer.Provider.Common.Job;
 
 namespace Voise.Synthesizer.Provider.Microsoft
 {
-    internal class MicrosoftSynthetizer : CommonSynthetizer
+    internal class MicrosoftSynthesizer : CommonSynthesizer
     {
         internal const string ENGINE_IDENTIFIER = "me";
 

@@ -47,7 +47,7 @@ namespace Voise.Classification.Classifier
             set
             {
                 if (_modelName != null)
-                    throw new System.Exception("Model name alread defined.");
+                    throw new System.Exception("Model name already defined.");
 
                 _modelName = value;
             }

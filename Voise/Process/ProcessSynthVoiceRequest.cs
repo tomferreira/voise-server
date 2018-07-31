@@ -12,16 +12,16 @@ namespace Voise.Process
     internal class ProcessSynthVoiceRequest : ProcessBase
     {
         private VoiseSynthVoiceRequest _request;
-        private SynthetizerManager _synthetizerManager;
+        private SynthesizerManager _synthesizerManager;
 
-        internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, SynthetizerManager synthetizerManager)
+        internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, SynthesizerManager synthesizerManager)
             : base(client)
         {
             _request = request;
-            _synthetizerManager = synthetizerManager;
+            _synthesizerManager = synthesizerManager;
         }
 
-        // For while, its only implemented Microsoft Synthetizer
+        // For while, its only implemented Microsoft Synthesizer
         internal override async Task ExecuteAsync()
         {
             ILog log = LogManager.GetLogger(typeof(ProcessSynthVoiceRequest));
@@ -41,9 +41,9 @@ namespace Voise.Process
 
             try
             {
-                CommonSynthetizer synthetizer = _synthetizerManager.GetSynthetizer(_request.Config.engine_id);
+                CommonSynthesizer synthesizer = _synthesizerManager.GetSynthesizer(_request.Config.engine_id);
 
-                //var encoding = MicrosoftSynthetizer.ConvertAudioEncoding(_request.Config.encoding);
+                //var encoding = MicrosoftSynthesizer.ConvertAudioEncoding(_request.Config.encoding);
                 //int bytesPerSample = encoding != AudioEncoding.EncodingUnspecified ? encoding.BitsPerSample / 8 : 1;
                 int bytesPerSample = 2;
 
@@ -59,7 +59,7 @@ namespace Voise.Process
                     SendResult(result);
                 };
 
-                var job = synthetizer.SetSynth(
+                var job = synthesizer.SetSynth(
                     _client.StreamOut,
                     _request.Config.encoding,
                     _request.Config.sample_rate,
@@ -67,7 +67,7 @@ namespace Voise.Process
 
                 SendAccept();
 
-                await synthetizer.SynthAsync(job, _request.text).ConfigureAwait(false);
+                await synthesizer.SynthAsync(job, _request.text).ConfigureAwait(false);
 
                 pipeline.Result = new VoiseResult(VoiseResult.Modes.TTS);
             }

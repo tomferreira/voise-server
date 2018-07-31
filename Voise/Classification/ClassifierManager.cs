@@ -40,7 +40,7 @@ namespace Voise.Classification
 
         internal Task<Classifier.Base.Result> ClassifyAsync(string modelName, string message)
         {
-            if (modelName == null || modelName.Trim() == string.Empty)
+            if (String.IsNullOrWhiteSpace(modelName))
                 throw new BadModelException("Model name is empty.");
 
             Classifier.Base classifier = null;
