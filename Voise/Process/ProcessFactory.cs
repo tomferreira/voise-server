@@ -10,13 +10,13 @@ namespace Voise.Process
     internal class ProcessFactory
     {
         private RecognizerManager _recognizerManager;
-        private SynthetizerManager _synthetizerManager;
+        private SynthesizerManager _synthesizerManager;
         private ClassifierManager _classifierManager;
 
-        internal ProcessFactory(RecognizerManager recognizerManager, SynthetizerManager synthetizerManager, ClassifierManager classifierManager)
+        internal ProcessFactory(RecognizerManager recognizerManager, SynthesizerManager synthesizerManager, ClassifierManager classifierManager)
         {
             _recognizerManager = recognizerManager;
-            _synthetizerManager = synthetizerManager;
+            _synthesizerManager = synthesizerManager;
             _classifierManager = classifierManager;
         }
 
@@ -49,7 +49,7 @@ namespace Voise.Process
             if (request.SynthVoiceRequest != null)
             {
                 return new ProcessSynthVoiceRequest(
-                    client, request.SynthVoiceRequest, _synthetizerManager);
+                    client, request.SynthVoiceRequest, _synthesizerManager);
             }
 
             return null;

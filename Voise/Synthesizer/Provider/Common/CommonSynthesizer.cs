@@ -3,7 +3,7 @@ using Voise.Synthesizer.Provider.Common.Job;
 
 namespace Voise.Synthesizer.Provider.Common
 {
-    internal abstract class CommonSynthetizer
+    internal abstract class CommonSynthesizer
     {
         internal IJob SetSynth(AudioStream streamOut, string encoding, int sampleRate, string languageCode)
         {

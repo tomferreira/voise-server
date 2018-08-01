@@ -68,10 +68,10 @@ namespace Voise
             ClassifierManager classifierManager = new ClassifierManager(_config);
 
             // TTS
-            SynthetizerManager synthetizerManager = new SynthetizerManager(_config);
+            SynthesizerManager synthesizerManager = new SynthesizerManager(_config);
 
             _processFactory = new ProcessFactory(
-                recognizerManager, synthetizerManager, classifierManager);
+                recognizerManager, synthesizerManager, classifierManager);
         }
 
         public void Start()

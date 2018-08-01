@@ -37,7 +37,7 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         protected ByteString ConvertAudioToByteString(string audio_base64)
         {
-            if (audio_base64 == null || audio_base64.Trim() == string.Empty)
+            if (String.IsNullOrWhiteSpace(audio_base64))
                 throw new BadAudioException("Audio is empty.");
 
             try
