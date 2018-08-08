@@ -11,8 +11,8 @@ namespace Voise
         /// </summary>
         internal class StreamInEventArgs : EventArgs
         {
-            private byte[] buffer;
-            private int bytes;
+            private readonly byte[] buffer;
+            private readonly int bytes;
 
             /// <summary>
             /// Creates new StreamInEventArgs
@@ -62,7 +62,7 @@ namespace Voise
         private Queue<MemoryStream> _buffers;
         private MemoryStream _currentBuffer;
 
-        private object _mutex;
+        private readonly object _mutex;
 
         internal int BufferCapacity { get; private set; }
 

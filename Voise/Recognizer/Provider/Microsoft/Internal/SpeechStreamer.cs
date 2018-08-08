@@ -28,9 +28,9 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         /// <summary>
         /// Buffer containing the stream data
         /// </summary>
-        private List<byte> _buffer;
+        private readonly List<byte> _buffer;
+        private readonly int _buffersize;
 
-        private int _buffersize;
         private int _readposition;
         private int _writeposition;
         private bool _reset;

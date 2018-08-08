@@ -11,7 +11,7 @@ namespace Voise.Recognizer.Provider.Google
     {
         internal const string ENGINE_IDENTIFIER = "ge";
 
-        private SpeechRecognizer _recognizer;
+        private readonly SpeechRecognizer _recognizer;
 
         internal GoogleRecognizer(string credentialPath)
         {

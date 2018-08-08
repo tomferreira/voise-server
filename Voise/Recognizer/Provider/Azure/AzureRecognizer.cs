@@ -10,7 +10,7 @@ namespace Voise.Recognizer.Provider.Azure
     {
         internal const string ENGINE_IDENTIFIER = "ze";
 
-        private string _primaryKey;
+        private readonly string _primaryKey;
 
         internal AzureRecognizer(string primaryKey)
         {

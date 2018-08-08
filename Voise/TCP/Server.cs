@@ -14,7 +14,7 @@ namespace Voise.TCP
         private Socket _listenSocket;
         private SocketAsyncEventArgs _acceptAsyncArgs;
         private List<ClientConnection> _connections;
-        private HandlerRequest _hr;
+        private readonly HandlerRequest _hr;
 
         private ILog _log;
 

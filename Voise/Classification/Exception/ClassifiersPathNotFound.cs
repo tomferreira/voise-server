@@ -1,12 +1,23 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Voise.Classification.Exception
 {
     [Serializable]
-    class ClassifiersPathNotFound : System.Exception
+    internal class ClassifiersPathNotFound : System.Exception
     {
-        internal ClassifiersPathNotFound(string message)
+        public ClassifiersPathNotFound(string message)
             : base(message)
+        {
+        }
+
+        public ClassifiersPathNotFound(string message, System.Exception innerException) 
+            : base(message, innerException)
+        {
+        }
+
+        protected ClassifiersPathNotFound(SerializationInfo info, StreamingContext context) 
+            : base(info, context)
         {
         }
     }

@@ -13,9 +13,9 @@ namespace Voise.Process
 {
     internal class ProcessSyncRequest : ProcessBase
     {
-        private VoiseSyncRecognitionRequest _request;
-        private RecognizerManager _recognizerManager;
-        private ClassifierManager _classifierManager;
+        private readonly VoiseSyncRecognitionRequest _request;
+        private readonly RecognizerManager _recognizerManager;
+        private readonly ClassifierManager _classifierManager;
 
         internal ProcessSyncRequest(ClientConnection client, VoiseSyncRecognitionRequest request,
             RecognizerManager recognizerManager, ClassifierManager classifierManager)

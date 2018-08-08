@@ -1,6 +1,8 @@
 ﻿using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Synthesis;
 using System;
+using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Voise.Provider.Microsoft;
 using Voise.Synthesizer.Exception;
@@ -10,9 +12,9 @@ namespace Voise.Synthesizer.Provider.Microsoft
 {
     internal class Job : IJob
     {
-        private SpeechSynthesizer _speechSynthesizer;
-        private SpeechAudioFormatInfo _info;
-        private AudioStream _streamOut;
+        private readonly SpeechSynthesizer _speechSynthesizer;
+        private readonly SpeechAudioFormatInfo _info;
+        private readonly AudioStream _streamOut;
 
         internal Job(AudioStream streamOut, AudioEncoding encoding, int sampleRate, string languageCode)
         {
@@ -76,13 +78,8 @@ namespace Voise.Synthesizer.Provider.Microsoft
 
         private InstalledVoice GetVoise(string languageCode)
         {
-            foreach (var voice in _speechSynthesizer.GetInstalledVoices())
-            {
-                if (voice.VoiceInfo.Culture.Name.ToLower() == languageCode.ToLower())
-                    return voice;
-            }
-
-            return null;
+            return _speechSynthesizer.GetInstalledVoices()
+                .First(voice => voice.VoiceInfo.Culture.Name.ToLower(CultureInfo.InvariantCulture) == languageCode.ToLower(CultureInfo.InvariantCulture));
         }
 
         public void Dispose()

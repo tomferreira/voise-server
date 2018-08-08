@@ -14,7 +14,7 @@ namespace Voise
 {
     public class Voise
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
 #if DEBUG
             BasicConfigurator.Configure();
@@ -87,7 +87,7 @@ namespace Voise
 
         private async Task HandleClientRequest(ClientConnection client, VoiseRequest request)
         {
-            ProcessBase process = _processFactory.createProcess(client, request);
+            ProcessBase process = _processFactory.CreateProcess(client, request);
 
             if (process != null)
                 await process.ExecuteAsync().ConfigureAwait(false);
