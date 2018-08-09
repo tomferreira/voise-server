@@ -79,7 +79,7 @@ namespace Voise.Synthesizer.Provider.Microsoft
         private InstalledVoice GetVoise(string languageCode)
         {
             return _speechSynthesizer.GetInstalledVoices()
-                .First(voice => voice.VoiceInfo.Culture.Name.ToLower(CultureInfo.InvariantCulture) == languageCode.ToLower(CultureInfo.InvariantCulture));
+                .FirstOrDefault(voice => voice.VoiceInfo.Culture.Name.ToLower(CultureInfo.InvariantCulture) == languageCode.ToLower(CultureInfo.InvariantCulture));
         }
 
         public void Dispose()
