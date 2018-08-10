@@ -13,9 +13,9 @@ namespace Voise.Process
 {
     internal class ProcessStreamStartRequest : ProcessBase
     {
-        private VoiseStreamRecognitionStartRequest _request;
-        private RecognizerManager _recognizerManager;
-        private ClassifierManager _classifierManager;
+        private readonly VoiseStreamRecognitionStartRequest _request;
+        private readonly RecognizerManager _recognizerManager;
+        private readonly ClassifierManager _classifierManager;
 
         internal ProcessStreamStartRequest(ClientConnection client, VoiseStreamRecognitionStartRequest request,
             RecognizerManager recognizerManager, ClassifierManager classifierManager)

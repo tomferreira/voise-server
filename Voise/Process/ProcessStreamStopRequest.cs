@@ -9,8 +9,8 @@ namespace Voise.Process
 {
     internal class ProcessStreamStopRequest : ProcessBase
     {
-        private VoiseStreamRecognitionStopRequest _request;
-        private RecognizerManager _recognizerManager;
+        private readonly VoiseStreamRecognitionStopRequest _request;
+        private readonly RecognizerManager _recognizerManager;
 
         internal ProcessStreamStopRequest(ClientConnection client, VoiseStreamRecognitionStopRequest request,
             RecognizerManager recognizerManager)

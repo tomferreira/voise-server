@@ -11,8 +11,8 @@ namespace Voise.Process
 {
     internal class ProcessSynthVoiceRequest : ProcessBase
     {
-        private VoiseSynthVoiceRequest _request;
-        private SynthesizerManager _synthesizerManager;
+        private readonly VoiseSynthVoiceRequest _request;
+        private readonly SynthesizerManager _synthesizerManager;
 
         internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, SynthesizerManager synthesizerManager)
             : base(client)
@@ -51,8 +51,10 @@ namespace Voise.Process
 
                 _client.StreamOut.DataAvailable += delegate (object sender, AudioStream.StreamInEventArgs e)
                 {
-                    VoiseResult result = new VoiseResult(VoiseResult.Modes.TTS);
-                    result.AudioContent = Convert.ToBase64String(e.Buffer);
+                    VoiseResult result = new VoiseResult(VoiseResult.Modes.TTS)
+                    {
+                        AudioContent = Convert.ToBase64String(e.Buffer)
+                    };
 
                     log.Debug($"Sending stream data ({e.Buffer.Length} bytes) at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 

@@ -10,7 +10,7 @@ namespace Voise.Process
 {
     internal abstract class ProcessBase
     {
-        protected ClientConnection _client;
+        protected readonly ClientConnection _client;
 
         internal ProcessBase(ClientConnection client)
         {

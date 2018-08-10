@@ -19,7 +19,7 @@ namespace Voise.TCP
         private byte[] _buffer;
         private StringBuilder _data;
 
-        private HandlerRequest _hr;
+        private readonly HandlerRequest _hr;
 
         private ILog _log;
 
@@ -82,7 +82,10 @@ namespace Voise.TCP
                 {
                     _socket.Shutdown(SocketShutdown.Both);
                 }
-                catch (Exception) { }
+                catch (SocketException)
+                {
+                    // Ignore
+                }
 
                 _socket.Close();
             }

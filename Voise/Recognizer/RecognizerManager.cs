@@ -19,7 +19,7 @@ namespace Voise.Recognizer
             List<string> recognizersEnabled = config.RecognizersEnabled;
 
             if (recognizersEnabled.Count == 0)
-                throw new System.Exception("At least one recogning engine must be enabled.");
+                throw new System.Exception("At least one recognition engine must be enabled.");
 
             _recognizers = new Dictionary<string, CommonRecognizer>();
 
@@ -52,10 +52,10 @@ namespace Voise.Recognizer
 
         internal CommonRecognizer GetRecognizer(string engineID)
         {
-            string finalEngineID = (engineID != null) ? engineID : DEFAULT_ENGINE_IDENTIFIER;
+            string finalEngineID = engineID ?? DEFAULT_ENGINE_IDENTIFIER;
 
             if (!_recognizers.ContainsKey(finalEngineID.ToLower()))
-                throw new System.Exception($"Recogning engine '{finalEngineID}' disabled or invalid.");
+                throw new System.Exception($"Recognition engine '{finalEngineID}' disabled or invalid.");
 
             return _recognizers[finalEngineID.ToLower()];
         }

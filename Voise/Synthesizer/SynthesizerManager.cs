@@ -27,7 +27,7 @@ namespace Voise.Synthesizer
 
         internal CommonSynthesizer GetSynthesizer(string engineID)
         {
-            string finalEngineID = (engineID != null) ? engineID : DEFAULT_ENGINE_IDENTIFIER;
+            string finalEngineID = engineID ?? DEFAULT_ENGINE_IDENTIFIER;
 
             if (!_synthesizers.ContainsKey(finalEngineID.ToLower()))
                 throw new System.Exception($"Synthesizer engine '{finalEngineID}' disabled or invalid.");

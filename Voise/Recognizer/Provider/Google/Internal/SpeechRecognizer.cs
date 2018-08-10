@@ -34,13 +34,15 @@ namespace Voise.Recognizer.Provider.Google.Internal
             if (!File.Exists(credentialPath))
                 throw new System.Exception($"Credential path '{credentialPath}' not found.");
 
-            var fileStream = new FileStream(credentialPath, FileMode.Open);
-            GoogleCredential googleCredential = GoogleCredential.FromStream(fileStream);
-            ChannelCredentials channelCredentials = GoogleGrpcCredentials.ToChannelCredentials(googleCredential);
-            Channel channel = new Channel("speech.googleapis.com", channelCredentials);
+            using (var fileStream = new FileStream(credentialPath, FileMode.Open))
+            {
+                GoogleCredential googleCredential = GoogleCredential.FromStream(fileStream);
+                ChannelCredentials channelCredentials = GoogleGrpcCredentials.ToChannelCredentials(googleCredential);
+                Channel channel = new Channel("speech.googleapis.com", channelCredentials);
 
-            // TODO: Use a single channel... should be fine when SpeechClient has an OperationsClient.
-            return new SpeechRecognizer(SpeechClient.Create(channel));
+                // TODO: Use a single channel... should be fine when SpeechClient has an OperationsClient.
+                return new SpeechRecognizer(SpeechClient.Create(channel));
+            }
         }
 
         public RecognizeResponse Recognize(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)

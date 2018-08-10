@@ -9,9 +9,9 @@ namespace Voise.Process
 {
     internal class ProcessFactory
     {
-        private RecognizerManager _recognizerManager;
-        private SynthesizerManager _synthesizerManager;
-        private ClassifierManager _classifierManager;
+        private readonly RecognizerManager _recognizerManager;
+        private readonly SynthesizerManager _synthesizerManager;
+        private readonly ClassifierManager _classifierManager;
 
         internal ProcessFactory(RecognizerManager recognizerManager, SynthesizerManager synthesizerManager, ClassifierManager classifierManager)
         {
@@ -20,7 +20,7 @@ namespace Voise.Process
             _classifierManager = classifierManager;
         }
 
-        internal ProcessBase createProcess(ClientConnection client, VoiseRequest request)
+        internal ProcessBase CreateProcess(ClientConnection client, VoiseRequest request)
         {
             if (request.SyncRequest != null)
             {
