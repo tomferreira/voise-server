@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using Voise.Provider.Microsoft;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Microsoft.Internal;
-using Voise.Synthesizer.Microsoft;
 using Voise.Tuning;
 using static Voise.AudioStream;
 
@@ -42,12 +42,17 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 
             foreach (var context in contexts)
             {
-                GrammarBuilder gb = new GrammarBuilder();
-                gb.Culture = cultureInfo;
-                gb.Append(new Choices(context.Value.ToArray()));                
+                GrammarBuilder gb = new GrammarBuilder()
+                {
+                    Culture = cultureInfo
+                };
 
-                Grammar gram = new Grammar(gb);
-                gram.Name = context.Key;
+                gb.Append(new Choices(context.Value.ToArray()));
+
+                Grammar gram = new Grammar(gb)
+                {
+                    Name = context.Key
+                };
 
                 _engine.LoadGrammar(gram);
             }
@@ -66,13 +71,13 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 
             await Task.Run(() =>
             {
-                _ss = new SpeechStreamer(_streamIn.BufferCapacity * 50);
+                _ss = new SpeechStreamer(_streamIn.BufferCapacity * 150);
                 _engine.SetInputToAudioStream(_ss, _info);
 
                 _streamIn.Start(_tuning);
 
                 _engine.RecognizeAsync(RecognizeMode.Single);
-            });
+            }).ConfigureAwait(false);
         }
 
         private void StreamingStopped(object sender, EventArgs e)
@@ -82,7 +87,14 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 
         private void ConsumeStreamData(object sender, StreamInEventArgs e)
         {
-            _ss.Write(e.Buffer, 0, e.BytesStreamed);
+            try
+            {
+                _ss.Write(e.Buffer, 0, e.BytesStreamed);
+            }
+            catch (SpeechStreamer.BufferOverwrittenException)
+            {
+                _log.Warn("SpeechStreamer's buffer has overwritten. It's recommended increase buffer size.");
+            }
         }
 
         public async Task StopAsync()
@@ -100,7 +112,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                 }
 
                 _tuning?.SaveSpeechRecognitionResult(BestAlternative);
-            });
+            }).ConfigureAwait(false);
         }
 
         protected override void Dispose(bool disposing)
@@ -109,7 +121,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                 return;
 
             if (disposing)
-                _ss.Close();
+                _ss.Dispose();
 
             base.Dispose(disposing);
         }

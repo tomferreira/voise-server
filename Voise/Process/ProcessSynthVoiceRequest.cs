@@ -1,8 +1,9 @@
 ﻿using log4net;
 using System;
 using System.Threading.Tasks;
+using Voise.Synthesizer;
 using Voise.Synthesizer.Exception;
-using Voise.Synthesizer.Microsoft;
+using Voise.Synthesizer.Provider.Common;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -10,17 +11,17 @@ namespace Voise.Process
 {
     internal class ProcessSynthVoiceRequest : ProcessBase
     {
-        private VoiseSynthVoiceRequest _request;
-        private MicrosoftSynthetizer _synthetizer;
+        private readonly VoiseSynthVoiceRequest _request;
+        private readonly SynthesizerManager _synthesizerManager;
 
-        internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, MicrosoftSynthetizer synthetizer)
+        internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, SynthesizerManager synthesizerManager)
             : base(client)
         {
             _request = request;
-            _synthetizer = synthetizer;
+            _synthesizerManager = synthesizerManager;
         }
 
-        // For while, its only implemented Microsoft Synthetizer
+        // For while, its only implemented Microsoft Synthesizer
         internal override async Task ExecuteAsync()
         {
             ILog log = LogManager.GetLogger(typeof(ProcessSynthVoiceRequest));
@@ -28,7 +29,7 @@ namespace Voise.Process
             // This client already is receiving stream.
             if (_client.StreamOut != null)
             {
-                log.Error($"Client already is receiving stream. [Client: {_client.RemoteEndPoint.ToString()}]");
+                log.Warn($"Client already is receiving stream. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(new Exception("Client already is receiving stream."));
                 return;
@@ -40,33 +41,37 @@ namespace Voise.Process
 
             try
             {
-                var encoding = MicrosoftSynthetizer.ConvertAudioEncoding(_request.Config.encoding);
+                CommonSynthesizer synthesizer = _synthesizerManager.GetSynthesizer(_request.Config.engine_id);
 
-                int bytesPerSample = encoding != AudioEncoding.EncodingUnspecified ? encoding.BitsPerSample / 8 : 1;
+                //var encoding = MicrosoftSynthesizer.ConvertAudioEncoding(_request.Config.encoding);
+                //int bytesPerSample = encoding != AudioEncoding.EncodingUnspecified ? encoding.BitsPerSample / 8 : 1;
+                int bytesPerSample = 2;
 
                 _client.StreamOut = new AudioStream(20, _request.Config.sample_rate, bytesPerSample);
 
                 _client.StreamOut.DataAvailable += delegate (object sender, AudioStream.StreamInEventArgs e)
                 {
-                    VoiseResult result = new VoiseResult(VoiseResult.Modes.TTS);
-                    result.AudioContent = Convert.ToBase64String(e.Buffer);
+                    VoiseResult result = new VoiseResult(VoiseResult.Modes.TTS)
+                    {
+                        AudioContent = Convert.ToBase64String(e.Buffer)
+                    };
 
                     log.Debug($"Sending stream data ({e.Buffer.Length} bytes) at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                     SendResult(result);
                 };
 
-                _synthetizer.Create(
-                    _client.StreamOut, 
-                    encoding,
+                var job = synthesizer.SetSynth(
+                    _client.StreamOut,
+                    _request.Config.encoding,
                     _request.Config.sample_rate,
                     _request.Config.language_code);
 
                 SendAccept();
 
-                pipeline.Result = new VoiseResult(VoiseResult.Modes.TTS);
+                await synthesizer.SynthAsync(job, _request.text).ConfigureAwait(false);
 
-                await _synthetizer.SynthAsync(_client.StreamOut, _request.text);
+                pipeline.Result = new VoiseResult(VoiseResult.Modes.TTS);
             }
             catch (Exception e)
             {
@@ -90,12 +95,13 @@ namespace Voise.Process
             _client.StreamOut = null;
 
             // Send end of stream
-            pipeline.Result.AudioContent = "";
+            pipeline.Result.AudioContent = string.Empty;
             SendResult(pipeline.Result);
 
             log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
-            pipeline = _client.CurrentPipeline = null;
+            _client.CurrentPipeline.Dispose();
+            _client.CurrentPipeline = null;
         }
     }
 }

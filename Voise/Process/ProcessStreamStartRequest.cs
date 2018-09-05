@@ -13,9 +13,9 @@ namespace Voise.Process
 {
     internal class ProcessStreamStartRequest : ProcessBase
     {
-        private VoiseStreamRecognitionStartRequest _request;
-        private RecognizerManager _recognizerManager;
-        private ClassifierManager _classifierManager;
+        private readonly VoiseStreamRecognitionStartRequest _request;
+        private readonly RecognizerManager _recognizerManager;
+        private readonly ClassifierManager _classifierManager;
 
         internal ProcessStreamStartRequest(ClientConnection client, VoiseStreamRecognitionStartRequest request,
             RecognizerManager recognizerManager, ClassifierManager classifierManager)
@@ -24,7 +24,7 @@ namespace Voise.Process
             _request = request;
             _recognizerManager = recognizerManager;
             _classifierManager = classifierManager;
-    }
+        }
 
         internal override async Task ExecuteAsync()
         {
@@ -33,7 +33,7 @@ namespace Voise.Process
             // This client already is streaming audio.
             if (_client.StreamIn != null)
             {
-                log.Error($"Client already is streaming audio. [Client: {_client.RemoteEndPoint.ToString()}]");
+                log.Warn($"Client already is streaming audio. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(new Exception("Client already is streaming audio."));
                 return;
@@ -63,7 +63,7 @@ namespace Voise.Process
                     _request.Config.encoding,
                     _request.Config.sample_rate,
                     _request.Config.language_code,
-                    contexts);
+                    contexts).ConfigureAwait(false);
 
                 SendAccept();
 
@@ -89,7 +89,7 @@ namespace Voise.Process
 
             // Espera pelo término do streaming para continuar a pipeline.
             // Veja o tratamento do comando 'StreamDataRequest'.
-            await pipeline.WaitAsync();
+            await pipeline.WaitAsync().ConfigureAwait(false);
 
             // Caso ocorra alguma exceção asíncrona durante o streming do áudio
             if (pipeline.AsyncStreamError != null)
@@ -116,7 +116,7 @@ namespace Voise.Process
                     {
                         var classification = await _classifierManager.ClassifyAsync(
                             _request.Config.model_name,
-                            pipeline.Result.Transcript);
+                            pipeline.Result.Transcript).ConfigureAwait(false);
 
                         pipeline.Result.Intent = classification.ClassName;
                         pipeline.Result.Probability = classification.Probability;
@@ -141,7 +141,8 @@ namespace Voise.Process
             }
             finally
             {
-                pipeline = _client.CurrentPipeline = null;
+                _client.CurrentPipeline.Dispose();
+                _client.CurrentPipeline = null;
             }
         }
     }

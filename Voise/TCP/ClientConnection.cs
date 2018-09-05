@@ -9,7 +9,7 @@ using static Voise.TCP.Server;
 
 namespace Voise.TCP
 {
-    internal class ClientConnection
+    internal class ClientConnection : IDisposable
     {
         private const string DELIMITER = "<EOF>";
 
@@ -19,7 +19,7 @@ namespace Voise.TCP
         private byte[] _buffer;
         private StringBuilder _data;
 
-        private HandlerRequest _hr;
+        private readonly HandlerRequest _hr;
 
         private ILog _log;
 
@@ -77,13 +77,15 @@ namespace Voise.TCP
 
                 _readEventArgs.Completed -= SockAsyncEventArgs_Completed;
                 _readEventArgs.SetBuffer(null, 0, 0);
-                _readEventArgs.Dispose();
 
                 try
                 {
                     _socket.Shutdown(SocketShutdown.Both);
                 }
-                catch (Exception) { }
+                catch (SocketException)
+                {
+                    // Ignore
+                }
 
                 _socket.Close();
             }
@@ -148,10 +150,11 @@ namespace Voise.TCP
             if (response == null)
                 return;
 
-            string data = JsonConvert.SerializeObject(response) + DELIMITER;
+            StringBuilder data = new StringBuilder(JsonConvert.SerializeObject(response));
+            data.Append(DELIMITER);
 
             // Convert the string data to byte data using UTF8 encoding.
-            byte[] byteData = Encoding.UTF8.GetBytes(data);
+            byte[] byteData = Encoding.UTF8.GetBytes(data.ToString());
 
             _socket.Send(byteData);
         }
@@ -167,6 +170,21 @@ namespace Voise.TCP
         private void HandleRequest(VoiseRequest request)
         {
             _hr?.Invoke(this, request);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _socket.Dispose();
+                _readEventArgs.Dispose();
+            }
         }
     }
 }

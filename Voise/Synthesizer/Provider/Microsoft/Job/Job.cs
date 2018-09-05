@@ -1,15 +1,20 @@
 ﻿using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Synthesis;
+using System;
+using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
+using Voise.Provider.Microsoft;
 using Voise.Synthesizer.Exception;
+using Voise.Synthesizer.Provider.Common.Job;
 
-namespace Voise.Synthesizer.Microsoft
+namespace Voise.Synthesizer.Provider.Microsoft
 {
-    internal class Job
+    internal class Job : IJob
     {
-        private SpeechSynthesizer _speechSynthesizer;
-        private SpeechAudioFormatInfo _info;
-        private AudioStream _streamOut;
+        private readonly SpeechSynthesizer _speechSynthesizer;
+        private readonly SpeechAudioFormatInfo _info;
+        private readonly AudioStream _streamOut;
 
         internal Job(AudioStream streamOut, AudioEncoding encoding, int sampleRate, string languageCode)
         {
@@ -20,7 +25,7 @@ namespace Voise.Synthesizer.Microsoft
             _streamOut = streamOut;
 
             _info = new SpeechAudioFormatInfo(
-                encoding.Format, sampleRate, encoding.BitsPerSample, 
+                encoding.Format, sampleRate, encoding.BitsPerSample,
                 encoding.ChannelCount, sampleRate * encoding.BitsPerSample / 8, encoding.BlockAlign, null);
 
             InstalledVoice voice = GetVoise(languageCode);
@@ -31,7 +36,7 @@ namespace Voise.Synthesizer.Microsoft
             _speechSynthesizer.SelectVoice(voice.VoiceInfo.Name);
         }
 
-        internal async Task SynthAsync(string text)
+        public async Task SynthAsync(string text)
         {
             await Task.Run(() =>
             {
@@ -53,7 +58,8 @@ namespace Voise.Synthesizer.Microsoft
                 _speechSynthesizer.SetOutputToNull();
 
                 _streamOut.Stop();
-            });
+                waveStream.Dispose();
+            }).ConfigureAwait(false);
         }
 
         private void WaveStream_Progress(object sender, WaveStream.ProgressEventArgs e)
@@ -72,13 +78,22 @@ namespace Voise.Synthesizer.Microsoft
 
         private InstalledVoice GetVoise(string languageCode)
         {
-            foreach (var voice in _speechSynthesizer.GetInstalledVoices())
-            {
-                if (voice.VoiceInfo.Culture.Name.ToLower() == languageCode.ToLower())
-                    return voice;
-            }
+            return _speechSynthesizer.GetInstalledVoices()
+                .FirstOrDefault(voice => voice.VoiceInfo.Culture.Name.ToLower(CultureInfo.InvariantCulture) == languageCode.ToLower(CultureInfo.InvariantCulture));
+        }
 
-            return null;
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _speechSynthesizer.Dispose();
+            }
         }
     }
 }

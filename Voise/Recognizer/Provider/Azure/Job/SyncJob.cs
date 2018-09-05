@@ -37,7 +37,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
                 }
 
                 _tuning?.SaveSpeechRecognitionResult(BestAlternative);
-            });
+            }).ConfigureAwait(false);
         }
     }
 }

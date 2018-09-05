@@ -1,15 +1,15 @@
-﻿using Google.Cloud.Speech.V1Beta1;
+﻿using Google.Cloud.Speech.V1;
 using Google.Protobuf;
 using System;
 using System.Collections.Generic;
 using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Google.Internal;
 using Voise.Tuning;
-using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
+using static Google.Cloud.Speech.V1.RecognitionConfig.Types;
 
 namespace Voise.Recognizer.Provider.Google.Job
 {
-    internal abstract class Base: IDisposable
+    internal abstract class Base : IDisposable
     {
         protected SpeechRecognizer _recognizer;
         protected TuningIn _tuning;
@@ -39,7 +39,7 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         protected ByteString ConvertAudioToByteString(string audio_base64)
         {
-            if (audio_base64 == null || audio_base64.Trim() == string.Empty)
+            if (String.IsNullOrWhiteSpace(audio_base64))
                 throw new BadAudioException("Audio is empty.");
 
             try

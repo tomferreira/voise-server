@@ -4,15 +4,15 @@ using System.IO;
 
 namespace Voise
 {
-    internal class AudioStream
+    internal class AudioStream : IDisposable
     {
         /// <summary>
         /// Event Args for StreamIn event
         /// </summary>
         internal class StreamInEventArgs : EventArgs
         {
-            private byte[] buffer;
-            private int bytes;
+            private readonly byte[] buffer;
+            private readonly int bytes;
 
             /// <summary>
             /// Creates new StreamInEventArgs
@@ -59,12 +59,12 @@ namespace Voise
         }
 
         private State _state;
-        private object _monitorState;
-
         private Queue<MemoryStream> _buffers;
         private MemoryStream _currentBuffer;
 
         private Tuning.Base _tuning;
+
+        private readonly object _mutex;
 
         internal int BufferCapacity { get; private set; }
 
@@ -75,10 +75,11 @@ namespace Voise
             int bytesPerSecond = sampleRate * bytesPerSample;
 
             _state = State.Stopped;
-            _monitorState = new object();
 
-            BufferCapacity = bufferMillisec * bytesPerSecond / 1000;            
+            BufferCapacity = bufferMillisec * bytesPerSecond / 1000;
             _buffers = new Queue<MemoryStream>();
+
+            _mutex = new object();
 
             CreateBuffer();
         }
@@ -87,24 +88,21 @@ namespace Voise
         {
             _tuning = tuning;
 
-            lock (_monitorState)
+            lock (_mutex)
                 _state = State.Started;
         }
 
         internal void Stop()
         {
-            lock (_monitorState)
+            lock (_mutex)
             {
                 if (!IsStarted())
                     return;
 
                 _state = State.Stopped;
-            }
 
-            // Enqueue current buffer to be send too
-            if (_currentBuffer != null)
-            {
-                lock(_buffers)
+                // Enqueue current buffer to be send too
+                if (_currentBuffer != null)
                     _buffers.Enqueue(_currentBuffer);
             }
 
@@ -124,45 +122,48 @@ namespace Voise
         {
             Stop();
 
-            lock (_monitorState)
+            lock (_mutex)
                 _state = State.Aborted;
         }
 
         internal bool IsStarted()
         {
-            lock (_monitorState)
+            lock (_mutex)
                 return _state == State.Started;
         }
 
         internal bool IsAborted()
         {
-            lock (_monitorState)
+            lock (_mutex)
                 return _state == State.Aborted;
         }
 
         internal void Write(byte[] data)
         {
-            int offset = 0;
-            int length = data.Length;
-
-            while (length > 0)
+            lock (_mutex)
             {
-                int remmaing = BufferCapacity - (int)_currentBuffer.Length;
+                int offset = 0;
+                int length = data.Length;
 
-                if (remmaing == 0)
+                while (length > 0)
                 {
-                    CreateBuffer();
-                    continue;
+                    int remmaing = BufferCapacity - (int)_currentBuffer.Length;
+
+                    if (remmaing == 0)
+                    {
+                        CreateBuffer();
+                        continue;
+                    }
+
+                    int count = Math.Min(remmaing, length);
+                    _currentBuffer.Write(data, offset, count);
+
+                    //
+                    _tuning?.WriteRecording(data, offset, count);
+
+                    offset += count;
+                    length -= count;
                 }
-
-                int count = Math.Min(remmaing, length);
-                _currentBuffer.Write(data, offset, count);
-
-                //
-                _tuning?.WriteRecording(data, offset, count);
-
-                offset += count;
-                length -= count;
             }
 
             if (IsStarted())
@@ -171,7 +172,7 @@ namespace Voise
 
         private void Callback(bool sendNotFull = false)
         {
-            lock (_buffers)
+            lock (_mutex)
             {
                 while (_buffers.Count > 0)
                 {
@@ -187,13 +188,31 @@ namespace Voise
 
         private void CreateBuffer()
         {
-            if (_currentBuffer != null)
+            lock (_mutex)
             {
-                lock(_buffers)
+                if (_currentBuffer != null)
                     _buffers.Enqueue(_currentBuffer);
-            }
 
-            _currentBuffer = new MemoryStream(BufferCapacity);            
+                _currentBuffer = new MemoryStream(BufferCapacity);
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                lock (_mutex)
+                {
+                    if (_currentBuffer != null)
+                        _currentBuffer.Dispose();
+                }
+            }
         }
     }
 }

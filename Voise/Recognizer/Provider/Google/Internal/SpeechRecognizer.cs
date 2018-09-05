@@ -1,7 +1,7 @@
 ﻿using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
 using Google.Apis.Auth.OAuth2;
-using Google.Cloud.Speech.V1Beta1;
+using Google.Cloud.Speech.V1;
 using Grpc.Auth;
 using Grpc.Core;
 using System.IO;
@@ -34,23 +34,25 @@ namespace Voise.Recognizer.Provider.Google.Internal
             if (!File.Exists(credentialPath))
                 throw new System.Exception($"Credential path '{credentialPath}' not found.");
 
-            var fileStream = new FileStream(credentialPath, FileMode.Open);
-            GoogleCredential googleCredential = GoogleCredential.FromStream(fileStream);
-            ChannelCredentials channelCredentials = GoogleGrpcCredentials.ToChannelCredentials(googleCredential);
-            Channel channel = new Channel("speech.googleapis.com", channelCredentials);
+            using (var fileStream = new FileStream(credentialPath, FileMode.Open))
+            {
+                GoogleCredential googleCredential = GoogleCredential.FromStream(fileStream);
+                ChannelCredentials channelCredentials = GoogleGrpcCredentials.ToChannelCredentials(googleCredential);
+                Channel channel = new Channel("speech.googleapis.com", channelCredentials);
 
-            // TODO: Use a single channel... should be fine when SpeechClient has an OperationsClient.
-            return new SpeechRecognizer(SpeechClient.Create(channel));
+                // TODO: Use a single channel... should be fine when SpeechClient has an OperationsClient.
+                return new SpeechRecognizer(SpeechClient.Create(channel));
+            }
         }
 
-        public SyncRecognizeResponse Recognize(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
-            => _client.SyncRecognize(
+        public RecognizeResponse Recognize(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
+            => _client.Recognize(
                 GaxPreconditions.CheckNotNull(config, nameof(config)),
                 GaxPreconditions.CheckNotNull(audio, nameof(audio)),
                 callSettings);
 
-        public Task<SyncRecognizeResponse> RecognizeAsync(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
-            => _client.SyncRecognizeAsync(
+        public Task<RecognizeResponse> RecognizeAsync(RecognitionConfig config, RecognitionAudio audio, CallSettings callSettings = null)
+            => _client.RecognizeAsync(
                 GaxPreconditions.CheckNotNull(config, nameof(config)),
                 GaxPreconditions.CheckNotNull(audio, nameof(audio)),
                 callSettings);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Voise.Recognizer.Provider.Azure;
 using Voise.Recognizer.Provider.Common;
+using Voise.Recognizer.Provider.Cpqd;
 using Voise.Recognizer.Provider.Google;
 using Voise.Recognizer.Provider.Microsoft;
 
@@ -18,7 +19,7 @@ namespace Voise.Recognizer
             List<string> recognizersEnabled = config.RecognizersEnabled;
 
             if (recognizersEnabled.Count == 0)
-                throw new System.Exception("At least one recogning engine must be enabled.");
+                throw new System.Exception("At least one recognition engine must be enabled.");
 
             _recognizers = new Dictionary<string, CommonRecognizer>();
 
@@ -39,6 +40,15 @@ namespace Voise.Recognizer
                 _recognizers.Add(AzureRecognizer.ENGINE_IDENTIFIER, new AzureRecognizer(primaryKey));
             }
 
+            if (recognizersEnabled.Contains(CpqdRecognizer.ENGINE_IDENTIFIER))
+            {
+                var username = config.GetRecognizerAttribute("cpqd", "username");
+                var password = config.GetRecognizerAttribute("cpqd", "password");
+                var host = config.GetRecognizerAttribute("cpqd", "host");
+
+                _recognizers.Add(CpqdRecognizer.ENGINE_IDENTIFIER, new CpqdRecognizer(username, password, host));
+            }
+
             if (config.TuningEnabled)
             {
                 foreach (CommonRecognizer recognizer in _recognizers.Values)
@@ -48,10 +58,10 @@ namespace Voise.Recognizer
 
         internal CommonRecognizer GetRecognizer(string engineID)
         {
-            string finalEngineID = (engineID != null) ? engineID : DEFAULT_ENGINE_IDENTIFIER;
+            string finalEngineID = engineID ?? DEFAULT_ENGINE_IDENTIFIER;
 
             if (!_recognizers.ContainsKey(finalEngineID.ToLower()))
-                throw new System.Exception($"Recogning engine '{finalEngineID}' disabled or invalid.");
+                throw new System.Exception($"Recognition engine '{finalEngineID}' disabled or invalid.");
 
             return _recognizers[finalEngineID.ToLower()];
         }

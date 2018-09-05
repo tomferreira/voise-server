@@ -1,9 +1,23 @@
-﻿namespace Voise.Synthesizer.Exception
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Voise.Synthesizer.Exception
 {
-    class BadLanguageException : System.Exception
+    [Serializable]
+    internal class BadLanguageException : System.Exception
     {
-        internal BadLanguageException(string message)
+        public BadLanguageException(string message)
             : base(message)
+        {
+        }
+
+        public BadLanguageException(string message, System.Exception innerException) 
+            : base(message, innerException)
+        {
+        }
+
+        protected BadLanguageException(SerializationInfo info, StreamingContext context) 
+            : base(info, context)
         {
         }
     }

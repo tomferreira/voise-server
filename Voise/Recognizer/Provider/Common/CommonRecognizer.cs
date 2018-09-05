@@ -1,5 +1,5 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Tuning;
@@ -8,8 +8,17 @@ namespace Voise.Recognizer.Provider.Common
 {
     internal abstract class CommonRecognizer
     {
+        private const int TIMEOUT_TASK_REMOVE_JOBS_ABORTED = 5 * 60 * 1000; // 5 minutes
+
         private string _tuningPath;
-        private Dictionary<AudioStream, IStreamingJob> _streamingJobs = new Dictionary<AudioStream, IStreamingJob>();
+        protected Dictionary<AudioStream, IStreamingJob> _streamingJobs;
+
+        internal CommonRecognizer()
+        {
+            _streamingJobs = new Dictionary<AudioStream, IStreamingJob>();
+
+            InitRemoveJobsWithAbortedStream();
+        }
 
         internal void EnableTuning(string tuningPath)
         {
@@ -24,7 +33,7 @@ namespace Voise.Recognizer.Provider.Common
                 TuningIn tuning = _tuningPath != null ? 
                     new TuningIn(_tuningPath, TuningIn.InputMethod.Sync, encoding, sampleRate, languageCode) : null;
 
-                await job.StartAsync(tuning);
+                await job.StartAsync(tuning).ConfigureAwait(false);
 
                 tuning?.Dispose();
 
@@ -43,7 +52,7 @@ namespace Voise.Recognizer.Provider.Common
             TuningIn tuning = _tuningPath != null ?
                 new TuningIn(_tuningPath, TuningIn.InputMethod.Stream, encoding, sampleRate, languageCode) : null;
 
-            await job.StartAsync(tuning);
+            await job.StartAsync(tuning).ConfigureAwait(false);
         }
 
         internal async Task<SpeechRecognitionResult> StopStreamingRecognitionAsync(AudioStream streamIn)
@@ -58,7 +67,7 @@ namespace Voise.Recognizer.Provider.Common
                 job = _streamingJobs[streamIn];
             }
 
-            await job.StopAsync();
+            await job.StopAsync().ConfigureAwait(false);
 
             SpeechRecognitionResult result = job.BestAlternative;
 
@@ -77,5 +86,35 @@ namespace Voise.Recognizer.Provider.Common
 
         protected abstract IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts);
+
+        // This task runs in background mode and its responsible to stop the aborted audio streaming.
+        // The abort can occur when the socket connection is finished during the process of send audio streaming.
+        private void InitRemoveJobsWithAbortedStream()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        IEnumerable<AudioStream> abortedStreams = null;
+
+                        lock (_streamingJobs)
+                            abortedStreams = _streamingJobs.Keys.Where(s => s.IsAborted());
+
+                        foreach (AudioStream stream in abortedStreams)
+                            await StopStreamingRecognitionAsync(stream).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // Ignore any exception
+                    }
+                    finally
+                    {
+                        await Task.Delay(TIMEOUT_TASK_REMOVE_JOBS_ABORTED).ConfigureAwait(false);
+                    }
+                }
+            });
+        }
     }
 }

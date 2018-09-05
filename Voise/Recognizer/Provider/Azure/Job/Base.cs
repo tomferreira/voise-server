@@ -3,13 +3,12 @@ using Microsoft.CognitiveServices.SpeechRecognition;
 using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Voise.Recognizer.Exception;
 using Voise.Tuning;
 
 namespace Voise.Recognizer.Provider.Azure.Job
 {
-    internal abstract class Base: IDisposable
+    internal abstract class Base : IDisposable
     {
         protected DataRecognitionClient _recognitionClient;
         protected TuningIn _tuning;
@@ -18,7 +17,6 @@ namespace Voise.Recognizer.Provider.Azure.Job
         protected readonly object _monitorCompleted;
 
         protected ILog _log;
-
         protected bool _disposed;
 
         public SpeechRecognitionResult BestAlternative { get; protected set; }
@@ -72,10 +70,11 @@ namespace Voise.Recognizer.Provider.Azure.Job
         {
             if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.RecognitionSuccess)
             {
-                RecognizedPhrase bestResult = e.PhraseResponse.Results.OrderByDescending(x => (int)x.Confidence).First();
+                RecognizedPhrase alternative =
+                    e.PhraseResponse.Results.OrderByDescending(x => (int)x.Confidence).First();
 
                 BestAlternative = new SpeechRecognitionResult(
-                    bestResult.DisplayText, ConvertConfidence(bestResult.Confidence));
+                    alternative.DisplayText, ConvertConfidence(alternative.Confidence));
             }
 
             lock (_monitorCompleted)
@@ -87,7 +86,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
 
         protected void ConversationErrorHandler(object sender, SpeechErrorEventArgs e)
         {
-            _log.Error($"{e.SpeechErrorText} Code: {e.SpeechErrorCode.ToString()}");
+            _log.Error($"{e.SpeechErrorText} [Code: {e.SpeechErrorCode.ToString()}]");
 
             lock (_monitorCompleted)
             {
@@ -114,7 +113,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
+            // GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -126,7 +125,8 @@ namespace Voise.Recognizer.Provider.Azure.Job
             {
                 // FIXME: This isn't the best approach, but the Dispose method 
                 // is take 2 sec, and its very slow.
-                Task.Run(() => _recognitionClient.Dispose());
+                // _recognitionClient.Dispose();
+                _recognitionClient = null;
             }
 
             _disposed = true;

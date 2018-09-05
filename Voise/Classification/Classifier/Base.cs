@@ -37,7 +37,8 @@ namespace Voise.Classification.Classifier
         protected ILog _log;
 
         private string _modelName;
-        internal string ModelName {
+        internal string ModelName
+        {
             get
             {
                 return _modelName;
@@ -46,7 +47,7 @@ namespace Voise.Classification.Classifier
             set
             {
                 if (_modelName != null)
-                    throw new System.Exception("Model name alread defined.");
+                    throw new System.Exception("Model name already defined.");
 
                 _modelName = value;
             }
@@ -74,7 +75,7 @@ namespace Voise.Classification.Classifier
             Evaluation evaluator = new Evaluation(data);
 
             evaluator.setDiscardPredictions(false);
-            evaluator.crossValidateModel(_wekaClassifier, data, K_FOLDS, new java.util.Random(42));
+            evaluator.crossValidateModel(_wekaClassifier, data, Math.Min(K_FOLDS, data.numInstances()), new java.util.Random(42));
 
             double waupr = evaluator.weightedAreaUnderPRC();
 
@@ -98,7 +99,7 @@ namespace Voise.Classification.Classifier
             Result result = InnerClassify(message);
 
             if (result != null)
-              return result;
+                return result;
 
             double[] probabilities = Distribution(message);
 

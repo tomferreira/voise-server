@@ -8,7 +8,7 @@ namespace Voise.Process
 {
     internal class ProcessStreamDataRequest : ProcessBase
     {
-        private VoiseStreamRecognitionDataRequest _request;
+        private readonly VoiseStreamRecognitionDataRequest _request;
 
         internal ProcessStreamDataRequest(ClientConnection client, VoiseStreamRecognitionDataRequest request)
             : base(client)
@@ -34,7 +34,7 @@ namespace Voise.Process
                 {
                     log.Error($"{e.Message}\nStackTrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
                 }
-            });
+            }).ConfigureAwait(false);
         }
     }
 }

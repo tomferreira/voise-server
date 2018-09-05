@@ -5,18 +5,29 @@
 
     <recognizers>
         <!-- Default: me -->
-        <!--<enabled>me,ge,ze</enabled>-->
+        <!--<enabled>me,ge,ze,ce</enabled>-->
 
         <!--
         <google>
             <credential_path></credential_path>
         </google>
 
-        <azure>            
+        <azure>
             <primarykey></primarykey>
         </azure>
+        
+        <cpqd>
+            <username></username>
+            <password></password>
+            <host></host>
+        </cpqd>
         -->
     </recognizers>
+
+    <synthesizers>
+        <!-- Default: me -->
+        <!--<enabled>me</enabled>-->
+    </synthesizers>
 
     <!-- Default: ./classifiers/ -->
     <!--<classifiers_path>./classifiers/</classifiers_path>-->

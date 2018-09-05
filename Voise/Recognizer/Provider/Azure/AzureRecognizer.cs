@@ -10,9 +10,7 @@ namespace Voise.Recognizer.Provider.Azure
     {
         internal const string ENGINE_IDENTIFIER = "ze";
 
-        private string _primaryKey;
-
-        private Dictionary<AudioStream, StreamingJob> _streamingJobs;
+        private readonly string _primaryKey;
 
         internal AzureRecognizer(string primaryKey)
         {
@@ -20,7 +18,6 @@ namespace Voise.Recognizer.Provider.Azure
                 throw new System.Exception("Primary key must be defined for Azure engine.");
 
             _primaryKey = primaryKey;
-            _streamingJobs = new Dictionary<AudioStream, StreamingJob>();
         }
 
         protected override ISyncJob CreateSyncJob(string audio_base64, string encoding,

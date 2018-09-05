@@ -8,21 +8,25 @@ namespace Voise
 {
     public class Config
     {
-        private static string FILENAME_FULLPATH = "./config.xml";
+        private const string FILENAME_FULLPATH = "./config.xml";
 
         // General
-        private static int DEFAULT_PORT = 8102;
+        private const int DEFAULT_PORT = 8102;
 
         // Recognizer
-        private static List<string> DEFAULT_RECOGNIZERS_ENABLED = 
+        private static readonly List<string> DEFAULT_RECOGNIZERS_ENABLED =
             new List<string>() { Recognizer.Provider.Microsoft.MicrosoftRecognizer.ENGINE_IDENTIFIER };
 
+        // Synthesizer
+        private static readonly List<string> DEFAULT_SYNTHESIZERS_ENABLED =
+            new List<string>() { Synthesizer.Provider.Microsoft.MicrosoftSynthesizer.ENGINE_IDENTIFIER };
+
         // Classifier
-        private static string DEFAULT_CLASSIFIERS_PATH = "./classifiers/";
+        private const string DEFAULT_CLASSIFIERS_PATH = "./classifiers/";
 
         // Tuning
-        private static bool DEFAULT_TUNING_ENABLED = false;
-        private static string DEFAULT_TUNING_PATH = "./tuning/";
+        private const bool DEFAULT_TUNING_ENABLED = false;
+        private const string DEFAULT_TUNING_PATH = "./tuning/";
 
         private XmlElement _element;
 
@@ -55,10 +59,24 @@ namespace Voise
         {
             get
             {
-                 string value = GetRecognizerAttribute("enabled");
+                string value = GetRecognizerAttribute("enabled");
 
                 if (value == null)
                     return DEFAULT_RECOGNIZERS_ENABLED;
+
+                string[] elem = value.Split(';', ',');
+                return new List<string>(elem);
+            }
+        }
+
+        internal List<string> SynthesizersEnabled
+        {
+            get
+            {
+                string value = GetSynthesizerAttribute("enabled");
+
+                if (value == null)
+                    return DEFAULT_SYNTHESIZERS_ENABLED;
 
                 string[] elem = value.Split(';', ',');
                 return new List<string>(elem);
@@ -73,10 +91,10 @@ namespace Voise
                 {
                     return _element.SelectSingleNode("classifiers_path").InnerText;
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return DEFAULT_CLASSIFIERS_PATH;
-                }                
+                }
             }
         }
 
@@ -109,6 +127,10 @@ namespace Voise
         internal string GetRecognizerAttribute(params string[] identifiers)
         {
             return GetAttribute("recognizers", identifiers);
+        }
+        internal string GetSynthesizerAttribute(params string[] identifiers)
+        {
+            return GetAttribute("synthesizers", identifiers);
         }
 
         internal string GetTuningAttribute(params string[] identifiers)

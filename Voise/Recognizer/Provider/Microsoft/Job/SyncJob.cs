@@ -7,8 +7,8 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Voise.Provider.Microsoft;
 using Voise.Recognizer.Provider.Common.Job;
-using Voise.Synthesizer.Microsoft;
 using Voise.Tuning;
 
 namespace Voise.Recognizer.Provider.Microsoft.Job
@@ -38,12 +38,17 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 
             foreach (var context in contexts)
             {
-                GrammarBuilder gb = new GrammarBuilder();
-                gb.Culture = cultureInfo;
+                GrammarBuilder gb = new GrammarBuilder
+                {
+                    Culture = cultureInfo
+                };
+
                 gb.Append(new Choices(context.Value.ToArray()));
 
-                Grammar gram = new Grammar(gb);
-                gram.Name = context.Key;
+                Grammar gram = new Grammar(gb)
+                {
+                    Name = context.Key
+                };
 
                 _engine.LoadGrammar(gram);
             }
@@ -58,7 +63,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             _tuning = tuning;
             _tuning?.WriteRecording(_audio, 0, _audio.Length);
 
-            await Task.Run(() => 
+            await Task.Run(() =>
             {
                 _engine.RecognizeAsync();
 
@@ -69,7 +74,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                 }
 
                 _tuning?.SaveSpeechRecognitionResult(BestAlternative);
-            });
+            }).ConfigureAwait(false);
         }
     }
 }

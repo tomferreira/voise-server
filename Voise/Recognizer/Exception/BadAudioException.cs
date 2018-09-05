@@ -1,14 +1,23 @@
-﻿namespace Voise.Recognizer.Exception
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Voise.Recognizer.Exception
 {
+    [Serializable]
     internal class BadAudioException : System.Exception
     {
-        internal BadAudioException(string message)
+        public BadAudioException(string message)
             : base(message)
         {
         }
 
-        internal BadAudioException(string message, System.Exception innerException)
+        public BadAudioException(string message, System.Exception innerException)
             : base(message, innerException)
+        {
+        }
+
+        protected BadAudioException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

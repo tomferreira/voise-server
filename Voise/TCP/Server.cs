@@ -14,7 +14,7 @@ namespace Voise.TCP
         private Socket _listenSocket;
         private SocketAsyncEventArgs _acceptAsyncArgs;
         private List<ClientConnection> _connections;
-        private HandlerRequest _hr;
+        private readonly HandlerRequest _hr;
 
         private ILog _log;
 
@@ -48,7 +48,7 @@ namespace Voise.TCP
         {
             IsOpen = false;
 
-            _listenSocket.Close();            
+            _listenSocket.Close();
             _listenSocket = null;
 
             lock (_connections)
@@ -91,6 +91,8 @@ namespace Voise.TCP
 
         private void ClearClientConnection(ClientConnection client)
         {
+            client.Dispose();
+
             lock (_connections)
             {
                 // Remove closed client

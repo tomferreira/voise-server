@@ -13,9 +13,9 @@ namespace Voise.Process
 {
     internal class ProcessSyncRequest : ProcessBase
     {
-        private VoiseSyncRecognitionRequest _request;
-        private RecognizerManager _recognizerManager;
-        private ClassifierManager _classifierManager;
+        private readonly VoiseSyncRecognitionRequest _request;
+        private readonly RecognizerManager _recognizerManager;
+        private readonly ClassifierManager _classifierManager;
 
         internal ProcessSyncRequest(ClientConnection client, VoiseSyncRecognitionRequest request,
             RecognizerManager recognizerManager, ClassifierManager classifierManager)
@@ -45,7 +45,7 @@ namespace Voise.Process
                     _request.Config.encoding,
                     _request.Config.sample_rate,
                     _request.Config.language_code,
-                    contexts);
+                    contexts).ConfigureAwait(false);
 
                 //
                 pipeline.Result = new VoiseResult(VoiseResult.Modes.ASR);
@@ -80,7 +80,7 @@ namespace Voise.Process
                     {
                         var classification = await _classifierManager.ClassifyAsync(
                             _request.Config.model_name,
-                            pipeline.Result.Transcript);
+                            pipeline.Result.Transcript).ConfigureAwait(false);
 
                         pipeline.Result.Intent = classification.ClassName;
                         pipeline.Result.Probability = classification.Probability;
@@ -99,7 +99,8 @@ namespace Voise.Process
             }
             finally
             {
-                pipeline = _client.CurrentPipeline = null;
+                _client.CurrentPipeline.Dispose();
+                _client.CurrentPipeline = null;
             }
         }
     }

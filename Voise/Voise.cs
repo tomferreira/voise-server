@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Voise.Classification;
 using Voise.Process;
 using Voise.Recognizer;
-using Voise.Synthesizer.Microsoft;
+using Voise.Synthesizer;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -14,7 +14,7 @@ namespace Voise
 {
     public class Voise
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
 #if DEBUG
             BasicConfigurator.Configure();
@@ -29,12 +29,20 @@ namespace Voise
                 while (true)
                     Thread.Sleep(100);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ILog log = LogManager.GetLogger(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-                log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
+                if (e is AggregateException)
+                {
+                    foreach (var ie in (e as AggregateException).InnerExceptions)
+                        log.Fatal($"{ie.Message}\nStacktrace: {ie.StackTrace}");
+                }
+                else
+                {
+                    log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
+                }
             }
 #else
             Console.WriteLine("To Start Voise Server, use the Windows Service.");
@@ -60,10 +68,10 @@ namespace Voise
             ClassifierManager classifierManager = new ClassifierManager(_config);
 
             // TTS
-            MicrosoftSynthetizer synthetizer = new MicrosoftSynthetizer();
+            SynthesizerManager synthesizerManager = new SynthesizerManager(_config);
 
             _processFactory = new ProcessFactory(
-                recognizerManager, synthetizer, classifierManager);
+                recognizerManager, synthesizerManager, classifierManager);
         }
 
         public void Start()
@@ -79,10 +87,10 @@ namespace Voise
 
         private async Task HandleClientRequest(ClientConnection client, VoiseRequest request)
         {
-            ProcessBase process = _processFactory.createProcess(client, request);
+            ProcessBase process = _processFactory.CreateProcess(client, request);
 
             if (process != null)
-                await process.ExecuteAsync();
+                await process.ExecuteAsync().ConfigureAwait(false);
         }
     }
 }

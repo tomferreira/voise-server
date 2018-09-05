@@ -3,7 +3,7 @@ using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Google.Internal;
 using Voise.Recognizer.Provider.Google.Job;
-using static Google.Cloud.Speech.V1Beta1.RecognitionConfig.Types;
+using static Google.Cloud.Speech.V1.RecognitionConfig.Types;
 
 namespace Voise.Recognizer.Provider.Google
 {
@@ -11,8 +11,7 @@ namespace Voise.Recognizer.Provider.Google
     {
         internal const string ENGINE_IDENTIFIER = "ge";
 
-        private SpeechRecognizer _recognizer;
-        private Dictionary<AudioStream, StreamingJob> _streamingJobs;
+        private readonly SpeechRecognizer _recognizer;
 
         internal GoogleRecognizer(string credentialPath)
         {
@@ -20,7 +19,6 @@ namespace Voise.Recognizer.Provider.Google
                 throw new System.Exception("Credential path must be defined for Google engine.");
 
             _recognizer = SpeechRecognizer.Create(credentialPath);
-            _streamingJobs = new Dictionary<AudioStream, StreamingJob>();
         }
 
         // Max duration of audio ~60s (https://cloud.google.com/speech/limits)
@@ -61,7 +59,7 @@ namespace Voise.Recognizer.Provider.Google
         {
             var enc = ConvertAudioEncoding(encoding);
 
-            switch(enc)
+            switch (enc)
             {
                 case AudioEncoding.Flac:
                 case AudioEncoding.Linear16:

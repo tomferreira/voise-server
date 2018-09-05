@@ -9,8 +9,8 @@ namespace Voise.Process
 {
     internal class ProcessStreamStopRequest : ProcessBase
     {
-        private VoiseStreamRecognitionStopRequest _request;
-        private RecognizerManager _recognizerManager;
+        private readonly VoiseStreamRecognitionStopRequest _request;
+        private readonly RecognizerManager _recognizerManager;
 
         internal ProcessStreamStopRequest(ClientConnection client, VoiseStreamRecognitionStopRequest request,
             RecognizerManager recognizerManager)
@@ -24,7 +24,7 @@ namespace Voise.Process
         {
             ILog log = LogManager.GetLogger(typeof(ProcessStreamStopRequest));
 
-            log.Info($"Stoping stream request at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
+            log.Info($"Stopping stream request at pipeline {_client.CurrentPipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             try
             {
@@ -32,7 +32,7 @@ namespace Voise.Process
                     throw new Exception("Engine not defined.");
 
                 var recognition =
-                    await _client.CurrentPipeline.Recognizer.StopStreamingRecognitionAsync(_client.StreamIn);
+                    await _client.CurrentPipeline.Recognizer.StopStreamingRecognitionAsync(_client.StreamIn).ConfigureAwait(false);
 
                 _client.CurrentPipeline.Result.Transcript = recognition.Transcript;
                 _client.CurrentPipeline.Result.Confidence = recognition.Confidence;

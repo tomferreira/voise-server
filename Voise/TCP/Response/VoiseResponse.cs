@@ -16,9 +16,11 @@
 
         internal VoiseResponse(ResponseCode code, string message = null)
         {
-            result = new VoiseResult();
-            result.code = code.Code;
-            result.message = message ?? code.Message;
+            result = new VoiseResult
+            {
+                code = code.Code,
+                message = message ?? code.Message
+            };
         }
 
         public VoiseResult result;

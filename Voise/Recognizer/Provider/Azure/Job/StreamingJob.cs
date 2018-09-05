@@ -26,7 +26,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
         {
             _tuning = tuning;
 
-            await Task.Run(() => _streamIn.Start(_tuning));
+            await Task.Run(() => _streamIn.Start(_tuning)).ConfigureAwait(false);
         }
 
         public async Task StopAsync()
@@ -44,7 +44,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
                 }
 
                 _tuning?.SaveSpeechRecognitionResult(BestAlternative);
-            });
+            }).ConfigureAwait(false);
         }
 
         private void ConsumeStreamData(object sender, StreamInEventArgs e)

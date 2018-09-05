@@ -3,8 +3,8 @@ using Microsoft.Speech.Recognition;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Voise.Provider.Microsoft;
 using Voise.Recognizer.Exception;
-using Voise.Synthesizer.Microsoft;
 using Voise.Tuning;
 
 namespace Voise.Recognizer.Provider.Microsoft.Job
@@ -44,7 +44,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             }
             else if (e.InitialSilenceTimeout || e.BabbleTimeout)
             {
-                _log.Error("Initial silence timeout ou babble timeout raised");
+                _log.Info("Initial silence timeout ou babble timeout raised.");
             }
             else if (e.Result != null)
             {
