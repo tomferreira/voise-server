@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Voise.TCP.Request;
 
 namespace Voise.Tuning
 {
@@ -11,39 +14,73 @@ namespace Voise.Tuning
             Stream
         };
 
-        protected FileStream _recording;
-        protected string _resultPath;
+        private bool _running;
+
+        private string _resultPath;
+        private MemoryStream _recording;
+
+        protected Dictionary<string, string> _data;
 
         protected InputMethod _inputMethod;
         private bool _disposed;
 
-        internal Base(string path, string direction, InputMethod inputMethod, string encoding, int sampleRate, string languageCode)
+        internal Base(string basePath, string direction, InputMethod inputMethod, VoiseConfig config)
         {
+            _running = false;
+
             DateTime now = DateTime.Now;
 
-            string fullPath = $"{path}\\{now.ToString("yyyy-MM-dd")}\\{direction}";
-            string filename = $"{now.ToString("HHmmss")}-{encoding}-{sampleRate}-{languageCode}";
-
-            CreateRecordingFile($"{fullPath}\\{filename}.wav");
-
-            _resultPath = $"{fullPath}\\{filename}.txt";
-
             _inputMethod = inputMethod;
+
+            string fullPath = $"{basePath}/{now.ToString("yyyy-MM-dd")}/{direction}/";
+            string filename = $"{now.ToString("HHmmss")}-{new Random().Next()}";
+
+            CreateDirectory(fullPath);
+
+            _resultPath = $"{fullPath}/{filename}";
+            _recording = new MemoryStream();
+
+            _data = new Dictionary<string, string>();
+            _data.Add($"Input Method", _inputMethod.ToString());
+            _data.Add($"Engine ID", config.engine_id);
+            _data.Add($"Encoding", config.encoding);
+            _data.Add($"Sample Rate", config.sample_rate.ToString());
+            _data.Add($"Language Code", config.language_code);
+            _data.Add($"Model Name", config.model_name);
+
+            _running = true;
         }
 
         internal void WriteRecording(byte[] data, int offset, int count)
         {
+            if (!_running)
+                return;
+
             _recording.Write(data, offset, count);
         }
 
-        private void CreateRecordingFile(string audioPath)
+        internal abstract void SetResult(VoiseResult result);
+
+        internal void Close()
         {
-            string dirPath = Path.GetDirectoryName(audioPath);
+            if (!_running)
+                return;
+
+            _recording.Close();
+            File.WriteAllBytes($"{_resultPath}.wav", _recording.ToArray());
+
+            var content = _data.Select(x => x.Key + ": " + x.Value).ToArray();
+            File.WriteAllLines($"{_resultPath}.txt", content);
+
+            _running = false;
+        }
+
+        private void CreateDirectory(string fullPath)
+        {
+            string dirPath = Path.GetDirectoryName(fullPath);
 
             if (!Directory.Exists(dirPath))
                 Directory.CreateDirectory(dirPath);
-
-            _recording = File.Create(audioPath);
         }
 
         public void Dispose()
@@ -58,10 +95,7 @@ namespace Voise.Tuning
                 return;
 
             if (disposing)
-            {
-                _recording.Close();
-                _recording.Dispose();                
-            }
+                _recording.Dispose();
 
             _disposed = true;
         }

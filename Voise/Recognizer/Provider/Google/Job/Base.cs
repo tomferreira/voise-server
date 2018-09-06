@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Google.Internal;
-using Voise.Tuning;
 using static Google.Cloud.Speech.V1.RecognitionConfig.Types;
 
 namespace Voise.Recognizer.Provider.Google.Job
@@ -12,7 +11,6 @@ namespace Voise.Recognizer.Provider.Google.Job
     internal abstract class Base : IDisposable
     {
         protected SpeechRecognizer _recognizer;
-        protected TuningIn _tuning;
 
         protected bool _disposed;
 
@@ -37,14 +35,11 @@ namespace Voise.Recognizer.Provider.Google.Job
                 throw new BadEncodingException("Sample rate is invalid.");
         }
 
-        protected ByteString ConvertAudioToByteString(string audio_base64)
+        protected ByteString ConvertAudioToByteString(byte[] audio)
         {
-            if (String.IsNullOrWhiteSpace(audio_base64))
-                throw new BadAudioException("Audio is empty.");
-
             try
             {
-                return ByteString.CopyFrom(Convert.FromBase64String(audio_base64));
+                return ByteString.CopyFrom(audio);
             }
             catch (System.Exception e)
             {

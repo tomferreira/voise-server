@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Google.Internal;
-using Voise.Tuning;
 using static Google.Cloud.Speech.V1.RecognitionConfig.Types;
 
 namespace Voise.Recognizer.Provider.Google.Job
@@ -12,7 +11,7 @@ namespace Voise.Recognizer.Provider.Google.Job
     {
         private RecognizeRequest _request;
 
-        internal SyncJob(SpeechRecognizer recognizer, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        internal SyncJob(SpeechRecognizer recognizer, byte[] audio, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base(recognizer)
         {
             ValidateArguments(encoding, sampleRate, languageCode);
@@ -29,21 +28,13 @@ namespace Voise.Recognizer.Provider.Google.Job
                 },
                 Audio = new RecognitionAudio()
                 {
-                    Content = ConvertAudioToByteString(audio_base64)
+                    Content = ConvertAudioToByteString(audio)
                 }
             };
         }
 
-        public async Task StartAsync(TuningIn tuning)
+        public async Task StartAsync()
         {
-            _tuning = tuning;
-
-            if (_tuning != null)
-            {
-                byte[] audio = _request.Audio.Content.ToByteArray();
-                _tuning?.WriteRecording(audio, 0, audio.Length);
-            }
-
             RecognizeResponse response =
                 await _recognizer.RecognizeAsync(_request.Config, _request.Audio).ConfigureAwait(false);
 
@@ -55,8 +46,6 @@ namespace Voise.Recognizer.Provider.Google.Job
                         BestAlternative = new SpeechRecognitionResult(alternative.Transcript, alternative.Confidence);
                 }
             }
-
-            _tuning?.SaveSpeechRecognitionResult(BestAlternative);
         }
     }
 }

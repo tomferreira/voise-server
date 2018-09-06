@@ -9,6 +9,7 @@ using Voise.Recognizer;
 using Voise.Synthesizer;
 using Voise.TCP;
 using Voise.TCP.Request;
+using Voise.Tuning;
 
 namespace Voise
 {
@@ -70,8 +71,11 @@ namespace Voise
             // TTS
             SynthesizerManager synthesizerManager = new SynthesizerManager(_config);
 
+            //
+            TuningManager tuningManager = new TuningManager(_config);
+
             _processFactory = new ProcessFactory(
-                recognizerManager, synthesizerManager, classifierManager);
+                recognizerManager, synthesizerManager, classifierManager, tuningManager);
         }
 
         public void Start()

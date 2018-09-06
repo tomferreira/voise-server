@@ -9,15 +9,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Voise.Provider.Microsoft;
 using Voise.Recognizer.Provider.Common.Job;
-using Voise.Tuning;
 
 namespace Voise.Recognizer.Provider.Microsoft.Job
 {
     internal class SyncJob : Base, ISyncJob
     {
-        private byte[] _audio;
-
-        internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        internal SyncJob(byte[] audio, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base(LogManager.GetLogger(typeof(SyncJob)))
         {
             ValidateArguments(encoding, sampleRate, languageCode, contexts);
@@ -53,16 +50,11 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                 _engine.LoadGrammar(gram);
             }
 
-            _audio = Util.ConvertAudioToBytes(audio_base64);
-
-            _engine.SetInputToAudioStream(new MemoryStream(_audio), info);
+            _engine.SetInputToAudioStream(new MemoryStream(audio), info);
         }
 
-        public async Task StartAsync(TuningIn tuning)
+        public async Task StartAsync()
         {
-            _tuning = tuning;
-            _tuning?.WriteRecording(_audio, 0, _audio.Length);
-
             await Task.Run(() =>
             {
                 _engine.RecognizeAsync();
@@ -72,8 +64,6 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
-
-                _tuning?.SaveSpeechRecognitionResult(BestAlternative);
             }).ConfigureAwait(false);
         }
     }

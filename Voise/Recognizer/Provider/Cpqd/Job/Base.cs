@@ -8,14 +8,12 @@ using System;
 using System.Linq;
 using System.Threading;
 using Voise.Recognizer.Exception;
-using Voise.Tuning;
 
 namespace Voise.Recognizer.Provider.Cpqd.Job
 {
     internal class Base : IDisposable
     {
         protected readonly SpeechRecognizer _speechRecognizer;
-        protected TuningIn _tuning;
 
         protected LanguageModelList _modelList;
         protected Internal.BufferAudioSource _audioSource;

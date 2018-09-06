@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Google.Internal;
-using Voise.Tuning;
 using static Google.Cloud.Speech.V1.RecognitionConfig.Types;
 using static Voise.AudioStream;
 
@@ -46,16 +45,14 @@ namespace Voise.Recognizer.Provider.Google.Job
             _streamIn.StreamingStopped += StreamingStopped;
         }
 
-        public async Task StartAsync(TuningIn tuning)
+        public async Task StartAsync()
         {
-            _tuning = tuning;
-
             _recognizerStream =
                 await _recognizer.BeginStreamingRecognizeAsync(_config).ConfigureAwait(false);
 
             _requestQueue = new RequestQueue<ByteString>(_recognizerStream.RequestStream, 100);
 
-            _streamIn.Start(_tuning);
+            _streamIn.Start();
             _doneTask = ConsumeResultsAsync();
         }
 
@@ -101,8 +98,6 @@ namespace Voise.Recognizer.Provider.Google.Job
 
             // This will complete when the gRPC stream has completed.
             await _doneTask;
-
-            _tuning?.SaveSpeechRecognitionResult(BestAlternative);
         }
 
         protected override void Dispose(bool disposing)

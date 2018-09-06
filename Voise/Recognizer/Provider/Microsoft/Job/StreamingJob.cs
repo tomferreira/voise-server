@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Voise.Provider.Microsoft;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Microsoft.Internal;
-using Voise.Tuning;
 using static Voise.AudioStream;
 
 namespace Voise.Recognizer.Provider.Microsoft.Job
@@ -65,16 +64,14 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             _streamIn.StreamingStopped += StreamingStopped;
         }
 
-        public async Task StartAsync(TuningIn tuning)
+        public async Task StartAsync()
         {
-            _tuning = tuning;
-
             await Task.Run(() =>
             {
                 _ss = new SpeechStreamer(_streamIn.BufferCapacity * 150);
                 _engine.SetInputToAudioStream(_ss, _info);
 
-                _streamIn.Start(_tuning);
+                _streamIn.Start();
 
                 _engine.RecognizeAsync(RecognizeMode.Single);
             }).ConfigureAwait(false);
@@ -110,8 +107,6 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
-
-                _tuning?.SaveSpeechRecognitionResult(BestAlternative);
             }).ConfigureAwait(false);
         }
 

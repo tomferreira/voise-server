@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Voise.Tuning;
 
 namespace Voise.Recognizer.Provider.Common.Job
 {
@@ -8,6 +7,6 @@ namespace Voise.Recognizer.Provider.Common.Job
     {
         SpeechRecognitionResult BestAlternative { get; }
 
-        Task StartAsync(TuningIn tuning);
+        Task StartAsync();
     }
 }

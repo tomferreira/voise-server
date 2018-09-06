@@ -1,25 +1,21 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Voise.Recognizer;
+﻿using Voise.TCP.Request;
 
 namespace Voise.Tuning
 {
     internal class TuningIn : Base
     {
-        internal TuningIn(string path, InputMethod inputMethod, string encoding, int sampleRate, string languageCode)
-            : base(path, "in", inputMethod, encoding, sampleRate, languageCode)
+        internal TuningIn(string path, InputMethod inputMethod, VoiseConfig config)
+            : base(path, "in", inputMethod, config)
         {
         }
 
-        internal void SaveSpeechRecognitionResult(SpeechRecognitionResult result)
+        internal override void SetResult(VoiseResult result)
         {
-            List<string> contents = new List<string>();
+            _data.Add($"Transcript", result.Transcript);
+            _data.Add($"Confidence", result.Confidence.ToString());
 
-            contents.Add($"Input Method: {_inputMethod.ToString()}");
-            contents.Add($"Transcript: {result.Transcript}");
-            contents.Add($"Confidence: {result.Confidence}");
-
-            File.WriteAllLines(_resultPath, contents);
+            _data.Add($"Intent", result.Intent);
+            _data.Add($"Probability", result.Probability.ToString());
         }
     }
 }

@@ -22,10 +22,10 @@ namespace Voise.Recognizer.Provider.Google
         }
 
         // Max duration of audio ~60s (https://cloud.google.com/speech/limits)
-        protected override ISyncJob CreateSyncJob(string audio_base64, string encoding,
+        protected override ISyncJob CreateSyncJob(byte[] audio, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            return new SyncJob(_recognizer, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
+            return new SyncJob(_recognizer, audio, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
         }
 
         protected override IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,

@@ -5,7 +5,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
-using Voise.Tuning;
 
 namespace Voise.Recognizer.Provider.Cpqd.Job
 {
@@ -23,17 +22,15 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
             _streamIn.StreamingStopped += StreamingStopped;
         }
 
-        public async Task StartAsync(TuningIn tuning)
+        public async Task StartAsync()
         {
-            _tuning = tuning;
-
             await Task.Run(() =>
             {
                 _audioSource = new Internal.BufferAudioSource();
 
                 _speechRecognizer.Recognize(_audioSource, _modelList);
 
-                _streamIn.Start(_tuning);
+                _streamIn.Start();
             }).ConfigureAwait(false);
         }
 

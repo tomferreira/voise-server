@@ -40,7 +40,7 @@ namespace Voise.Synthesizer.Provider.Microsoft
         {
             await Task.Run(() =>
             {
-                _streamOut.Start(null);
+                _streamOut.Start();
 
                 WaveStream waveStream = new WaveStream();
 

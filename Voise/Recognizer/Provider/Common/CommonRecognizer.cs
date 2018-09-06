@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
-using Voise.Tuning;
 
 namespace Voise.Recognizer.Provider.Common
 {
@@ -10,7 +9,6 @@ namespace Voise.Recognizer.Provider.Common
     {
         private const int TIMEOUT_TASK_REMOVE_JOBS_ABORTED = 5 * 60 * 1000; // 5 minutes
 
-        private string _tuningPath;
         protected Dictionary<AudioStream, IStreamingJob> _streamingJobs;
 
         internal CommonRecognizer()
@@ -20,22 +18,12 @@ namespace Voise.Recognizer.Provider.Common
             InitRemoveJobsWithAbortedStream();
         }
 
-        internal void EnableTuning(string tuningPath)
-        {
-            _tuningPath = tuningPath;
-        }
-
-        internal async Task<SpeechRecognitionResult> SyncRecognition(string audio_base64, string encoding,
+        internal async Task<SpeechRecognitionResult> SyncRecognition(byte[] audio, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            using (ISyncJob job = CreateSyncJob(audio_base64, encoding, sampleRate, languageCode, contexts))
+            using (ISyncJob job = CreateSyncJob(audio, encoding, sampleRate, languageCode, contexts))
             {
-                TuningIn tuning = _tuningPath != null ? 
-                    new TuningIn(_tuningPath, TuningIn.InputMethod.Sync, encoding, sampleRate, languageCode) : null;
-
-                await job.StartAsync(tuning).ConfigureAwait(false);
-
-                tuning?.Dispose();
+                await job.StartAsync().ConfigureAwait(false);
 
                 return job.BestAlternative;
             }
@@ -49,10 +37,7 @@ namespace Voise.Recognizer.Provider.Common
             lock (_streamingJobs)
                 _streamingJobs.Add(streamIn, job);
 
-            TuningIn tuning = _tuningPath != null ?
-                new TuningIn(_tuningPath, TuningIn.InputMethod.Stream, encoding, sampleRate, languageCode) : null;
-
-            await job.StartAsync(tuning).ConfigureAwait(false);
+            await job.StartAsync().ConfigureAwait(false);
         }
 
         internal async Task<SpeechRecognitionResult> StopStreamingRecognitionAsync(AudioStream streamIn)
@@ -76,12 +61,10 @@ namespace Voise.Recognizer.Provider.Common
 
             job.Dispose();
 
-            // TODO: Dispose tuning
-
             return result;
         }
 
-        protected abstract ISyncJob CreateSyncJob(string audio_base64, string encoding,
+        protected abstract ISyncJob CreateSyncJob(byte[] audio, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts);
 
         protected abstract IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,

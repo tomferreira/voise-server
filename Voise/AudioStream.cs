@@ -68,9 +68,9 @@ namespace Voise
 
         internal int BufferCapacity { get; private set; }
 
-        internal AudioStream(int bufferMillisec, int sampleRate, int bytesPerSample)
+        internal AudioStream(int bufferMillisec, int sampleRate, int bytesPerSample, Tuning.Base tuning)
         {
-            _tuning = null;
+            _tuning = tuning;
 
             int bytesPerSecond = sampleRate * bytesPerSample;
 
@@ -84,10 +84,8 @@ namespace Voise
             CreateBuffer();
         }
 
-        internal void Start(Tuning.Base tuning)
+        internal void Start()
         {
-            _tuning = tuning;
-
             lock (_mutex)
                 _state = State.Started;
         }
@@ -109,13 +107,6 @@ namespace Voise
             Callback(true);
 
             StreamingStopped?.Invoke(this, EventArgs.Empty);
-
-            /*if (_recording != null)
-            {
-                _recording.Close();
-                _recording.Dispose();
-                _recording = null;
-            }*/
         }
 
         internal void Abort()

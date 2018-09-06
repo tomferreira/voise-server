@@ -4,14 +4,12 @@ using System;
 using System.Linq;
 using System.Threading;
 using Voise.Recognizer.Exception;
-using Voise.Tuning;
 
 namespace Voise.Recognizer.Provider.Azure.Job
 {
     internal abstract class Base : IDisposable
     {
         protected DataRecognitionClient _recognitionClient;
-        protected TuningIn _tuning;
 
         protected bool _completed;
         protected readonly object _monitorCompleted;

@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common.Job;
-using Voise.Tuning;
 using static Voise.AudioStream;
 
 namespace Voise.Recognizer.Provider.Azure.Job
@@ -22,11 +21,9 @@ namespace Voise.Recognizer.Provider.Azure.Job
             _streamIn.DataAvailable += ConsumeStreamData;
         }
 
-        public async Task StartAsync(TuningIn tuning)
+        public async Task StartAsync()
         {
-            _tuning = tuning;
-
-            await Task.Run(() => _streamIn.Start(_tuning)).ConfigureAwait(false);
+            await Task.Run(() => _streamIn.Start()).ConfigureAwait(false);
         }
 
         public async Task StopAsync()
@@ -42,8 +39,6 @@ namespace Voise.Recognizer.Provider.Azure.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
-
-                _tuning?.SaveSpeechRecognitionResult(BestAlternative);
             }).ConfigureAwait(false);
         }
 

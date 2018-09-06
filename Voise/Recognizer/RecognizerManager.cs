@@ -48,12 +48,6 @@ namespace Voise.Recognizer
 
                 _recognizers.Add(CpqdRecognizer.ENGINE_IDENTIFIER, new CpqdRecognizer(username, password, host));
             }
-
-            if (config.TuningEnabled)
-            {
-                foreach (CommonRecognizer recognizer in _recognizers.Values)
-                    recognizer.EnableTuning(config.TuningPath);
-            }
         }
 
         internal CommonRecognizer GetRecognizer(string engineID)
