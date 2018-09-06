@@ -27,6 +27,8 @@ namespace Voise
         // Tuning
         private const bool DEFAULT_TUNING_ENABLED = false;
         private const string DEFAULT_TUNING_PATH = "./tuning/";
+        private const int DEFAULT_TUNING_RETENTON_DAY = 7;
+
 
         private XmlElement _element;
 
@@ -121,6 +123,19 @@ namespace Voise
                     return DEFAULT_TUNING_PATH;
 
                 return value;
+            }
+        }
+
+        internal int TuningRetentionDays
+        {
+            get
+            {
+                string value = GetTuningAttribute("retention_days");
+
+                if (value == null)
+                    return DEFAULT_TUNING_RETENTON_DAY;
+
+                return Convert.ToInt32(value);
             }
         }
 
