@@ -28,7 +28,7 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
-            });
+            }).ConfigureAwait(false);
         }
     }
 }
