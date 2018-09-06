@@ -33,7 +33,7 @@ namespace Voise.Tuning
             _inputMethod = inputMethod;
 
             string fullPath = $"{basePath}/{now.ToString("yyyy-MM-dd")}/{direction}/";
-            string filename = $"{now.ToString("HHmmss")}-{new Random().Next()}";
+            string filename = $"{now.ToString("HHmmss.fff")}-{new Random().Next()}";
 
             CreateDirectory(fullPath);
 
