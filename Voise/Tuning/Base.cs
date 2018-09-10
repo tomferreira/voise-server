@@ -21,10 +21,10 @@ namespace Voise.Tuning
 
         protected Dictionary<string, string> _data;
 
-        protected InputMethod _inputMethod;
+        private InputMethod _inputMethod;
         private bool _disposed;
 
-        internal Base(string basePath, string direction, InputMethod inputMethod, VoiseConfig config)
+        internal Base(string basePath, string direction, InputMethod inputMethod)
         {
             _running = false;
 
@@ -42,11 +42,6 @@ namespace Voise.Tuning
 
             _data = new Dictionary<string, string>();
             _data.Add($"Input Method", _inputMethod.ToString());
-            _data.Add($"Engine ID", config.engine_id);
-            _data.Add($"Encoding", config.encoding);
-            _data.Add($"Sample Rate", config.sample_rate.ToString());
-            _data.Add($"Language Code", config.language_code);
-            _data.Add($"Model Name", config.model_name);
 
             _running = true;
         }
