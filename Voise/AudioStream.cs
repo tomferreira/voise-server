@@ -199,10 +199,7 @@ namespace Voise
             if (disposing)
             {
                 lock (_mutex)
-                {
-                    if (_currentBuffer != null)
-                        _currentBuffer.Dispose();
-                }
+                    _currentBuffer?.Dispose();
             }
         }
     }
