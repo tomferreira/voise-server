@@ -6,12 +6,8 @@ namespace Voise.Tuning
     internal class TuningIn : Base
     {
         internal TuningIn(string path, InputMethod inputMethod, VoiseConfig config)
-            : base(path, "in", inputMethod)
+            : base(path, "in", inputMethod, config)
         {
-            _data.Add("Engine ID", config.engine_id);
-            _data.Add("Encoding", config.encoding);
-            _data.Add("Sample Rate", config.sample_rate.ToString());
-            _data.Add("Language Code", config.language_code);
             _data.Add("Model Name", config.model_name);
             _data.Add("Context", string.Join(",", values: config.context ?? new List<string>()));
         }
@@ -23,6 +19,8 @@ namespace Voise.Tuning
 
             _data.Add($"Intent", result.Intent);
             _data.Add($"Probability", result.Probability.ToString());
+
+            _shouldPersist = true;
         }
     }
 }

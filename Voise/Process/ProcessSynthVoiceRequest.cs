@@ -6,6 +6,7 @@ using Voise.Synthesizer.Exception;
 using Voise.Synthesizer.Provider.Common;
 using Voise.TCP;
 using Voise.TCP.Request;
+using Voise.Tuning;
 
 namespace Voise.Process
 {
@@ -14,11 +15,16 @@ namespace Voise.Process
         private readonly VoiseSynthVoiceRequest _request;
         private readonly SynthesizerManager _synthesizerManager;
 
-        internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, SynthesizerManager synthesizerManager)
+        private TuningOut _tuning;
+
+        internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, 
+            SynthesizerManager synthesizerManager, TuningManager tuningManager)
             : base(client)
         {
             _request = request;
             _synthesizerManager = synthesizerManager;
+
+            _tuning = tuningManager.CreateTuningOut(TuningIn.InputMethod.Sync, _request.text, _request.Config);
         }
 
         // For while, its only implemented Microsoft Synthesizer
@@ -47,7 +53,7 @@ namespace Voise.Process
                 //int bytesPerSample = encoding != AudioEncoding.EncodingUnspecified ? encoding.BitsPerSample / 8 : 1;
                 int bytesPerSample = 2;
 
-                _client.StreamOut = new AudioStream(20, _request.Config.sample_rate, bytesPerSample, null);
+                _client.StreamOut = new AudioStream(20, _request.Config.sample_rate, bytesPerSample, _tuning);
 
                 _client.StreamOut.DataAvailable += delegate (object sender, AudioStream.StreamInEventArgs e)
                 {
@@ -72,6 +78,8 @@ namespace Voise.Process
                 await synthesizer.SynthAsync(job, _request.text).ConfigureAwait(false);
 
                 pipeline.Result = new VoiseResult(VoiseResult.Modes.TTS);
+
+                _tuning?.SetResult(pipeline.Result);
             }
             catch (Exception e)
             {
@@ -93,6 +101,8 @@ namespace Voise.Process
                 _client.StreamOut.Dispose();
                 _client.StreamOut = null;
 
+                _tuning?.Close();
+                _tuning?.Dispose();
             }
 
             // Send end of stream

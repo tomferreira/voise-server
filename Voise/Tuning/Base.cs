@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,13 +19,15 @@ namespace Voise.Tuning
 
         private string _resultPath;
         private MemoryStream _recording;
+        private WaveFormat _waveFormat;
 
         protected Dictionary<string, string> _data;
 
         private InputMethod _inputMethod;
+        protected bool _shouldPersist;
         private bool _disposed;
 
-        internal Base(string basePath, string direction, InputMethod inputMethod)
+        internal Base(string basePath, string direction, InputMethod inputMethod, VoiseConfig config)
         {
             _running = false;
 
@@ -41,9 +44,37 @@ namespace Voise.Tuning
             _recording = new MemoryStream();
 
             _data = new Dictionary<string, string>();
-            _data.Add($"Input Method", _inputMethod.ToString());
+            _data.Add("Input Method", _inputMethod.ToString());
+            _data.Add("Engine ID", config.engine_id);
+            _data.Add("Encoding", config.encoding);
+            _data.Add("Sample Rate", config.sample_rate.ToString());
+            _data.Add("Language Code", config.language_code);
+
+            CreateWaveFormat(config.encoding, config.sample_rate);
 
             _running = true;
+            _shouldPersist = false;
+        }
+
+        private void CreateWaveFormat(string encoding, int sampleRate)
+        {
+            _waveFormat = null;
+
+            switch (encoding.ToLower())
+            {
+                case "flac":
+                case "linear16":
+                    _waveFormat = new WaveFormat(sampleRate, 1);
+                    break;
+
+                case "alaw":
+                    _waveFormat = WaveFormat.CreateALawFormat(sampleRate, 1);
+                    break;
+
+                case "mulaw":
+                    _waveFormat = WaveFormat.CreateMuLawFormat(sampleRate, 1);
+                    break;
+            }
         }
 
         internal void WriteRecording(byte[] data, int offset, int count)
@@ -62,12 +93,26 @@ namespace Voise.Tuning
                 return;
 
             _recording.Close();
-            File.WriteAllBytes($"{_resultPath}.wav", _recording.ToArray());
+
+            if (_shouldPersist)
+                PersistTuning();
+
+            _running = false;
+        }
+
+        private void PersistTuning()
+        {
+            if (_waveFormat != null)
+            {
+                using (WaveFileWriter writer = new WaveFileWriter($"{_resultPath}.wav", _waveFormat))
+                {
+                    byte[] data = _recording.ToArray();
+                    writer.Write(data, 0, data.Length);
+                }
+            }
 
             var content = _data.Select(x => x.Key + ": " + x.Value).ToArray();
             File.WriteAllLines($"{_resultPath}.txt", content);
-
-            _running = false;
         }
 
         private void CreateDirectory(string fullPath)
