@@ -8,7 +8,7 @@ namespace Voise.Tuning
         internal TuningOut(string path, InputMethod inputMethod, string text, VoiseConfig config)
             : base(path, "out", inputMethod, config)
         {
-            _data.Add("Text", text);
+            _attrs.Add("Text", text);
         }
 
         internal override void SetResult(VoiseResult result)

@@ -21,7 +21,7 @@ namespace Voise.Tuning
         private MemoryStream _recording;
         private WaveFormat _waveFormat;
 
-        protected Dictionary<string, string> _data;
+        protected Dictionary<string, string> _attrs;
 
         private InputMethod _inputMethod;
         protected bool _shouldPersist;
@@ -43,12 +43,12 @@ namespace Voise.Tuning
             _resultPath = $"{fullPath}/{filename}";
             _recording = new MemoryStream();
 
-            _data = new Dictionary<string, string>();
-            _data.Add("Input Method", _inputMethod.ToString());
-            _data.Add("Engine ID", config.engine_id);
-            _data.Add("Encoding", config.encoding);
-            _data.Add("Sample Rate", config.sample_rate.ToString());
-            _data.Add("Language Code", config.language_code);
+            _attrs = new Dictionary<string, string>();
+            _attrs.Add("Input Method", _inputMethod.ToString());
+            _attrs.Add("Engine ID", config.engine_id);
+            _attrs.Add("Encoding", config.encoding);
+            _attrs.Add("Sample Rate", config.sample_rate.ToString());
+            _attrs.Add("Language Code", config.language_code);
 
             CreateWaveFormat(config.encoding, config.sample_rate);
 
@@ -111,7 +111,7 @@ namespace Voise.Tuning
                 }
             }
 
-            var content = _data.Select(x => x.Key + ": " + x.Value).ToArray();
+            var content = _attrs.Select(x => x.Key + ": " + x.Value).ToArray();
             File.WriteAllLines($"{_resultPath}.txt", content);
         }
 

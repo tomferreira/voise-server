@@ -8,17 +8,17 @@ namespace Voise.Tuning
         internal TuningIn(string path, InputMethod inputMethod, VoiseConfig config)
             : base(path, "in", inputMethod, config)
         {
-            _data.Add("Model Name", config.model_name);
-            _data.Add("Context", string.Join(",", values: config.context ?? new List<string>()));
+            _attrs.Add("Model Name", config.model_name);
+            _attrs.Add("Context", string.Join(",", values: config.context ?? new List<string>()));
         }
 
         internal override void SetResult(VoiseResult result)
         {
-            _data.Add($"Transcript", result.Transcript);
-            _data.Add($"Confidence", result.Confidence.ToString());
+            _attrs.Add("Transcript", result.Transcript);
+            _attrs.Add("Confidence", result.Confidence.ToString());
 
-            _data.Add($"Intent", result.Intent);
-            _data.Add($"Probability", result.Probability.ToString());
+            _attrs.Add("Intent", result.Intent);
+            _attrs.Add("Probability", result.Probability.ToString());
 
             _shouldPersist = true;
         }
