@@ -77,6 +77,7 @@ namespace Voise.Process
             catch (Exception e)
             {
                 // Cleanup streamIn
+                _client.StreamIn.Dispose();
                 _client.StreamIn = null;
 
                 _tuning?.Close();
@@ -103,6 +104,7 @@ namespace Voise.Process
             if (pipeline.AsyncStreamError != null)
             {
                 // Cleanup streamIn
+                _client.StreamIn.Dispose();
                 _client.StreamIn = null;
 
                 _tuning?.Close();
@@ -138,26 +140,23 @@ namespace Voise.Process
 
                 log.Info($"Stream request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
-
-                // Cleanup streamIn
-                _client.StreamIn = null;
-
-                _tuning?.Close();
-                _tuning?.Dispose();
-
                 SendResult(pipeline.Result);
             }
             catch (Exception e)
             {
-                // Cleanup streamIn
-                _client.StreamIn = null;
-
                 log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(e);
             }
             finally
             {
+                // Cleanup streamIn
+                _client.StreamIn.Dispose();
+                _client.StreamIn = null;
+
+                _tuning?.Close();
+                _tuning?.Dispose();
+
                 _client.CurrentPipeline.Dispose();
                 _client.CurrentPipeline = null;
             }

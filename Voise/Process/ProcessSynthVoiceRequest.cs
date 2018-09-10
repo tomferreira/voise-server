@@ -75,9 +75,6 @@ namespace Voise.Process
             }
             catch (Exception e)
             {
-                // Cleanup streamOut
-                _client.StreamOut = null;
-
                 if (e is BadEncodingException)
                 {
                     log.Info($"{e.Message} [Client: {_client.RemoteEndPoint.ToString()}]");
@@ -90,9 +87,13 @@ namespace Voise.Process
                 SendError(e);
                 return;
             }
+            finally
+            {
+                // Cleanup streamOut
+                _client.StreamOut.Dispose();
+                _client.StreamOut = null;
 
-            // Cleanup streamOut
-            _client.StreamOut = null;
+            }
 
             // Send end of stream
             pipeline.Result.AudioContent = string.Empty;
