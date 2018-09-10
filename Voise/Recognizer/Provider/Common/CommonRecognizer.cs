@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Voise.General;
 using Voise.Recognizer.Provider.Common.Job;
 
 namespace Voise.Recognizer.Provider.Common

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Voise.Recognizer.Provider.Common;
 
-namespace Voise
+namespace Voise.General
 {
     internal class Pipeline : IDisposable
     {

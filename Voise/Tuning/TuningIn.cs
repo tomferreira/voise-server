@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Voise.General;
 using Voise.TCP.Request;
 
 namespace Voise.Tuning

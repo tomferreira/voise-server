@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voise.Classification;
+using Voise.General;
 using Voise.Recognizer;
 using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Common;

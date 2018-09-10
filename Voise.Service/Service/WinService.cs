@@ -1,12 +1,13 @@
 ﻿using Common.Logging;
 using System;
 using Topshelf;
+using Voise.General;
 
 namespace VoiseService.Service
 {
     class WinService
     {
-        private Voise.Voise _voise;
+        private VoiseServer _voise;
 
         public ILog Log { get; private set; }
 
@@ -26,9 +27,9 @@ namespace VoiseService.Service
 
             try
             {
-                Voise.Config config = new Voise.Config();
+                Voise.General.Config config = new Voise.General.Config();
 
-                _voise = new Voise.Voise(config);
+                _voise = new VoiseServer(config);
                 _voise.Start();
 
                 return true;

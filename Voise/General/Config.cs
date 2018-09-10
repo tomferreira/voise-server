@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 
-namespace Voise
+namespace Voise.General
 {
     public class Config
     {

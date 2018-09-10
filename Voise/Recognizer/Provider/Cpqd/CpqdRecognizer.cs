@@ -2,6 +2,7 @@
 using CPqDASR.Communication;
 using CPqDASR.Config;
 using System.Collections.Generic;
+using Voise.General;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Cpqd.Job;

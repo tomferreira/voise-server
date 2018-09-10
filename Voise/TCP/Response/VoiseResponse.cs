@@ -1,4 +1,6 @@
-﻿namespace Voise.TCP.Response
+﻿using Voise.General;
+
+namespace Voise.TCP.Response
 {
     internal class VoiseResponse
     {

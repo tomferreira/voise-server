@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Voise.General;
 using Voise.TCP.Request;
 
 namespace Voise.Tuning

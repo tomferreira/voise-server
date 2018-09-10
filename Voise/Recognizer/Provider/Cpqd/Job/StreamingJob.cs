@@ -4,6 +4,7 @@ using log4net;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Voise.General;
 using Voise.Recognizer.Provider.Common.Job;
 
 namespace Voise.Recognizer.Provider.Cpqd.Job

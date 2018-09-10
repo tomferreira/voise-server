@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Voise.Classification.Exception;
+using Voise.General;
 using weka.core;
 
 namespace Voise.Classification

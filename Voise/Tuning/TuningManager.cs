@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Threading;
+using Voise.General;
 using Voise.TCP.Request;
 
 namespace Voise.Tuning

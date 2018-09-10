@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Voise.General;
 using Voise.Recognizer.Provider.Azure.Job;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;

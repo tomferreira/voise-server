@@ -1,8 +1,8 @@
 ﻿using log4net;
 using System.Threading;
 using System.Threading.Tasks;
+using Voise.General;
 using Voise.Recognizer.Provider.Common.Job;
-using static Voise.AudioStream;
 
 namespace Voise.Recognizer.Provider.Azure.Job
 {
@@ -42,7 +42,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
             }).ConfigureAwait(false);
         }
 
-        private void ConsumeStreamData(object sender, StreamInEventArgs e)
+        private void ConsumeStreamData(object sender, AudioStream.StreamInEventArgs e)
         {
             _recognitionClient.SendAudio(e.Buffer, e.BytesStreamed);
         }
