@@ -11,7 +11,7 @@ namespace Voise.Recognizer.Provider.Google.Job
     {
         private RecognizeRequest _request;
 
-        internal SyncJob(SpeechRecognizer recognizer, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        internal SyncJob(SpeechRecognizer recognizer, byte[] audio, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base(recognizer)
         {
             ValidateArguments(encoding, sampleRate, languageCode);
@@ -28,7 +28,7 @@ namespace Voise.Recognizer.Provider.Google.Job
                 },
                 Audio = new RecognitionAudio()
                 {
-                    Content = ConvertAudioToByteString(audio_base64)
+                    Content = ConvertAudioToByteString(audio)
                 }
             };
         }

@@ -14,6 +14,7 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
     internal class Base : IDisposable
     {
         protected readonly SpeechRecognizer _speechRecognizer;
+
         protected LanguageModelList _modelList;
         protected Internal.BufferAudioSource _audioSource;
 

@@ -14,7 +14,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 {
     internal class SyncJob : Base, ISyncJob
     {
-        internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        internal SyncJob(byte[] audio, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base(LogManager.GetLogger(typeof(SyncJob)))
         {
             ValidateArguments(encoding, sampleRate, languageCode, contexts);
@@ -50,8 +50,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
                 _engine.LoadGrammar(gram);
             }
 
-            _engine.SetInputToAudioStream(
-                new MemoryStream(Util.ConvertAudioToBytes(audio_base64)), info);
+            _engine.SetInputToAudioStream(new MemoryStream(audio), info);
         }
 
         public async Task StartAsync()

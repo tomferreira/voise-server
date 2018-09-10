@@ -47,7 +47,7 @@ namespace Voise.Process
                 //int bytesPerSample = encoding != AudioEncoding.EncodingUnspecified ? encoding.BitsPerSample / 8 : 1;
                 int bytesPerSample = 2;
 
-                _client.StreamOut = new AudioStream(20, _request.Config.sample_rate, bytesPerSample);
+                _client.StreamOut = new AudioStream(20, _request.Config.sample_rate, bytesPerSample, null);
 
                 _client.StreamOut.DataAvailable += delegate (object sender, AudioStream.StreamInEventArgs e)
                 {

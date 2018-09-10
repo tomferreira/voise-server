@@ -20,10 +20,10 @@ namespace Voise.Recognizer.Provider.Azure
             _primaryKey = primaryKey;
         }
 
-        protected override ISyncJob CreateSyncJob(string audio_base64, string encoding,
+        protected override ISyncJob CreateSyncJob(byte[] audio, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            return new SyncJob(_primaryKey, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode);
+            return new SyncJob(_primaryKey, audio, ConvertAudioEncoding(encoding), sampleRate, languageCode);
         }
 
         protected override IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,

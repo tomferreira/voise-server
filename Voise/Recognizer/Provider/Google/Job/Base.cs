@@ -35,14 +35,11 @@ namespace Voise.Recognizer.Provider.Google.Job
                 throw new BadEncodingException("Sample rate is invalid.");
         }
 
-        protected ByteString ConvertAudioToByteString(string audio_base64)
+        protected ByteString ConvertAudioToByteString(byte[] audio)
         {
-            if (String.IsNullOrWhiteSpace(audio_base64))
-                throw new BadAudioException("Audio is empty.");
-
             try
             {
-                return ByteString.CopyFrom(Convert.FromBase64String(audio_base64));
+                return ByteString.CopyFrom(audio);
             }
             catch (System.Exception e)
             {

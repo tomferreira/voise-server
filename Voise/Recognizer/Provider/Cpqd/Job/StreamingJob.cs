@@ -22,16 +22,16 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
             _streamIn.StreamingStopped += StreamingStopped;
         }
 
-        public Task StartAsync()
+        public async Task StartAsync()
         {
-            return Task.Run(() =>
+            await Task.Run(() =>
             {
                 _audioSource = new Internal.BufferAudioSource();
 
                 _speechRecognizer.Recognize(_audioSource, _modelList);
 
                 _streamIn.Start();
-            });
+            }).ConfigureAwait(false);
         }
 
         public Task StopAsync()

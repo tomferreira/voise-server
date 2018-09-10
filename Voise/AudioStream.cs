@@ -62,12 +62,16 @@ namespace Voise
         private Queue<MemoryStream> _buffers;
         private MemoryStream _currentBuffer;
 
+        private Tuning.Base _tuning;
+
         private readonly object _mutex;
 
         internal int BufferCapacity { get; private set; }
 
-        internal AudioStream(int bufferMillisec, int sampleRate, int bytesPerSample)
+        internal AudioStream(int bufferMillisec, int sampleRate, int bytesPerSample, Tuning.Base tuning)
         {
+            _tuning = tuning;
+
             int bytesPerSecond = sampleRate * bytesPerSample;
 
             _state = State.Stopped;
@@ -144,6 +148,9 @@ namespace Voise
 
                     int count = Math.Min(remmaing, length);
                     _currentBuffer.Write(data, offset, count);
+
+                    //
+                    _tuning?.WriteRecording(data, offset, count);
 
                     offset += count;
                     length -= count;

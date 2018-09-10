@@ -41,9 +41,9 @@ namespace Voise.Recognizer.Provider.Cpqd
             _modelList.AddFromUri("builtin:slm/general");
         }
 
-        protected override ISyncJob CreateSyncJob(string audio_base64, string encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        protected override ISyncJob CreateSyncJob(byte[] audio, string encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            return new SyncJob(_config, _modelList, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode);
+            return new SyncJob(_config, _modelList, audio, ConvertAudioEncoding(encoding), sampleRate, languageCode);
         }
 
         protected override IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)

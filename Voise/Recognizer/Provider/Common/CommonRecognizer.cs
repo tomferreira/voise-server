@@ -18,10 +18,10 @@ namespace Voise.Recognizer.Provider.Common
             InitRemoveJobsWithAbortedStream();
         }
 
-        internal async Task<SpeechRecognitionResult> SyncRecognition(string audio_base64, string encoding,
+        internal async Task<SpeechRecognitionResult> SyncRecognition(byte[] audio, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            using (ISyncJob job = CreateSyncJob(audio_base64, encoding, sampleRate, languageCode, contexts))
+            using (ISyncJob job = CreateSyncJob(audio, encoding, sampleRate, languageCode, contexts))
             {
                 await job.StartAsync().ConfigureAwait(false);
 
@@ -64,7 +64,7 @@ namespace Voise.Recognizer.Provider.Common
             return result;
         }
 
-        protected abstract ISyncJob CreateSyncJob(string audio_base64, string encoding,
+        protected abstract ISyncJob CreateSyncJob(byte[] audio, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts);
 
         protected abstract IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,

@@ -8,6 +8,7 @@ using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Common;
 using Voise.TCP;
 using Voise.TCP.Request;
+using Voise.Tuning;
 
 namespace Voise.Process
 {
@@ -17,13 +18,17 @@ namespace Voise.Process
         private readonly RecognizerManager _recognizerManager;
         private readonly ClassifierManager _classifierManager;
 
+        private TuningIn _tuning;
+
         internal ProcessStreamStartRequest(ClientConnection client, VoiseStreamRecognitionStartRequest request,
-            RecognizerManager recognizerManager, ClassifierManager classifierManager)
+            RecognizerManager recognizerManager, ClassifierManager classifierManager, TuningManager tuningManager)
             : base(client)
         {
             _request = request;
             _recognizerManager = recognizerManager;
             _classifierManager = classifierManager;
+
+            _tuning = tuningManager.CreateTuningIn(TuningIn.InputMethod.Stream, _request.Config);
         }
 
         internal override async Task ExecuteAsync()
@@ -56,7 +61,7 @@ namespace Voise.Process
                 ////int bytesPerSample = GoogleRecognizer.GetBytesPerSample(request.Config.encoding);
                 int bytesPerSample = 2;
 
-                _client.StreamIn = new AudioStream(100, _request.Config.sample_rate, bytesPerSample);
+                _client.StreamIn = new AudioStream(100, _request.Config.sample_rate, bytesPerSample, _tuning);
 
                 await recognizer.StartStreamingRecognitionAsync(
                     _client.StreamIn,
@@ -73,6 +78,9 @@ namespace Voise.Process
             {
                 // Cleanup streamIn
                 _client.StreamIn = null;
+
+                _tuning?.Close();
+                _tuning?.Dispose();
 
                 if (e is BadEncodingException || e is BadAudioException)
                 {
@@ -91,11 +99,14 @@ namespace Voise.Process
             // Veja o tratamento do comando 'StreamDataRequest'.
             await pipeline.WaitAsync().ConfigureAwait(false);
 
-            // Caso ocorra alguma exceção asíncrona durante o streming do áudio
+            // Caso ocorra alguma exceção assíncrona durante o streming do áudio
             if (pipeline.AsyncStreamError != null)
             {
                 // Cleanup streamIn
                 _client.StreamIn = null;
+
+                _tuning?.Close();
+                _tuning?.Dispose();
 
                 log.Error($"{pipeline.AsyncStreamError.Message}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
@@ -123,10 +134,16 @@ namespace Voise.Process
                     }
                 }
 
+                _tuning?.SetResult(pipeline.Result);
+
                 log.Info($"Stream request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
+
 
                 // Cleanup streamIn
                 _client.StreamIn = null;
+
+                _tuning?.Close();
+                _tuning?.Dispose();
 
                 SendResult(pipeline.Result);
             }

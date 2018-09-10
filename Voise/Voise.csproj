@@ -231,6 +231,8 @@
     <Compile Include="Recognizer\Provider\Microsoft\MicrosoftRecognizer.cs" />
     <Compile Include="Recognizer\RecognizerManager.cs" />
     <Compile Include="Recognizer\SpeechRecognitionResult.cs" />
+    <Compile Include="Tuning\TuningIn.cs" />
+    <Compile Include="Tuning\Base.cs" />
     <Compile Include="Recognizer\Util.cs" />
     <Compile Include="ResponseCode.cs" />
     <Compile Include="Recognizer\Provider\Azure\AudioEncoding.cs" />
@@ -250,6 +252,7 @@
     <Compile Include="Process\ProcessStreamStartRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Synthesizer\SynthesizerManager.cs" />
+    <Compile Include="Tuning\TuningManager.cs" />
     <Compile Include="VoiseResult.cs" />
     <Compile Include="TCP\ClientConnection.cs" />
     <Compile Include="TCP\Request\VoiseStreamRecognitionStopRequest.cs" />
