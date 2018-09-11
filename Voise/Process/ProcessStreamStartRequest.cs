@@ -58,11 +58,7 @@ namespace Voise.Process
 
                 Dictionary<string, List<string>> contexts = GetContexts(_request.Config, _classifierManager);
 
-                // FIXME
-                ////int bytesPerSample = GoogleRecognizer.GetBytesPerSample(request.Config.encoding);
-                int bytesPerSample = 2;
-
-                _client.StreamIn = new AudioStream(100, _request.Config.sample_rate, bytesPerSample, _tuning);
+                _client.StreamIn = new AudioStream(100, _request.Config.sample_rate, 2, _tuning);
 
                 await recognizer.StartStreamingRecognitionAsync(
                     _client.StreamIn,

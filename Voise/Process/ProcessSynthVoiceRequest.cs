@@ -50,11 +50,7 @@ namespace Voise.Process
             {
                 CommonSynthesizer synthesizer = _synthesizerManager.GetSynthesizer(_request.Config.engine_id);
 
-                //var encoding = MicrosoftSynthesizer.ConvertAudioEncoding(_request.Config.encoding);
-                //int bytesPerSample = encoding != AudioEncoding.EncodingUnspecified ? encoding.BitsPerSample / 8 : 1;
-                int bytesPerSample = 2;
-
-                _client.StreamOut = new AudioStream(20, _request.Config.sample_rate, bytesPerSample, _tuning);
+                _client.StreamOut = new AudioStream(20, _request.Config.sample_rate, 2, _tuning);
 
                 _client.StreamOut.DataAvailable += delegate (object sender, AudioStream.StreamInEventArgs e)
                 {

@@ -55,23 +55,5 @@ namespace Voise.Recognizer.Provider.Google
                     return AudioEncoding.EncodingUnspecified;
             }
         }
-
-        internal static int GetBytesPerSample(string encoding)
-        {
-            var enc = ConvertAudioEncoding(encoding);
-
-            switch (enc)
-            {
-                case AudioEncoding.Flac:
-                case AudioEncoding.Linear16:
-                    return 2;
-
-                case AudioEncoding.Mulaw:
-                    return 1;
-
-                default:
-                    return 0;
-            }
-        }
     }
 }
