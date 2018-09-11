@@ -203,6 +203,7 @@
     <Compile Include="Classification\Classifier\SMOTextClassifier.cs" />
     <Compile Include="General\Config.cs" />
     <Compile Include="General\VoiseServer.cs" />
+    <Compile Include="General\Constant.cs" />
     <Compile Include="Process\ProcessFactory.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\AudioEncoding.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\CpqdRecognizer.cs" />

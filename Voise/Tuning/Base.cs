@@ -63,17 +63,20 @@ namespace Voise.Tuning
 
             switch (encoding.ToLower())
             {
-                case "flac":
-                case "linear16":
-                    _waveFormat = new WaveFormat(sampleRate, 1);
+                case Constant.ENCODING_FLAC:
+                    _waveFormat = new WaveFormat(sampleRate, Constant.CHANNEL_MONO);
                     break;
 
-                case "alaw":
-                    _waveFormat = WaveFormat.CreateALawFormat(sampleRate, 1);
+                case Constant.ENCODING_LINEAR16:
+                    _waveFormat = new WaveFormat(sampleRate, 16, Constant.CHANNEL_MONO);
                     break;
 
-                case "mulaw":
-                    _waveFormat = WaveFormat.CreateMuLawFormat(sampleRate, 1);
+                case Constant.ENCODING_ALAW:
+                    _waveFormat = WaveFormat.CreateALawFormat(sampleRate, Constant.CHANNEL_MONO);
+                    break;
+
+                case Constant.ENCODING_MULAW:
+                    _waveFormat = WaveFormat.CreateMuLawFormat(sampleRate, Constant.CHANNEL_MONO);
                     break;
             }
         }

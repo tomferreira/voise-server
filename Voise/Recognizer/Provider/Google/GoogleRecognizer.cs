@@ -39,16 +39,16 @@ namespace Voise.Recognizer.Provider.Google
         {
             switch (encoding.ToLower())
             {
-                case "flac":
+                case Constant.ENCODING_FLAC:
                     return AudioEncoding.Flac;
 
-                case "linear16":
+                case Constant.ENCODING_LINEAR16:
                     return AudioEncoding.Linear16;
 
-                case "alaw":
-                    throw new System.Exception("Codec 'alaw' not supported.");
+                case Constant.ENCODING_ALAW:
+                    throw new System.Exception($"Codec '{Constant.ENCODING_ALAW}' not supported.");
 
-                case "mulaw":
+                case Constant.ENCODING_MULAW:
                     return AudioEncoding.Mulaw;
 
                 default:
