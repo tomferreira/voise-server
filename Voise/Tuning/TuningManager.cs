@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Threading;
+using Voise.General;
 using Voise.TCP.Request;
 
 namespace Voise.Tuning
@@ -32,6 +33,14 @@ namespace Voise.Tuning
                 return null;
 
             return new TuningIn(_tuningPath, inputMethod, config);
+        }
+
+        internal TuningOut CreateTuningOut(Base.InputMethod inputMethod, string text, VoiseConfig config)
+        {
+            if (string.IsNullOrWhiteSpace(_tuningPath))
+                return null;
+
+            return new TuningOut(_tuningPath, inputMethod, text, config);
         }
 
         private void EnableTuning(string tuningPath, int retentionDays)

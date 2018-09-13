@@ -52,7 +52,7 @@ namespace Voise.Process
             if (request.SynthVoiceRequest != null)
             {
                 return new ProcessSynthVoiceRequest(
-                    client, request.SynthVoiceRequest, _synthesizerManager);
+                    client, request.SynthVoiceRequest, _synthesizerManager, _tuningManager);
             }
 
             return null;

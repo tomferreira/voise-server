@@ -1,4 +1,4 @@
-﻿namespace Voise
+﻿namespace Voise.General
 {
     internal class VoiseResult
     {

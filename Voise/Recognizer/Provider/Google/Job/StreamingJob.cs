@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Voise.General;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Google.Internal;
 using static Google.Cloud.Speech.V1.RecognitionConfig.Types;
-using static Voise.AudioStream;
 
 namespace Voise.Recognizer.Provider.Google.Job
 {
@@ -61,7 +61,7 @@ namespace Voise.Recognizer.Provider.Google.Job
             await _requestQueue.CompleteAsync().ConfigureAwait(false);
         }
 
-        private void ConsumeStreamData(object sender, StreamInEventArgs e)
+        private void ConsumeStreamData(object sender, AudioStream.StreamInEventArgs e)
         {
             ByteString data = ByteString.CopyFrom(e.Buffer, 0, e.BytesStreamed);
             _requestQueue.Post(data);

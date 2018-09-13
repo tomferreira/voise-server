@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Net.Sockets;
 using System.Text;
+using Voise.General;
 using Voise.TCP.Request;
 using Voise.TCP.Response;
 using static Voise.TCP.Server;

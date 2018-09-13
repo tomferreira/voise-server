@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Voise.General;
 using Voise.Recognizer.Provider.Azure.Job;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
@@ -36,17 +37,17 @@ namespace Voise.Recognizer.Provider.Azure
         {
             switch (encoding.ToLower())
             {
-                case "flac":
-                    throw new System.Exception("Codec 'flac' not supported.");
+                case Constant.ENCODING_FLAC:
+                    throw new System.Exception($"Codec '{Constant.ENCODING_FLAC}' not supported.");
 
-                case "linear16":
+                case Constant.ENCODING_LINEAR16:
                     return AudioEncoding.Linear16;
 
-                case "alaw":
-                    throw new System.Exception("Codec 'alaw' not supported.");
+                case Constant.ENCODING_ALAW:
+                    throw new System.Exception($"Codec '{Constant.ENCODING_ALAW}' not supported.");
 
-                case "mulaw":
-                    throw new System.Exception("Codec 'mulaw' not supported.");
+                case Constant.ENCODING_MULAW:
+                    throw new System.Exception($"Codec '{Constant.ENCODING_MULAW}' not supported.");
 
                 default:
                     return AudioEncoding.EncodingUnspecified;

@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using Voise.General;
 using Voise.Synthesizer.Provider.Common;
 using Voise.Synthesizer.Provider.Microsoft;
 

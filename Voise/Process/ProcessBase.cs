@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voise.Classification;
+using Voise.General;
 using Voise.TCP;
 using Voise.TCP.Request;
 using Voise.TCP.Response;

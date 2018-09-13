@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Voise
+namespace Voise.General
 {
     internal class AudioStream : IDisposable
     {
@@ -199,10 +199,7 @@ namespace Voise
             if (disposing)
             {
                 lock (_mutex)
-                {
-                    if (_currentBuffer != null)
-                        _currentBuffer.Dispose();
-                }
+                    _currentBuffer?.Dispose();
             }
         }
     }

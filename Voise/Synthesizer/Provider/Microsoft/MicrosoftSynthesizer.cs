@@ -1,4 +1,5 @@
-﻿using Voise.Provider.Microsoft;
+﻿using Voise.General;
+using Voise.Provider.Microsoft;
 using Voise.Synthesizer.Provider.Common;
 using Voise.Synthesizer.Provider.Common.Job;
 
@@ -18,16 +19,16 @@ namespace Voise.Synthesizer.Provider.Microsoft
         {
             switch (encoding.ToLower())
             {
-                case "flac":
-                    throw new System.Exception("Codec 'flac' not supported.");
+                case Constant.ENCODING_FLAC:
+                    throw new System.Exception($"Codec '{Constant.ENCODING_FLAC}' not supported.");
 
-                case "linear16":
+                case Constant.ENCODING_LINEAR16:
                     return AudioEncoding.Linear16;
 
-                case "alaw":
+                case Constant.ENCODING_ALAW:
                     return AudioEncoding.Alaw;
 
-                case "mulaw":
+                case Constant.ENCODING_MULAW:
                     return AudioEncoding.Mulaw;
 
                 default:

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voise.Classification;
+using Voise.General;
 using Voise.Recognizer;
 using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Common;
@@ -57,11 +58,7 @@ namespace Voise.Process
 
                 Dictionary<string, List<string>> contexts = GetContexts(_request.Config, _classifierManager);
 
-                // FIXME
-                ////int bytesPerSample = GoogleRecognizer.GetBytesPerSample(request.Config.encoding);
-                int bytesPerSample = 2;
-
-                _client.StreamIn = new AudioStream(100, _request.Config.sample_rate, bytesPerSample, _tuning);
+                _client.StreamIn = new AudioStream(100, _request.Config.sample_rate, 2, _tuning);
 
                 await recognizer.StartStreamingRecognitionAsync(
                     _client.StreamIn,
@@ -77,6 +74,7 @@ namespace Voise.Process
             catch (Exception e)
             {
                 // Cleanup streamIn
+                _client.StreamIn.Dispose();
                 _client.StreamIn = null;
 
                 _tuning?.Close();
@@ -103,6 +101,7 @@ namespace Voise.Process
             if (pipeline.AsyncStreamError != null)
             {
                 // Cleanup streamIn
+                _client.StreamIn.Dispose();
                 _client.StreamIn = null;
 
                 _tuning?.Close();
@@ -138,26 +137,23 @@ namespace Voise.Process
 
                 log.Info($"Stream request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
-
-                // Cleanup streamIn
-                _client.StreamIn = null;
-
-                _tuning?.Close();
-                _tuning?.Dispose();
-
                 SendResult(pipeline.Result);
             }
             catch (Exception e)
             {
-                // Cleanup streamIn
-                _client.StreamIn = null;
-
                 log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(e);
             }
             finally
             {
+                // Cleanup streamIn
+                _client.StreamIn.Dispose();
+                _client.StreamIn = null;
+
+                _tuning?.Close();
+                _tuning?.Dispose();
+
                 _client.CurrentPipeline.Dispose();
                 _client.CurrentPipeline = null;
             }

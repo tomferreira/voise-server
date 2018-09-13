@@ -122,6 +122,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files\Microsoft SDKs\Speech\v11.0\Assembly\Microsoft.Speech.dll</HintPath>
     </Reference>
+    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -188,7 +191,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AudioStream.cs" />
+    <Compile Include="General\AudioStream.cs" />
     <Compile Include="Classification\Classifier\Base.cs" />
     <Compile Include="Classification\ClassifierManager.cs" />
     <Compile Include="Classification\Exception\BadModelException.cs" />
@@ -198,7 +201,9 @@
     <Compile Include="Classification\Classifier\MultilayerPerceptronTextClassificatier.cs" />
     <Compile Include="Classification\Classifier\NaiveBayesTextClassifier.cs" />
     <Compile Include="Classification\Classifier\SMOTextClassifier.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="General\Config.cs" />
+    <Compile Include="General\VoiseServer.cs" />
+    <Compile Include="General\Constant.cs" />
     <Compile Include="Process\ProcessFactory.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\AudioEncoding.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\CpqdRecognizer.cs" />
@@ -231,10 +236,8 @@
     <Compile Include="Recognizer\Provider\Microsoft\MicrosoftRecognizer.cs" />
     <Compile Include="Recognizer\RecognizerManager.cs" />
     <Compile Include="Recognizer\SpeechRecognitionResult.cs" />
-    <Compile Include="Tuning\TuningIn.cs" />
-    <Compile Include="Tuning\Base.cs" />
     <Compile Include="Recognizer\Util.cs" />
-    <Compile Include="ResponseCode.cs" />
+    <Compile Include="General\ResponseCode.cs" />
     <Compile Include="Recognizer\Provider\Azure\AudioEncoding.cs" />
     <Compile Include="Synthesizer\Provider\Common\CommonSynthesizer.cs" />
     <Compile Include="Synthesizer\Exception\BadEncodingException.cs" />
@@ -245,15 +248,18 @@
     <Compile Include="Synthesizer\Provider\Microsoft\MicrosoftSynthesizer.cs" />
     <Compile Include="Synthesizer\Provider\Microsoft\WaveStream.cs" />
     <Compile Include="Synthesizer\Provider\Microsoft\Job\Job.cs" />
-    <Compile Include="Pipeline.cs" />
+    <Compile Include="General\Pipeline.cs" />
     <Compile Include="Process\ProcessBase.cs" />
     <Compile Include="Process\ProcessStreamDataRequest.cs" />
     <Compile Include="Process\ProcessSyncRequest.cs" />
     <Compile Include="Process\ProcessStreamStartRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Synthesizer\SynthesizerManager.cs" />
+    <Compile Include="Tuning\Base.cs" />
     <Compile Include="Tuning\TuningManager.cs" />
-    <Compile Include="VoiseResult.cs" />
+    <Compile Include="Tuning\TuningIn.cs" />
+    <Compile Include="Tuning\TuningOut.cs" />
+    <Compile Include="General\VoiseResult.cs" />
     <Compile Include="TCP\ClientConnection.cs" />
     <Compile Include="TCP\Request\VoiseStreamRecognitionStopRequest.cs" />
     <Compile Include="TCP\Request\VoiseSyncRecognitionRequest.cs" />
