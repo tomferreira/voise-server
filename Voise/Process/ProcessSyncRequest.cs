@@ -3,27 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voise.Classification;
+using Voise.General;
 using Voise.Recognizer;
 using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Common;
 using Voise.TCP;
 using Voise.TCP.Request;
+using Voise.Tuning;
 
 namespace Voise.Process
 {
     internal class ProcessSyncRequest : ProcessBase
     {
-        private VoiseSyncRecognitionRequest _request;
-        private RecognizerManager _recognizerManager;
-        private ClassifierManager _classifierManager;
+        private readonly VoiseSyncRecognitionRequest _request;
+        private readonly RecognizerManager _recognizerManager;
+        private readonly ClassifierManager _classifierManager;
+
+        private TuningIn _tuning;
 
         internal ProcessSyncRequest(ClientConnection client, VoiseSyncRecognitionRequest request,
-            RecognizerManager recognizerManager, ClassifierManager classifierManager)
+            RecognizerManager recognizerManager, ClassifierManager classifierManager, TuningManager tuningManager)
             : base(client)
         {
             _request = request;
             _recognizerManager = recognizerManager;
             _classifierManager = classifierManager;
+
+            _tuning = tuningManager.CreateTuningIn(TuningIn.InputMethod.Sync, _request.Config);
         }
 
         internal override async Task ExecuteAsync()
@@ -38,10 +44,14 @@ namespace Voise.Process
             {
                 CommonRecognizer recognizer = _recognizerManager.GetRecognizer(_request.Config.engine_id);
 
+                var audio = Util.ConvertAudioToBytes(_request.audio);
+
+                _tuning?.WriteRecording(audio, 0, audio.Length);
+
                 Dictionary<string, List<string>> contexts = GetContexts(_request.Config, _classifierManager);
 
                 var recognition = await recognizer.SyncRecognition(
-                    _request.audio,
+                    audio,
                     _request.Config.encoding,
                     _request.Config.sample_rate,
                     _request.Config.language_code,
@@ -89,6 +99,9 @@ namespace Voise.Process
 
                 log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
+                //
+                _tuning?.SetResult(pipeline.Result);
+
                 SendResult(pipeline.Result);
             }
             catch (Exception e)
@@ -99,6 +112,9 @@ namespace Voise.Process
             }
             finally
             {
+                _tuning?.Close();
+                _tuning?.Dispose();
+
                 _client.CurrentPipeline.Dispose();
                 _client.CurrentPipeline = null;
             }

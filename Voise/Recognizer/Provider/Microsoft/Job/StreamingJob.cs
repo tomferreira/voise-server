@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using Voise.General;
+using Voise.Provider.Microsoft;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Microsoft.Internal;
-using Voise.Synthesizer.Microsoft;
-using static Voise.AudioStream;
 
 namespace Voise.Recognizer.Provider.Microsoft.Job
 {
@@ -82,7 +82,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             _ss.Complete();
         }
 
-        private void ConsumeStreamData(object sender, StreamInEventArgs e)
+        private void ConsumeStreamData(object sender, AudioStream.StreamInEventArgs e)
         {
             try
             {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Voise
+namespace Voise.General
 {
     internal class AudioStream : IDisposable
     {
@@ -11,8 +11,8 @@ namespace Voise
         /// </summary>
         internal class StreamInEventArgs : EventArgs
         {
-            private byte[] buffer;
-            private int bytes;
+            private readonly byte[] buffer;
+            private readonly int bytes;
 
             /// <summary>
             /// Creates new StreamInEventArgs
@@ -62,12 +62,16 @@ namespace Voise
         private Queue<MemoryStream> _buffers;
         private MemoryStream _currentBuffer;
 
-        private object _mutex;
+        private Tuning.Base _tuning;
+
+        private readonly object _mutex;
 
         internal int BufferCapacity { get; private set; }
 
-        internal AudioStream(int bufferMillisec, int sampleRate, int bytesPerSample)
+        internal AudioStream(int bufferMillisec, int sampleRate, int bytesPerSample, Tuning.Base tuning)
         {
+            _tuning = tuning;
+
             int bytesPerSecond = sampleRate * bytesPerSample;
 
             _state = State.Stopped;
@@ -145,6 +149,9 @@ namespace Voise
                     int count = Math.Min(remmaing, length);
                     _currentBuffer.Write(data, offset, count);
 
+                    //
+                    _tuning?.WriteRecording(data, offset, count);
+
                     offset += count;
                     length -= count;
                 }
@@ -192,10 +199,7 @@ namespace Voise
             if (disposing)
             {
                 lock (_mutex)
-                {
-                    if (_currentBuffer != null)
-                        _currentBuffer.Dispose();
-                }
+                    _currentBuffer?.Dispose();
             }
         }
     }

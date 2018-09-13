@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Net.Sockets;
 using System.Text;
+using Voise.General;
 using Voise.TCP.Request;
 using Voise.TCP.Response;
 using static Voise.TCP.Server;
@@ -19,7 +20,7 @@ namespace Voise.TCP
         private byte[] _buffer;
         private StringBuilder _data;
 
-        private HandlerRequest _hr;
+        private readonly HandlerRequest _hr;
 
         private ILog _log;
 
@@ -82,7 +83,10 @@ namespace Voise.TCP
                 {
                     _socket.Shutdown(SocketShutdown.Both);
                 }
-                catch (Exception) { }
+                catch (SocketException)
+                {
+                    // Ignore
+                }
 
                 _socket.Close();
             }
@@ -147,10 +151,11 @@ namespace Voise.TCP
             if (response == null)
                 return;
 
-            string data = JsonConvert.SerializeObject(response) + DELIMITER;
+            StringBuilder data = new StringBuilder(JsonConvert.SerializeObject(response));
+            data.Append(DELIMITER);
 
             // Convert the string data to byte data using UTF8 encoding.
-            byte[] byteData = Encoding.UTF8.GetBytes(data);
+            byte[] byteData = Encoding.UTF8.GetBytes(data.ToString());
 
             _socket.Send(byteData);
         }

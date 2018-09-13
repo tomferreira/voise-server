@@ -3,8 +3,8 @@ using Microsoft.Speech.Recognition;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Voise.Provider.Microsoft;
 using Voise.Recognizer.Exception;
-using Voise.Synthesizer.Microsoft;
 
 namespace Voise.Recognizer.Provider.Microsoft.Job
 {

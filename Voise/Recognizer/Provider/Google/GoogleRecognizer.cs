@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Voise.General;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Google.Internal;
@@ -11,7 +12,7 @@ namespace Voise.Recognizer.Provider.Google
     {
         internal const string ENGINE_IDENTIFIER = "ge";
 
-        private SpeechRecognizer _recognizer;
+        private readonly SpeechRecognizer _recognizer;
 
         internal GoogleRecognizer(string credentialPath)
         {
@@ -22,10 +23,10 @@ namespace Voise.Recognizer.Provider.Google
         }
 
         // Max duration of audio ~60s (https://cloud.google.com/speech/limits)
-        protected override ISyncJob CreateSyncJob(string audio_base64, string encoding,
+        protected override ISyncJob CreateSyncJob(byte[] audio, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            return new SyncJob(_recognizer, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
+            return new SyncJob(_recognizer, audio, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
         }
 
         protected override IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,
@@ -38,38 +39,20 @@ namespace Voise.Recognizer.Provider.Google
         {
             switch (encoding.ToLower())
             {
-                case "flac":
+                case Constant.ENCODING_FLAC:
                     return AudioEncoding.Flac;
 
-                case "linear16":
+                case Constant.ENCODING_LINEAR16:
                     return AudioEncoding.Linear16;
 
-                case "alaw":
-                    throw new System.Exception("Codec 'alaw' not supported.");
+                case Constant.ENCODING_ALAW:
+                    throw new System.Exception($"Codec '{Constant.ENCODING_ALAW}' not supported.");
 
-                case "mulaw":
+                case Constant.ENCODING_MULAW:
                     return AudioEncoding.Mulaw;
 
                 default:
                     return AudioEncoding.EncodingUnspecified;
-            }
-        }
-
-        internal static int GetBytesPerSample(string encoding)
-        {
-            var enc = ConvertAudioEncoding(encoding);
-
-            switch (enc)
-            {
-                case AudioEncoding.Flac:
-                case AudioEncoding.Linear16:
-                    return 2;
-
-                case AudioEncoding.Mulaw:
-                    return 1;
-
-                default:
-                    return 0;
             }
         }
     }

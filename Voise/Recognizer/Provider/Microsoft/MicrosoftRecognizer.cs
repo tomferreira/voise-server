@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Voise.General;
+using Voise.Provider.Microsoft;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Microsoft.Job;
-using Voise.Synthesizer.Microsoft;
 
 namespace Voise.Recognizer.Provider.Microsoft
 {
@@ -10,10 +11,10 @@ namespace Voise.Recognizer.Provider.Microsoft
     {
         internal const string ENGINE_IDENTIFIER = "me";
 
-        protected override ISyncJob CreateSyncJob(string audio_base64, string encoding,
+        protected override ISyncJob CreateSyncJob(byte[] audio, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            return new SyncJob(audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
+            return new SyncJob(audio, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
         }
 
         protected override IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,
@@ -26,16 +27,16 @@ namespace Voise.Recognizer.Provider.Microsoft
         {
             switch (encoding.ToLower())
             {
-                case "flac":
-                    throw new System.Exception("Codec 'flac' not supported.");
+                case Constant.ENCODING_FLAC:
+                    throw new System.Exception($"Codec '{Constant.ENCODING_FLAC}' not supported.");
 
-                case "linear16":
+                case Constant.ENCODING_LINEAR16:
                     return AudioEncoding.Linear16;
 
-                case "alaw":
+                case Constant.ENCODING_ALAW:
                     return AudioEncoding.Alaw;
 
-                case "mulaw":
+                case Constant.ENCODING_MULAW:
                     return AudioEncoding.Mulaw;
 
                 default:

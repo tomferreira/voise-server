@@ -2,19 +2,13 @@
 using log4net.Config;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
-using Voise.Classification;
-using Voise.Process;
-using Voise.Recognizer;
-using Voise.Synthesizer.Microsoft;
-using Voise.TCP;
-using Voise.TCP.Request;
+using Voise.General;
 
 namespace Voise
 {
     public class Voise
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
 #if DEBUG
             BasicConfigurator.Configure();
@@ -23,7 +17,7 @@ namespace Voise
             {
                 Config config = new Config();
 
-                Voise voise = new Voise(config);
+                VoiseServer voise = new VoiseServer(config);
                 voise.Start();
 
                 while (true)
@@ -47,50 +41,6 @@ namespace Voise
 #else
             Console.WriteLine("To Start Voise Server, use the Windows Service.");
 #endif
-        }
-
-        private Server _tcpServer;
-        private Config _config;
-        private ProcessFactory _processFactory;
-
-        public Voise(Config config)
-        {
-            ILog log = LogManager.GetLogger(typeof(Voise));
-
-            log.Info($"Initializing Voise Server v{Version.VersionString}.");
-
-            _config = config;
-
-            _tcpServer = new Server(HandleClientRequest);
-
-            // ASR
-            RecognizerManager recognizerManager = new RecognizerManager(_config);
-            ClassifierManager classifierManager = new ClassifierManager(_config);
-
-            // TTS
-            MicrosoftSynthetizer synthetizer = new MicrosoftSynthetizer();
-
-            _processFactory = new ProcessFactory(
-                recognizerManager, synthetizer, classifierManager);
-        }
-
-        public void Start()
-        {
-            _tcpServer.StartAsync(_config.Port);
-        }
-
-        public void Stop()
-        {
-            if (_tcpServer != null && _tcpServer.IsOpen)
-                _tcpServer.Stop();
-        }
-
-        private async Task HandleClientRequest(ClientConnection client, VoiseRequest request)
-        {
-            ProcessBase process = _processFactory.createProcess(client, request);
-
-            if (process != null)
-                await process.ExecuteAsync().ConfigureAwait(false);
         }
     }
 }

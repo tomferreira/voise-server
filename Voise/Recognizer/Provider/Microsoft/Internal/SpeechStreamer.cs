@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
@@ -9,6 +10,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
     // requested the speech recogniser assumes that the stream has finished.
     internal class SpeechStreamer : Stream
     {
+        [Serializable]
         internal class BufferOverwrittenException : System.Exception
         {
             internal BufferOverwrittenException()
@@ -26,9 +28,9 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         /// <summary>
         /// Buffer containing the stream data
         /// </summary>
-        private List<byte> _buffer;
+        private readonly List<byte> _buffer;
+        private readonly int _buffersize;
 
-        private int _buffersize;
         private int _readposition;
         private int _writeposition;
         private bool _reset;

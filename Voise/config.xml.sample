@@ -15,7 +15,7 @@
         <azure>
             <primarykey></primarykey>
         </azure>
-        
+
         <cpqd>
             <username></username>
             <password></password>
@@ -24,16 +24,24 @@
         -->
     </recognizers>
 
+    <synthesizers>
+        <!-- Default: me -->
+        <!--<enabled>me</enabled>-->
+    </synthesizers>
+
     <!-- Default: ./classifiers/ -->
     <!--<classifiers_path>./classifiers/</classifiers_path>-->
 
     <!-- ATENÇÃO: A configuração de log deve ser realizada diretamente no arquivo Log.config -->
 
-    <tunning>
+    <tuning>
         <!-- Default: false -->
         <!-- <enabled>false</enabled> -->
 
-        <!-- Default: ./tunning/ -->
-        <!-- <path>./tunning/</path> -->
-    </tunning>
+        <!-- Default: ./tuning/ -->
+        <!-- <path>./tuning/</path> -->
+
+        <!-- Default: 7 -->
+        <!-- <retention_days>7</retention_days> -->
+    </tuning>
 </config>

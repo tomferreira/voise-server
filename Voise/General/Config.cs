@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 
-namespace Voise
+namespace Voise.General
 {
     public class Config
     {
@@ -17,12 +17,18 @@ namespace Voise
         private static readonly List<string> DEFAULT_RECOGNIZERS_ENABLED =
             new List<string>() { Recognizer.Provider.Microsoft.MicrosoftRecognizer.ENGINE_IDENTIFIER };
 
+        // Synthesizer
+        private static readonly List<string> DEFAULT_SYNTHESIZERS_ENABLED =
+            new List<string>() { Synthesizer.Provider.Microsoft.MicrosoftSynthesizer.ENGINE_IDENTIFIER };
+
         // Classifier
         private const string DEFAULT_CLASSIFIERS_PATH = "./classifiers/";
 
-        // Tunning
-        private const bool DEFAULT_TUNNING_ENABLED = false;
-        private const string DEFAULT_TUNNING_PATH = "./tunning/";
+        // Tuning
+        private const bool DEFAULT_TUNING_ENABLED = false;
+        private const string DEFAULT_TUNING_PATH = "./tuning/";
+        private const int DEFAULT_TUNING_RETENTON_DAY = 7;
+
 
         private XmlElement _element;
 
@@ -65,6 +71,20 @@ namespace Voise
             }
         }
 
+        internal List<string> SynthesizersEnabled
+        {
+            get
+            {
+                string value = GetSynthesizerAttribute("enabled");
+
+                if (value == null)
+                    return DEFAULT_SYNTHESIZERS_ENABLED;
+
+                string[] elem = value.Split(';', ',');
+                return new List<string>(elem);
+            }
+        }
+
         internal string ClassifiersPath
         {
             get
@@ -80,29 +100,42 @@ namespace Voise
             }
         }
 
-        internal bool TunningEnabled
+        internal bool TuningEnabled
         {
             get
             {
-                object value = GetTunningAttribute("enabled");
+                object value = GetTuningAttribute("enabled");
 
                 if (value == null)
-                    return DEFAULT_TUNNING_ENABLED;
+                    return DEFAULT_TUNING_ENABLED;
 
                 return Convert.ToBoolean(value);
             }
         }
 
-        internal string TunningPath
+        internal string TuningPath
         {
             get
             {
-                string value = GetTunningAttribute("path");
+                string value = GetTuningAttribute("path");
 
                 if (value == null)
-                    return DEFAULT_TUNNING_PATH;
+                    return DEFAULT_TUNING_PATH;
 
                 return value;
+            }
+        }
+
+        internal int TuningRetentionDays
+        {
+            get
+            {
+                string value = GetTuningAttribute("retention_days");
+
+                if (value == null)
+                    return DEFAULT_TUNING_RETENTON_DAY;
+
+                return Convert.ToInt32(value);
             }
         }
 
@@ -110,10 +143,14 @@ namespace Voise
         {
             return GetAttribute("recognizers", identifiers);
         }
-
-        internal string GetTunningAttribute(params string[] identifiers)
+        internal string GetSynthesizerAttribute(params string[] identifiers)
         {
-            return GetAttribute("tunning", identifiers);
+            return GetAttribute("synthesizers", identifiers);
+        }
+
+        internal string GetTuningAttribute(params string[] identifiers)
+        {
+            return GetAttribute("tuning", identifiers);
         }
 
         private string GetAttribute(string parentIdentifier, params string[] identifiers)

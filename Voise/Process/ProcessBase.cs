@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voise.Classification;
+using Voise.General;
 using Voise.TCP;
 using Voise.TCP.Request;
 using Voise.TCP.Response;
@@ -10,7 +11,7 @@ namespace Voise.Process
 {
     internal abstract class ProcessBase
     {
-        protected ClientConnection _client;
+        protected readonly ClientConnection _client;
 
         internal ProcessBase(ClientConnection client)
         {

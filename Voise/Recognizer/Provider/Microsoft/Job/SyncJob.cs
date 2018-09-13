@@ -7,14 +7,14 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Voise.Provider.Microsoft;
 using Voise.Recognizer.Provider.Common.Job;
-using Voise.Synthesizer.Microsoft;
 
 namespace Voise.Recognizer.Provider.Microsoft.Job
 {
     internal class SyncJob : Base, ISyncJob
     {
-        internal SyncJob(string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        internal SyncJob(byte[] audio, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base(LogManager.GetLogger(typeof(SyncJob)))
         {
             ValidateArguments(encoding, sampleRate, languageCode, contexts);
@@ -35,18 +35,22 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 
             foreach (var context in contexts)
             {
-                GrammarBuilder gb = new GrammarBuilder();
-                gb.Culture = cultureInfo;
+                GrammarBuilder gb = new GrammarBuilder
+                {
+                    Culture = cultureInfo
+                };
+
                 gb.Append(new Choices(context.Value.ToArray()));
 
-                Grammar gram = new Grammar(gb);
-                gram.Name = context.Key;
+                Grammar gram = new Grammar(gb)
+                {
+                    Name = context.Key
+                };
 
                 _engine.LoadGrammar(gram);
             }
 
-            _engine.SetInputToAudioStream(
-                new MemoryStream(Util.ConvertAudioToBytes(audio_base64)), info);
+            _engine.SetInputToAudioStream(new MemoryStream(audio), info);
         }
 
         public async Task StartAsync()

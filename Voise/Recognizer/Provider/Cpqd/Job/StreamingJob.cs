@@ -4,6 +4,7 @@ using log4net;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Voise.General;
 using Voise.Recognizer.Provider.Common.Job;
 
 namespace Voise.Recognizer.Provider.Cpqd.Job
@@ -22,16 +23,16 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
             _streamIn.StreamingStopped += StreamingStopped;
         }
 
-        public Task StartAsync()
+        public async Task StartAsync()
         {
-            return Task.Run(() =>
+            await Task.Run(() =>
             {
                 _audioSource = new Internal.BufferAudioSource();
 
                 _speechRecognizer.Recognize(_audioSource, _modelList);
 
                 _streamIn.Start();
-            });
+            }).ConfigureAwait(false);
         }
 
         public Task StopAsync()

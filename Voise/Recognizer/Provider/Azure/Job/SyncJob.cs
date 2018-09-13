@@ -9,14 +9,14 @@ namespace Voise.Recognizer.Provider.Azure.Job
     {
         private byte[] _audio;
 
-        internal SyncJob(string primaryKey, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
+        internal SyncJob(string primaryKey, byte[] audio, AudioEncoding encoding, int sampleRate, string languageCode)
             : base(LogManager.GetLogger(typeof(SyncJob)))
         {
             ValidateArguments(encoding, sampleRate, languageCode);
 
             InitClient(primaryKey, encoding, sampleRate, languageCode);
 
-            _audio = Util.ConvertAudioToBytes(audio_base64);
+            _audio = audio;
         }
 
         public async Task StartAsync()

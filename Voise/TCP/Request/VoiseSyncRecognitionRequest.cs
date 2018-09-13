@@ -4,7 +4,7 @@
     {
 #pragma warning disable 0649
         public VoiseConfig Config;
-        public string audio; // Base64 encoded
+        public string audio;  // Raw audio bytes (base64 encoded)
 #pragma warning restore 0649
     };
 }

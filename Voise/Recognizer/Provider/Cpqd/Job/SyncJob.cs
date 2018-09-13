@@ -9,18 +9,17 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
 {
     internal class SyncJob : Base, ISyncJob
     {
-        public SyncJob(ClientConfig config, LanguageModelList modelList, string audio_base64, AudioEncoding encoding, int sampleRate, string languageCode)
+        public SyncJob(ClientConfig config, LanguageModelList modelList, byte[] audio, AudioEncoding encoding, int sampleRate, string languageCode)
             : base(LogManager.GetLogger(typeof(SyncJob)), config, modelList)
         {
             ValidateArguments(encoding, sampleRate, languageCode);
 
-            var audioBytes = Util.ConvertAudioToBytes(audio_base64);
-            _audioSource = new Internal.BufferAudioSource(audioBytes);
+            _audioSource = new Internal.BufferAudioSource(audio);
         }
 
-        public Task StartAsync()
+        public async Task StartAsync()
         {
-            return Task.Run(() =>
+            await Task.Run(() =>
             {
                 _speechRecognizer.Recognize(_audioSource, _modelList);
 
@@ -29,7 +28,7 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
                     if (!_completed)
                         Monitor.Wait(_monitorCompleted);
                 }
-            });
+            }).ConfigureAwait(false);
         }
     }
 }

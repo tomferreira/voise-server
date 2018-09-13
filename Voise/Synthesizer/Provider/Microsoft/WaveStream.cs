@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Voise.Synthesizer.Microsoft
+namespace Voise.Synthesizer.Provider.Microsoft
 {
     internal class WaveStream : MemoryStream
     {

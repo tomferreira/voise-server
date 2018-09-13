@@ -1,37 +1,40 @@
 ﻿
 using Voise.Classification;
 using Voise.Recognizer;
-using Voise.Synthesizer.Microsoft;
+using Voise.Synthesizer;
 using Voise.TCP;
 using Voise.TCP.Request;
+using Voise.Tuning;
 
 namespace Voise.Process
 {
     internal class ProcessFactory
     {
-        private RecognizerManager _recognizerManager;
-        private MicrosoftSynthetizer _synthetizer;
-        private ClassifierManager _classifierManager;
+        private readonly RecognizerManager _recognizerManager;
+        private readonly SynthesizerManager _synthesizerManager;
+        private readonly ClassifierManager _classifierManager;
+        private readonly TuningManager _tuningManager;
 
-        internal ProcessFactory(RecognizerManager recognizerManager, MicrosoftSynthetizer synthetizer, ClassifierManager classifierManager)
+        internal ProcessFactory(RecognizerManager recognizerManager, SynthesizerManager synthesizerManager, ClassifierManager classifierManager, TuningManager tuningManager)
         {
             _recognizerManager = recognizerManager;
-            _synthetizer = synthetizer;
+            _synthesizerManager = synthesizerManager;
             _classifierManager = classifierManager;
+            _tuningManager = tuningManager;
         }
 
-        internal ProcessBase createProcess(ClientConnection client, VoiseRequest request)
+        internal ProcessBase CreateProcess(ClientConnection client, VoiseRequest request)
         {
             if (request.SyncRequest != null)
             {
                 return new ProcessSyncRequest(
-                    client, request.SyncRequest, _recognizerManager, _classifierManager);
+                    client, request.SyncRequest, _recognizerManager, _classifierManager, _tuningManager);
             }
 
             if (request.StreamStartRequest != null)
             {
                 return new ProcessStreamStartRequest(
-                    client, request.StreamStartRequest, _recognizerManager, _classifierManager);
+                    client, request.StreamStartRequest, _recognizerManager, _classifierManager, _tuningManager);
             }
 
             if (request.StreamDataRequest != null)
@@ -49,7 +52,7 @@ namespace Voise.Process
             if (request.SynthVoiceRequest != null)
             {
                 return new ProcessSynthVoiceRequest(
-                    client, request.SynthVoiceRequest, _synthetizer);
+                    client, request.SynthVoiceRequest, _synthesizerManager, _tuningManager);
             }
 
             return null;

@@ -2,6 +2,7 @@
 using CPqDASR.Communication;
 using CPqDASR.Config;
 using System.Collections.Generic;
+using Voise.General;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Cpqd.Job;
@@ -41,9 +42,9 @@ namespace Voise.Recognizer.Provider.Cpqd
             _modelList.AddFromUri("builtin:slm/general");
         }
 
-        protected override ISyncJob CreateSyncJob(string audio_base64, string encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        protected override ISyncJob CreateSyncJob(byte[] audio, string encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
-            return new SyncJob(_config, _modelList, audio_base64, ConvertAudioEncoding(encoding), sampleRate, languageCode);
+            return new SyncJob(_config, _modelList, audio, ConvertAudioEncoding(encoding), sampleRate, languageCode);
         }
 
         protected override IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
@@ -55,17 +56,17 @@ namespace Voise.Recognizer.Provider.Cpqd
         {
             switch (encoding.ToLower())
             {
-                case "flac":
-                    throw new System.Exception("Codec 'flac' not supported.");
+                case Constant.ENCODING_FLAC:
+                    throw new System.Exception($"Codec '{Constant.ENCODING_FLAC}' not supported.");
 
-                case "linear16":
+                case Constant.ENCODING_LINEAR16:
                     return AudioEncoding.Linear16;
 
-                case "alaw":
-                    throw new System.Exception("Codec 'alaw' not supported.");
+                case Constant.ENCODING_ALAW:
+                    throw new System.Exception($"Codec '{Constant.ENCODING_ALAW}' not supported.");
 
-                case "mulaw":
-                    throw new System.Exception("Codec 'mulaw' not supported.");
+                case Constant.ENCODING_MULAW:
+                    throw new System.Exception($"Codec '{Constant.ENCODING_MULAW}' not supported.");
 
                 default:
                     return AudioEncoding.EncodingUnspecified;

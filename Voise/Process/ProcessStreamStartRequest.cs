@@ -3,27 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voise.Classification;
+using Voise.General;
 using Voise.Recognizer;
 using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Common;
 using Voise.TCP;
 using Voise.TCP.Request;
+using Voise.Tuning;
 
 namespace Voise.Process
 {
     internal class ProcessStreamStartRequest : ProcessBase
     {
-        private VoiseStreamRecognitionStartRequest _request;
-        private RecognizerManager _recognizerManager;
-        private ClassifierManager _classifierManager;
+        private readonly VoiseStreamRecognitionStartRequest _request;
+        private readonly RecognizerManager _recognizerManager;
+        private readonly ClassifierManager _classifierManager;
+
+        private TuningIn _tuning;
 
         internal ProcessStreamStartRequest(ClientConnection client, VoiseStreamRecognitionStartRequest request,
-            RecognizerManager recognizerManager, ClassifierManager classifierManager)
+            RecognizerManager recognizerManager, ClassifierManager classifierManager, TuningManager tuningManager)
             : base(client)
         {
             _request = request;
             _recognizerManager = recognizerManager;
             _classifierManager = classifierManager;
+
+            _tuning = tuningManager.CreateTuningIn(TuningIn.InputMethod.Stream, _request.Config);
         }
 
         internal override async Task ExecuteAsync()
@@ -52,11 +58,7 @@ namespace Voise.Process
 
                 Dictionary<string, List<string>> contexts = GetContexts(_request.Config, _classifierManager);
 
-                // FIXME
-                ////int bytesPerSample = GoogleRecognizer.GetBytesPerSample(request.Config.encoding);
-                int bytesPerSample = 2;
-
-                _client.StreamIn = new AudioStream(100, _request.Config.sample_rate, bytesPerSample);
+                _client.StreamIn = new AudioStream(100, _request.Config.sample_rate, 2, _tuning);
 
                 await recognizer.StartStreamingRecognitionAsync(
                     _client.StreamIn,
@@ -72,7 +74,11 @@ namespace Voise.Process
             catch (Exception e)
             {
                 // Cleanup streamIn
+                _client.StreamIn.Dispose();
                 _client.StreamIn = null;
+
+                _tuning?.Close();
+                _tuning?.Dispose();
 
                 if (e is BadEncodingException || e is BadAudioException)
                 {
@@ -91,11 +97,15 @@ namespace Voise.Process
             // Veja o tratamento do comando 'StreamDataRequest'.
             await pipeline.WaitAsync().ConfigureAwait(false);
 
-            // Caso ocorra alguma exceção asíncrona durante o streming do áudio
+            // Caso ocorra alguma exceção assíncrona durante o streming do áudio
             if (pipeline.AsyncStreamError != null)
             {
                 // Cleanup streamIn
+                _client.StreamIn.Dispose();
                 _client.StreamIn = null;
+
+                _tuning?.Close();
+                _tuning?.Dispose();
 
                 log.Error($"{pipeline.AsyncStreamError.Message}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
@@ -123,24 +133,27 @@ namespace Voise.Process
                     }
                 }
 
-                log.Info($"Stream request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
+                _tuning?.SetResult(pipeline.Result);
 
-                // Cleanup streamIn
-                _client.StreamIn = null;
+                log.Info($"Stream request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendResult(pipeline.Result);
             }
             catch (Exception e)
             {
-                // Cleanup streamIn
-                _client.StreamIn = null;
-
                 log.Error($"{e.Message}\nStacktrace: {e.StackTrace}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 SendError(e);
             }
             finally
             {
+                // Cleanup streamIn
+                _client.StreamIn.Dispose();
+                _client.StreamIn = null;
+
+                _tuning?.Close();
+                _tuning?.Dispose();
+
                 _client.CurrentPipeline.Dispose();
                 _client.CurrentPipeline = null;
             }
