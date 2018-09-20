@@ -15,6 +15,18 @@ namespace Voise.Synthesizer.Provider.Microsoft
             return new Job(streamOut, ConvertAudioEncoding(encoding), sampleRate, languageCode);
         }
 
+        internal override int GetBytesPerSample(string encoding)
+        {
+            try
+            {
+                return ConvertAudioEncoding(encoding).BitsPerSample / 8;
+            }
+            catch
+            {
+                return 1;
+            }
+        }
+
         private AudioEncoding ConvertAudioEncoding(string encoding)
         {
             switch (encoding.ToLower())
