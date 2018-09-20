@@ -9,6 +9,7 @@ namespace Voise.Tuning
         internal TuningOut(string path, InputMethod inputMethod, string text, VoiseConfig config)
             : base(path, "out", inputMethod, config)
         {
+            _attrs.Add("Max frame (ms)", (config.max_frame_ms ?? 20).ToString());
             _attrs.Add("Text", text);
         }
 
