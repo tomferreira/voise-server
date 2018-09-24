@@ -3,6 +3,6 @@ namespace Voise
 {
     public class Version
     {
-        public const string VersionString = "0.8.0";
+        public const string VersionString = "0.8.1";
     }
 }
