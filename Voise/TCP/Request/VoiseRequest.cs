@@ -22,8 +22,13 @@ namespace Voise.TCP.Request
         public string encoding;
         public int sample_rate;
         public string language_code;
+
+        // Only for ASR
         public string model_name;
         public List<string> context;
+
+        // Only for TTS
+        public int? max_frame_ms;
 #pragma warning restore 0649
     }
 }

@@ -17,5 +17,7 @@ namespace Voise.Synthesizer.Provider.Common
         }
 
         protected abstract IJob CreateJob(AudioStream streamOut, string encoding, int sampleRate, string languageCode);
+
+        internal abstract int GetBytesPerSample(string encoding);
     }
 }

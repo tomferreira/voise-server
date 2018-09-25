@@ -50,7 +50,8 @@ namespace Voise.Process
             {
                 CommonSynthesizer synthesizer = _synthesizerManager.GetSynthesizer(_request.Config.engine_id);
 
-                _client.StreamOut = new AudioStream(20, _request.Config.sample_rate, 2, _tuning);
+                int bytesPerSample = synthesizer.GetBytesPerSample(_request.Config.encoding);
+                _client.StreamOut = new AudioStream(_request.Config.max_frame_ms ?? 20, _request.Config.sample_rate, bytesPerSample, _tuning);
 
                 _client.StreamOut.DataAvailable += delegate (object sender, AudioStream.StreamInEventArgs e)
                 {
@@ -102,7 +103,7 @@ namespace Voise.Process
                 _tuning?.Dispose();
             }
 
-            // Send end of stream
+            // Send end of stream (Empty audio indicates end of stream)
             pipeline.Result.AudioContent = string.Empty;
             SendResult(pipeline.Result);
 

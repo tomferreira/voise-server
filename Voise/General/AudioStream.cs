@@ -68,7 +68,7 @@ namespace Voise.General
 
         internal int BufferCapacity { get; private set; }
 
-        internal AudioStream(int bufferMillisec, int sampleRate, int bytesPerSample, Tuning.Base tuning)
+        internal AudioStream(int maxFrameMillisec, int sampleRate, int bytesPerSample, Tuning.Base tuning)
         {
             _tuning = tuning;
 
@@ -76,7 +76,7 @@ namespace Voise.General
 
             _state = State.Stopped;
 
-            BufferCapacity = bufferMillisec * bytesPerSecond / 1000;
+            BufferCapacity = maxFrameMillisec * bytesPerSecond / 1000;
             _buffers = new Queue<MemoryStream>();
 
             _mutex = new object();
