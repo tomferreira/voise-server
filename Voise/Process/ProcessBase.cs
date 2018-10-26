@@ -26,8 +26,10 @@ namespace Voise.Process
 
             if (config.context != null)
             {
-                contexts = new Dictionary<string, List<string>>();
-                contexts.Add("default", config.context);
+                contexts = new Dictionary<string, List<string>>
+                {
+                    { "default", config.context }
+                };
             }
             else
             {
@@ -53,9 +55,11 @@ namespace Voise.Process
                         break;
 
                     case VoiseResult.Modes.TTS:
-                        response.audio = new VoiseResponse.VoiseAudio();
-                        response.audio.content = result.AudioContent;
-                        response.audio.length = result.AudioContent.Length;
+                        response.audio = new VoiseResponse.VoiseAudio
+                        {
+                            content = result.AudioContent,
+                            length = result.AudioContent.Length
+                        };
                         break;
 
                     default:
