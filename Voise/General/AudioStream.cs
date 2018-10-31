@@ -62,7 +62,7 @@ namespace Voise.General
         private Queue<MemoryStream> _buffers;
         private MemoryStream _currentBuffer;
 
-        private Tuning.Base _tuning;
+        private readonly Tuning.Base _tuning;
 
         private readonly object _mutex;
 
