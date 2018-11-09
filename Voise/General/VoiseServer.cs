@@ -16,11 +16,12 @@ namespace Voise.General
         private Config _config;
         private ProcessFactory _processFactory;
 
+        private ILog _log;
+
         public VoiseServer(Config config)
         {
-            ILog log = LogManager.GetLogger(typeof(Voise));
-
-            log.Info($"Initializing Voise Server v{Version.VersionString}.");
+            _log = LogManager.GetLogger(typeof(Voise));
+            _log.Info($"Initializing Voise Server v{Version.VersionString}.");
 
             _config = config;
 
@@ -43,12 +44,16 @@ namespace Voise.General
         public void Start()
         {
             _tcpServer.StartAsync(_config.Port);
+
+            _log.Info("Voise Server started.");
         }
 
         public void Stop()
         {
             if (_tcpServer != null && _tcpServer.IsOpen)
                 _tcpServer.Stop();
+
+            _log.Info("Voise Server stopped.");
         }
 
         private async Task HandleClientRequest(ClientConnection client, VoiseRequest request)
