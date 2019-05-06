@@ -6,7 +6,7 @@ using Voise.General;
 
 namespace Voise
 {
-    public class Voise
+    public class Entry
     {
         public static void Main()
         {
@@ -39,7 +39,7 @@ namespace Voise
                 }
             }
 #else
-            Console.WriteLine("To Start Voise Server, use the Windows Service.");
+            Console.WriteLine("To start Voise Server, use the Windows Service.");
 #endif
         }
     }

@@ -20,7 +20,7 @@ namespace Voise.General
 
         public VoiseServer(Config config)
         {
-            _log = LogManager.GetLogger(typeof(Voise));
+            _log = LogManager.GetLogger(typeof(VoiseServer));
             _log.Info($"Initializing Voise Server v{Version.VersionString}.");
 
             _config = config;
