@@ -3,6 +3,7 @@ using CPqDASR.Communication;
 using CPqDASR.Config;
 using System.Collections.Generic;
 using Voise.General;
+using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Cpqd.Job;
@@ -57,16 +58,16 @@ namespace Voise.Recognizer.Provider.Cpqd
             switch (encoding.ToUpperInvariant())
             {
                 case Constant.ENCODING_FLAC:
-                    throw new System.Exception($"Codec '{Constant.ENCODING_FLAC}' not supported.");
+                    throw new CodecNotSupportedException($"Codec '{Constant.ENCODING_FLAC}' not supported.");
 
                 case Constant.ENCODING_LINEAR16:
                     return AudioEncoding.Linear16;
 
                 case Constant.ENCODING_ALAW:
-                    throw new System.Exception($"Codec '{Constant.ENCODING_ALAW}' not supported.");
+                    throw new CodecNotSupportedException($"Codec '{Constant.ENCODING_ALAW}' not supported.");
 
                 case Constant.ENCODING_MULAW:
-                    throw new System.Exception($"Codec '{Constant.ENCODING_MULAW}' not supported.");
+                    throw new CodecNotSupportedException($"Codec '{Constant.ENCODING_MULAW}' not supported.");
 
                 default:
                     return AudioEncoding.EncodingUnspecified;

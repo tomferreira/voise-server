@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Voise.General;
 using Voise.Provider.Microsoft;
+using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Microsoft.Job;
@@ -28,7 +29,7 @@ namespace Voise.Recognizer.Provider.Microsoft
             switch (encoding.ToUpperInvariant())
             {
                 case Constant.ENCODING_FLAC:
-                    throw new System.Exception($"Codec '{Constant.ENCODING_FLAC}' not supported.");
+                    throw new CodecNotSupportedException($"Codec '{Constant.ENCODING_FLAC}' not supported.");
 
                 case Constant.ENCODING_LINEAR16:
                     return AudioEncoding.Linear16;

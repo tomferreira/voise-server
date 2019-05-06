@@ -220,6 +220,7 @@
     <Compile Include="General\Constant.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Process\ProcessFactory.cs" />
+    <Compile Include="Recognizer\Exception\CodecNotSupportedException.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\AudioEncoding.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\CpqdRecognizer.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\Internal\BufferAudioSource.cs" />
@@ -254,6 +255,7 @@
     <Compile Include="Recognizer\Util.cs" />
     <Compile Include="General\ResponseCode.cs" />
     <Compile Include="Recognizer\Provider\Azure\AudioEncoding.cs" />
+    <Compile Include="Synthesizer\Exception\CodecNotSupportedException.cs" />
     <Compile Include="Synthesizer\Provider\Common\CommonSynthesizer.cs" />
     <Compile Include="Synthesizer\Exception\BadEncodingException.cs" />
     <Compile Include="Synthesizer\Exception\BadVoiceException.cs" />
