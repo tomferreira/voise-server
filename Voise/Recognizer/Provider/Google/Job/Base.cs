@@ -26,7 +26,7 @@ namespace Voise.Recognizer.Provider.Google.Job
             BestAlternative = SpeechRecognitionResult.NoResult;
         }
 
-        protected void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode)
+        protected static void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode)
         {
             if (encoding == AudioEncoding.EncodingUnspecified)
                 throw new BadEncodingException("Encoding is invalid.");
@@ -35,7 +35,7 @@ namespace Voise.Recognizer.Provider.Google.Job
                 throw new BadEncodingException("Sample rate is invalid.");
         }
 
-        protected ByteString ConvertAudioToByteString(byte[] audio)
+        protected static ByteString ConvertAudioToByteString(byte[] audio)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace Voise.Recognizer.Provider.Google.Job
             }
         }
 
-        protected SpeechContext CreateSpeechContext(Dictionary<string, List<string>> contexts)
+        protected static SpeechContext CreateSpeechContext(Dictionary<string, List<string>> contexts)
         {
             if (contexts == null || contexts.Count == 0)
                 return null;

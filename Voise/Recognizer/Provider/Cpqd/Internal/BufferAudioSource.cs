@@ -9,7 +9,7 @@ namespace Voise.Recognizer.Provider.Cpqd.Internal
     {
         private Queue<byte[]> _buffer;
         private bool _finished;
-        private object _monitorFinished;
+        private readonly object _monitorFinished;
 
         private AutoResetEvent _writeEvent;
 

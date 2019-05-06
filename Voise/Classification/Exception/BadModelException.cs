@@ -4,8 +4,12 @@ using System.Runtime.Serialization;
 namespace Voise.Classification.Exception
 {
     [Serializable]
-    internal class BadModelException : System.Exception
+    public class BadModelException : System.Exception
     {
+        public BadModelException()
+        {
+        }
+
         public BadModelException(string message)
             : base(message)
         {

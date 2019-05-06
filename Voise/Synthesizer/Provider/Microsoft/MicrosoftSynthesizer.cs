@@ -27,9 +27,9 @@ namespace Voise.Synthesizer.Provider.Microsoft
             }
         }
 
-        private AudioEncoding ConvertAudioEncoding(string encoding)
+        private static AudioEncoding ConvertAudioEncoding(string encoding)
         {
-            switch (encoding.ToLower())
+            switch (encoding.ToUpperInvariant())
             {
                 case Constant.ENCODING_FLAC:
                     throw new System.Exception($"Codec '{Constant.ENCODING_FLAC}' not supported.");

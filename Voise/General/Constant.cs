@@ -1,13 +1,13 @@
 ﻿
 namespace Voise.General
 {
-    internal class Constant
+    internal static class Constant
     {
         // Valid encodings
-        internal const string ENCODING_FLAC = "flac";
-        internal const string ENCODING_LINEAR16 = "linear16";
-        internal const string ENCODING_ALAW = "alaw";
-        internal const string ENCODING_MULAW = "mulaw";
+        internal const string ENCODING_FLAC = "FLAC";
+        internal const string ENCODING_LINEAR16 = "LINEAR16";
+        internal const string ENCODING_ALAW = "ALAW";
+        internal const string ENCODING_MULAW = "MULAW";
 
         //
         internal const int CHANNEL_MONO = 1;

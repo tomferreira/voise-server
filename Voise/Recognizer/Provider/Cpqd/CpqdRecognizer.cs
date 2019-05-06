@@ -52,9 +52,9 @@ namespace Voise.Recognizer.Provider.Cpqd
             return new StreamingJob(_config, streamIn, _modelList, ConvertAudioEncoding(encoding), sampleRate, languageCode);
         }
 
-        private AudioEncoding ConvertAudioEncoding(string encoding)
+        private static AudioEncoding ConvertAudioEncoding(string encoding)
         {
-            switch (encoding.ToLower())
+            switch (encoding.ToUpperInvariant())
             {
                 case Constant.ENCODING_FLAC:
                     throw new System.Exception($"Codec '{Constant.ENCODING_FLAC}' not supported.");

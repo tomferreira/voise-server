@@ -20,7 +20,7 @@ namespace Voise.Process
 
         internal abstract Task ExecuteAsync();
 
-        protected Dictionary<string, List<string>> GetContexts(VoiseConfig config, ClassifierManager classifierManager)
+        protected static Dictionary<string, List<string>> GetContexts(VoiseConfig config, ClassifierManager classifierManager)
         {
             Dictionary<string, List<string>> contexts = null;
 

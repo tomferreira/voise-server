@@ -128,7 +128,7 @@ namespace Voise.TCP
 
                 for (int index = 0; index > -1;)
                 {
-                    index = _data.ToString().IndexOf(DELIMITER);
+                    index = _data.ToString().IndexOf(DELIMITER, StringComparison.Ordinal);
 
                     if (index > -1)
                     {

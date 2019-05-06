@@ -43,7 +43,7 @@ namespace Voise.Recognizer.Provider.Cpqd.Job
             BestAlternative = SpeechRecognitionResult.NoResult;
         }
 
-        protected void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode)
+        protected static void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode)
         {
             if (encoding == AudioEncoding.EncodingUnspecified)
                 throw new BadEncodingException("Encoding is invalid.");

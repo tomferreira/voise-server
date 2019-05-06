@@ -4,8 +4,12 @@ using System.Runtime.Serialization;
 namespace Voise.Recognizer.Exception
 {
     [Serializable]
-    internal class BadAudioException : System.Exception
+    public class BadAudioException : System.Exception
     {
+        public BadAudioException()
+        {
+        }
+
         public BadAudioException(string message)
             : base(message)
         {

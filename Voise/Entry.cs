@@ -6,12 +6,15 @@ using Voise.General;
 
 namespace Voise
 {
-    public class Entry
+    public static class Entry
     {
         public static void Main()
         {
 #if DEBUG
             BasicConfigurator.Configure();
+
+            ILog log = LogManager.GetLogger(
+                System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
             try
             {
@@ -23,20 +26,14 @@ namespace Voise
                 while (true)
                     Thread.Sleep(100);
             }
+            catch (AggregateException e)
+            {
+                foreach (var ie in e.InnerExceptions)
+                    log.Fatal($"{ie.Message}\nStacktrace: {ie.StackTrace}");
+            }
             catch (Exception e)
             {
-                ILog log = LogManager.GetLogger(
-                    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-                if (e is AggregateException)
-                {
-                    foreach (var ie in (e as AggregateException).InnerExceptions)
-                        log.Fatal($"{ie.Message}\nStacktrace: {ie.StackTrace}");
-                }
-                else
-                {
-                    log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
-                }
+                log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
             }
 #else
             Console.WriteLine("To start Voise Server, use the Windows Service.");

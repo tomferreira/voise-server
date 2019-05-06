@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -48,7 +49,8 @@ namespace Voise.General
             {
                 try
                 {
-                    return Convert.ToInt32(_element.SelectSingleNode("port").InnerText);
+                    return Convert.ToInt32(_element.SelectSingleNode("port").InnerText,
+                        CultureInfo.InvariantCulture);
                 }
                 catch (Exception)
                 {
@@ -109,7 +111,7 @@ namespace Voise.General
                 if (value == null)
                     return DEFAULT_TUNING_ENABLED;
 
-                return Convert.ToBoolean(value);
+                return Convert.ToBoolean(value, CultureInfo.InvariantCulture);
             }
         }
 
@@ -135,7 +137,7 @@ namespace Voise.General
                 if (value == null)
                     return DEFAULT_TUNING_RETENTON_DAY;
 
-                return Convert.ToInt32(value);
+                return Convert.ToInt32(value, CultureInfo.InvariantCulture);
             }
         }
 

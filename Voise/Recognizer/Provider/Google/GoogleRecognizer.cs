@@ -37,7 +37,7 @@ namespace Voise.Recognizer.Provider.Google
 
         internal static AudioEncoding ConvertAudioEncoding(string encoding)
         {
-            switch (encoding.ToLower())
+            switch (encoding.ToUpperInvariant())
             {
                 case Constant.ENCODING_FLAC:
                     return AudioEncoding.Flac;

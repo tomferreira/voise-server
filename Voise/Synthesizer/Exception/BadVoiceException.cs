@@ -4,8 +4,12 @@ using System.Runtime.Serialization;
 namespace Voise.Synthesizer.Exception
 {
     [Serializable]
-    internal class BadVoiceException : System.Exception
+    public class BadVoiceException : System.Exception
     {
+        public BadVoiceException()
+        {
+        }
+
         public BadVoiceException(string message)
             : base(message)
         {

@@ -209,7 +209,7 @@
     <Compile Include="Classification\Classifier\Base.cs" />
     <Compile Include="Classification\ClassifierManager.cs" />
     <Compile Include="Classification\Exception\BadModelException.cs" />
-    <Compile Include="Classification\Exception\ClassifiersPathNotFound.cs" />
+    <Compile Include="Classification\Exception\ClassifiersPathNotFoundException.cs" />
     <Compile Include="Classification\Classifier\LogisticTextClassifier.cs" />
     <Compile Include="Classification\Classifier\J48TextClassifier.cs" />
     <Compile Include="Classification\Classifier\MultilayerPerceptronTextClassificatier.cs" />
@@ -218,6 +218,7 @@
     <Compile Include="General\Config.cs" />
     <Compile Include="General\VoiseServer.cs" />
     <Compile Include="General\Constant.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Process\ProcessFactory.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\AudioEncoding.cs" />
     <Compile Include="Recognizer\Provider\Cpqd\CpqdRecognizer.cs" />
@@ -255,7 +256,6 @@
     <Compile Include="Recognizer\Provider\Azure\AudioEncoding.cs" />
     <Compile Include="Synthesizer\Provider\Common\CommonSynthesizer.cs" />
     <Compile Include="Synthesizer\Exception\BadEncodingException.cs" />
-    <Compile Include="Synthesizer\Exception\BadLanguageException.cs" />
     <Compile Include="Synthesizer\Exception\BadVoiceException.cs" />
     <Compile Include="Synthesizer\Provider\Common\Job\IJob.cs" />
     <Compile Include="Provider\Microsoft\AudioEncoding.cs" />
