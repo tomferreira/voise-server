@@ -30,10 +30,10 @@ namespace Voise.Synthesizer
         {
             string finalEngineID = engineID ?? DEFAULT_ENGINE_IDENTIFIER;
 
-            if (!_synthesizers.ContainsKey(finalEngineID.ToLower()))
+            if (!_synthesizers.ContainsKey(finalEngineID.ToLowerInvariant()))
                 throw new System.Exception($"Synthesizer engine '{finalEngineID}' disabled or invalid.");
 
-            return _synthesizers[finalEngineID.ToLower()];
+            return _synthesizers[finalEngineID.ToLowerInvariant()];
         }
     }
 }

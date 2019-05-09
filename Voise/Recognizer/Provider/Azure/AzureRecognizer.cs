@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Voise.General;
+using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Azure.Job;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
@@ -15,10 +16,7 @@ namespace Voise.Recognizer.Provider.Azure
 
         internal AzureRecognizer(string primaryKey)
         {
-            if (primaryKey == null)
-                throw new System.Exception("Primary key must be defined for Azure engine.");
-
-            _primaryKey = primaryKey;
+            _primaryKey = primaryKey ?? throw new System.Exception("Primary key must be defined for Azure engine.");
         }
 
         protected override ISyncJob CreateSyncJob(byte[] audio, string encoding,
@@ -33,21 +31,21 @@ namespace Voise.Recognizer.Provider.Azure
             return new StreamingJob(_primaryKey, streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode);
         }
 
-        private AudioEncoding ConvertAudioEncoding(string encoding)
+        private static AudioEncoding ConvertAudioEncoding(string encoding)
         {
-            switch (encoding.ToLower())
+            switch (encoding.ToUpperInvariant())
             {
                 case Constant.ENCODING_FLAC:
-                    throw new System.Exception($"Codec '{Constant.ENCODING_FLAC}' not supported.");
+                    throw new CodecNotSupportedException($"Codec '{Constant.ENCODING_FLAC}' not supported.");
 
                 case Constant.ENCODING_LINEAR16:
                     return AudioEncoding.Linear16;
 
                 case Constant.ENCODING_ALAW:
-                    throw new System.Exception($"Codec '{Constant.ENCODING_ALAW}' not supported.");
+                    throw new CodecNotSupportedException($"Codec '{Constant.ENCODING_ALAW}' not supported.");
 
                 case Constant.ENCODING_MULAW:
-                    throw new System.Exception($"Codec '{Constant.ENCODING_MULAW}' not supported.");
+                    throw new CodecNotSupportedException($"Codec '{Constant.ENCODING_MULAW}' not supported.");
 
                 default:
                     return AudioEncoding.EncodingUnspecified;

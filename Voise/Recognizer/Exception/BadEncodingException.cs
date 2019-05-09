@@ -4,8 +4,12 @@ using System.Runtime.Serialization;
 namespace Voise.Recognizer.Exception
 {
     [Serializable]
-    internal class BadEncodingException : System.Exception
+    public class BadEncodingException : System.Exception
     {
+        public BadEncodingException()
+        {
+        }
+
         public BadEncodingException(string message)
             : base(message)
         {

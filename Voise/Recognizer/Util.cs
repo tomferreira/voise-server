@@ -3,7 +3,7 @@ using Voise.Recognizer.Exception;
 
 namespace Voise.Recognizer
 {
-    internal class Util
+    internal static class Util
     {
         internal static byte[] ConvertAudioToBytes(string audio_base64)
         {

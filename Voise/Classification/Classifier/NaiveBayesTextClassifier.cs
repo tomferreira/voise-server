@@ -32,8 +32,6 @@ namespace Voise.Classification.Classifier
 
             ps.buildClassifier(_trainingData);
 
-            string summary = ps.toSummaryString();
-
             string[] options = ps.getBestClassifierOptions();
 
             (_wekaClassifier as NaiveBayesMultinomialText).setOptions(options);

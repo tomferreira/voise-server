@@ -37,8 +37,6 @@ namespace Voise.Classification.Classifier
 
             ps.buildClassifier(filteredData);
 
-            string summary = ps.toSummaryString();
-
             string[] bestOptions = ps.getBestClassifierOptions();
 
             string[] options = new string[4] { "C", Utils.getOption('C', bestOptions), "N", Utils.getOption('N', bestOptions) };

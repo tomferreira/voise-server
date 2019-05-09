@@ -11,7 +11,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
     internal class SpeechStreamer : Stream
     {
         [Serializable]
-        internal class BufferOverwrittenException : System.Exception
+        public class BufferOverwrittenException : System.Exception
         {
             internal BufferOverwrittenException()
                 : base()

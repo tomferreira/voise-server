@@ -18,7 +18,7 @@ namespace Voise.Tuning
 
         private bool _running;
 
-        private string _resultPath;
+        private readonly string _resultPath;
         private MemoryStream _recording;
         private WaveFormat _waveFormat;
 
@@ -44,12 +44,14 @@ namespace Voise.Tuning
             _resultPath = $"{fullPath}/{filename}";
             _recording = new MemoryStream();
 
-            _attrs = new Dictionary<string, string>();
-            _attrs.Add("Input Method", _inputMethod.ToString());
-            _attrs.Add("Engine ID", config.engine_id);
-            _attrs.Add("Encoding", config.encoding);
-            _attrs.Add("Sample Rate", config.sample_rate.ToString());
-            _attrs.Add("Language Code", config.language_code);
+            _attrs = new Dictionary<string, string>
+            {
+                { "Input Method", _inputMethod.ToString() },
+                { "Engine ID", config.engine_id },
+                { "Encoding", config.encoding },
+                { "Sample Rate", config.sample_rate.ToString() },
+                { "Language Code", config.language_code }
+            };
 
             CreateWaveFormat(config.encoding, config.sample_rate);
 
@@ -61,7 +63,7 @@ namespace Voise.Tuning
         {
             _waveFormat = null;
 
-            switch (encoding.ToLower())
+            switch (encoding.ToUpperInvariant())
             {
                 case Constant.ENCODING_FLAC:
                     _waveFormat = new WaveFormat(sampleRate, Constant.CHANNEL_MONO);
@@ -119,7 +121,7 @@ namespace Voise.Tuning
             File.WriteAllLines($"{_resultPath}.txt", content);
         }
 
-        private void CreateDirectory(string fullPath)
+        private static void CreateDirectory(string fullPath)
         {
             string dirPath = Path.GetDirectoryName(fullPath);
 

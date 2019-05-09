@@ -57,7 +57,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             }
         }
 
-        protected void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        protected static void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
             if (encoding == AudioEncoding.EncodingUnspecified)
                 throw new BadEncodingException("Encoding is invalid.");
