@@ -100,13 +100,13 @@ class VoiseClientTest
   end
 
   # client = VoiseClientTest.new
-  # client.recognize("FLAC", 16000, "pt-BR", nil, "felicitacao/localizacao", "./alo.flac")
-  # client.recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Alo {duvida}.wav")
-  # client.recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Sem voz {#NOVOICE}.wav")
-  # client.recognize("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./ela_esta_no_trabalho.wav")
-  def recognize(encoding, sample_rate, language_code, context, model_name, audio_file, engine = nil)
+  # client.recognize_from_file("FLAC", 16000, "pt-BR", nil, "felicitacao/localizacao", "./alo.flac")
+  # client.recognize_from_file("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Alo {duvida}.wav")
+  # client.recognize_from_file("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./Sem voz {#NOVOICE}.wav")
+  # client.recognize_from_fileexit("LINEAR16", 8000, "pt-BR", nil, "felicitacao/localizacao", "./ela_esta_no_trabalho.wav")
+  def recognize_from_file(encoding, sample_rate, language_code, context, model_name, audio_file, engine = nil)
     VoiseClientTest::time_method do
-      puts @client.recognize(encoding, sample_rate, language_code, context, model_name, audio_file, engine).to_pretty_s
+      puts @client.recognize_from_file(encoding, sample_rate, language_code, context, model_name, audio_file, engine).to_pretty_s
     end
   end
 
