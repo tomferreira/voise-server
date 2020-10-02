@@ -55,10 +55,10 @@ namespace Voise.Recognizer
         {
             string finalEngineID = engineID ?? DEFAULT_ENGINE_IDENTIFIER;
 
-            if (!_recognizers.ContainsKey(finalEngineID.ToLower()))
+            if (!_recognizers.ContainsKey(finalEngineID.ToLowerInvariant()))
                 throw new System.Exception($"Recognition engine '{finalEngineID}' disabled or invalid.");
 
-            return _recognizers[finalEngineID.ToLower()];
+            return _recognizers[finalEngineID.ToLowerInvariant()];
         }
     }
 }

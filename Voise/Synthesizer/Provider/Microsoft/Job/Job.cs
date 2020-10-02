@@ -68,7 +68,7 @@ namespace Voise.Synthesizer.Provider.Microsoft
             _streamOut.Write(e.Chunk);
         }
 
-        private void ValidateArguments(AudioEncoding encoding, int sampleRate)
+        private static void ValidateArguments(AudioEncoding encoding, int sampleRate)
         {
             if (encoding == AudioEncoding.EncodingUnspecified)
                 throw new BadEncodingException("Encoding is invalid.");
@@ -79,8 +79,8 @@ namespace Voise.Synthesizer.Provider.Microsoft
 
         private InstalledVoice GetVoise(string languageCode)
         {
-            return _speechSynthesizer.GetInstalledVoices()
-                .FirstOrDefault(voice => voice.VoiceInfo.Culture.Name.ToLower(CultureInfo.InvariantCulture) == languageCode.ToLower(CultureInfo.InvariantCulture));
+            return _speechSynthesizer.GetInstalledVoices(CultureInfo.InvariantCulture)
+                .FirstOrDefault(voice => string.Equals(voice.VoiceInfo.Culture.Name, languageCode, StringComparison.OrdinalIgnoreCase));
         }
 
         public void Dispose()

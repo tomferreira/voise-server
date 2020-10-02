@@ -60,7 +60,7 @@ namespace Voise.Classification
         private void LoadClassifiers(string classifiersPath)
         {
             if (!Directory.Exists(classifiersPath))
-                throw new ClassifiersPathNotFound($"Classifiers path not found: {classifiersPath}");
+                throw new ClassifiersPathNotFoundException($"Classifiers path not found: {classifiersPath}");
 
             _log.Info($"Loading classifiers from {classifiersPath}");
 

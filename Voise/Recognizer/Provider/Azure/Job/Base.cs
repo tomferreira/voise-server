@@ -32,7 +32,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
             BestAlternative = SpeechRecognitionResult.NoResult;
         }
 
-        protected void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode)
+        protected static void ValidateArguments(AudioEncoding encoding, int sampleRate, string languageCode)
         {
             if (encoding == AudioEncoding.EncodingUnspecified)
                 throw new BadEncodingException("Encoding is invalid.");
@@ -93,7 +93,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
             }
         }
 
-        protected float ConvertConfidence(Confidence confidence)
+        protected static float ConvertConfidence(Confidence confidence)
         {
             switch (confidence)
             {

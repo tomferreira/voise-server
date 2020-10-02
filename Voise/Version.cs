@@ -1,8 +1,8 @@
 ﻿
 namespace Voise
 {
-    public class Version
+    public static class Version
     {
-        public const string VersionString = "0.8.1";
+        public const string VersionString = "0.9.0";
     }
 }

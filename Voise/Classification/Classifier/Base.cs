@@ -94,14 +94,12 @@ namespace Voise.Classification.Classifier
             if (message == null)
                 throw new ArgumentException("Message is null.");
 
-            message = message.ToLower();
-
             Result result = InnerClassify(message);
 
             if (result != null)
                 return result;
 
-            double[] probabilities = Distribution(message);
+            double[] probabilities = Distribution(message.ToLowerInvariant());
 
             double probability = probabilities.Max();
 
@@ -137,7 +135,7 @@ namespace Voise.Classification.Classifier
             return _wekaClassifier.distributionForInstance(filteredInstance);
         }
 
-        protected Instance MakeInstance(string text, Instances data)
+        protected static Instance MakeInstance(string text, Instances data)
         {
             // Create instance of length two.
             Instance instance = new DenseInstance(2);
@@ -154,15 +152,13 @@ namespace Voise.Classification.Classifier
 
         protected Result InnerClassify(string message)
         {
-            message = message.ToLower();
-
             // Verify if the message match with some training data.
             int numInstances = _trainingData.numInstances();
             for (int i = 0; i < numInstances; i++)
             {
                 Instance inst = _trainingData.instance(i);
 
-                if (inst.stringValue(0).ToLower() == message)
+                if (string.Equals(inst.stringValue(0), message, StringComparison.OrdinalIgnoreCase))
                 {
                     int ci = Convert.ToInt32(inst.classValue());
                     return new Result(_trainingData.classAttribute().value(ci), 1);
@@ -185,7 +181,7 @@ namespace Voise.Classification.Classifier
                 if (!_trainingList.ContainsKey(className))
                     _trainingList.Add(className, new List<string>());
 
-                _trainingList[className].Add(inst.stringValue(0).ToLower());
+                _trainingList[className].Add(inst.stringValue(0).ToLowerInvariant());
             }
         }
     }
