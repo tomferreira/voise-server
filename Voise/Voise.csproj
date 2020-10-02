@@ -43,12 +43,6 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
-    <Reference Include="CPqDAsr, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CPqDAsr.1.0.0\lib\netstandard2.0\CPqDAsr.dll</HintPath>
-    </Reference>
-    <Reference Include="CPqDWebSocketStandard, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CPqDWebSocketStandard.1.0.0\lib\netstandard2.0\CPqDWebSocketStandard.dll</HintPath>
-    </Reference>
     <Reference Include="Google.Api.CommonProtos, Version=1.7.0.0, Culture=neutral, PublicKeyToken=3ec5ea7f18953e47, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Api.CommonProtos.1.7.0\lib\net45\Google.Api.CommonProtos.dll</HintPath>
     </Reference>
@@ -246,12 +240,6 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Process\ProcessFactory.cs" />
     <Compile Include="Recognizer\Exception\CodecNotSupportedException.cs" />
-    <Compile Include="Recognizer\Provider\Cpqd\AudioEncoding.cs" />
-    <Compile Include="Recognizer\Provider\Cpqd\CpqdRecognizer.cs" />
-    <Compile Include="Recognizer\Provider\Cpqd\Internal\BufferAudioSource.cs" />
-    <Compile Include="Recognizer\Provider\Cpqd\Job\Base.cs" />
-    <Compile Include="Recognizer\Provider\Cpqd\Job\StreamingJob.cs" />
-    <Compile Include="Recognizer\Provider\Cpqd\Job\SyncJob.cs" />
     <Compile Include="Recognizer\Provider\Google\Internal\RecognizerStream.cs" />
     <Compile Include="Recognizer\Provider\Google\Internal\SpeechRecognizer.cs" />
     <Compile Include="Process\ProcessStreamStopRequest.cs" />
