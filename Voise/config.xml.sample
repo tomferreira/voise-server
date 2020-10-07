@@ -15,12 +15,6 @@
         <azure>
             <primarykey></primarykey>
         </azure>
-
-        <cpqd>
-            <username></username>
-            <password></password>
-            <host></host>
-        </cpqd>
         -->
     </recognizers>
 
