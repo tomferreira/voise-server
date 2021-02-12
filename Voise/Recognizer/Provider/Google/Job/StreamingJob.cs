@@ -69,9 +69,10 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         private async Task ConsumeResultsAsync()
         {
+            var cancellationToken = new System.Threading.CancellationToken();
             var responses = _recognizerStream.ResponseStream;
 
-            while (await responses.MoveNext().ConfigureAwait(false))
+            while (await responses.MoveNext(cancellationToken).ConfigureAwait(false))
             {
                 var response = responses.Current;
 

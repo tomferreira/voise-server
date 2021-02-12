@@ -49,10 +49,10 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         protected static SpeechContext CreateSpeechContext(Dictionary<string, List<string>> contexts)
         {
-            if (contexts == null || contexts.Count == 0)
-                return null;
-
             var speechContext = new SpeechContext();
+
+            if (contexts == null || contexts.Count == 0)
+                return speechContext;
 
             foreach (var context in contexts)
             {
