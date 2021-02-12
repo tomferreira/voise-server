@@ -5,7 +5,7 @@
 
     <recognizers>
         <!-- Default: me -->
-        <!--<enabled>me,ge,ze,ce</enabled>-->
+        <!--<enabled>me,ge,ze</enabled>-->
 
         <!--
         <google>
