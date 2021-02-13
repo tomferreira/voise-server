@@ -155,7 +155,7 @@ namespace Voise.General
             var node = _element.SelectSingleNode(parentIdentifier);
 
             foreach (string identifier in identifiers)
-                node = node.SelectSingleNode(identifier);
+                node = node?.SelectSingleNode(identifier);
 
             return node?.InnerText;
         }
