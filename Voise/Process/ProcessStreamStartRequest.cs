@@ -74,7 +74,7 @@ namespace Voise.Process
             catch (Exception e)
             {
                 // Cleanup streamIn
-                _client.StreamIn.Dispose();
+                _client.StreamIn?.Dispose();
                 _client.StreamIn = null;
 
                 _tuning?.Close();

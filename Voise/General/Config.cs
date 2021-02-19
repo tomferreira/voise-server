@@ -47,15 +47,12 @@ namespace Voise.General
         {
             get
             {
-                try
-                {
-                    return Convert.ToInt32(_element.SelectSingleNode("port").InnerText,
-                        CultureInfo.InvariantCulture);
-                }
-                catch (Exception)
-                {
+                var node = _element.SelectSingleNode("port");
+
+                if (node == null)
                     return DEFAULT_PORT;
-                }
+
+                return Convert.ToInt32(node.InnerText, CultureInfo.InvariantCulture);
             }
         }
 
@@ -91,14 +88,12 @@ namespace Voise.General
         {
             get
             {
-                try
-                {
-                    return _element.SelectSingleNode("classifiers_path").InnerText;
-                }
-                catch (Exception)
-                {
+                var node = _element.SelectSingleNode("classifiers_path");
+
+                if (node == null)
                     return DEFAULT_CLASSIFIERS_PATH;
-                }
+
+                return node.InnerText;
             }
         }
 
@@ -157,19 +152,12 @@ namespace Voise.General
 
         private string GetAttribute(string parentIdentifier, params string[] identifiers)
         {
-            try
-            {
-                XmlNode node = _element.SelectSingleNode(parentIdentifier);
+            var node = _element.SelectSingleNode(parentIdentifier);
 
-                foreach (string identifier in identifiers)
-                    node = node.SelectSingleNode(identifier);
+            foreach (string identifier in identifiers)
+                node = node?.SelectSingleNode(identifier);
 
-                return node.InnerText;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return node?.InnerText;
         }
     }
 }
