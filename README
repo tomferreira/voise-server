@@ -1,0 +1,22 @@
+Voise Server
+
+Componente principal da solução, o Voise Server é o gateway entre o cliente e os diversos provedores de serviços cognitvos, como reconhecimento de voz (Speech-to-text), sintetizador de voz (Text-to-speech) e reconhecimento de intenção (Intention recognition).
+
+Atualmente os seguintes provedores são suportados:
+
+| Provedor | Tipo | STT | TTS | IR |
+| -------- | :--: | :-: | :-: | :-: |
+| Google Cloud | Saas | X | X | |
+| Microsoft Azure | Saas | X | | |
+| Microsoft Speech | On-premise | X | |
+| Weka | On-premise | | | X |
+
+## Requisitos
+
+* .Net Framework 4.8 Runtime (https://dotnet.microsoft.com/download/dotnet-framework/net48)
+
+## Instalação
+
+    ```
+    Voise.Server.exe install
+    ```
