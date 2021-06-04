@@ -1,4 +1,4 @@
-Voise Server
+# Voise Server
 
 Componente principal da solução, o Voise Server é o gateway entre o cliente e os diversos provedores de serviços cognitvos, como reconhecimento de voz (Speech-to-text), sintetizador de voz (Text-to-speech) e reconhecimento de intenção (Intention recognition).
 
@@ -17,6 +17,58 @@ Atualmente os seguintes provedores são suportados:
 
 ## Instalação
 
-    ```
-    Voise.Server.exe install
-    ```
+1. Mova o diretório principal Voise para o diretório %ProgramFiles%
+
+2. Para a criação do serviço Windows, execute no prompt o seguinte comando (no modo administrador):
+
+```
+cd %ProgramFiles%\Voise
+Voise.Server.exe install
+```
+
+O serviço é criado com início automático, logo basta reiniciar a máquina que ele já estará no ar, ou se quiser já até a tela de serviço e inicie-o manualmente.
+
+## Configuração
+
+A configuração é feita no arquivo config.xml no diretório principal da solução.
+
+Exemplo de configuração usando o Google Cloud:
+```
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+    <!-- Default: 8102 -->
+    <!--<port>8102</port>-->
+
+    <recognizers>
+        <!-- Default: me -->
+        <enabled>ge</enabled>
+
+        <google>
+            <credential_path>.\credentials\google-agente-virtual.json</credential_path>
+        </google>
+
+    </recognizers>
+
+    <synthesizers>
+        <!-- Default: me -->
+        <!--<enabled>me</enabled>-->
+    </synthesizers>
+
+    <!-- Default: ./classifiers/ -->
+    <!-- <classifiers_path>./classifiers/</classifiers_path> -->
+
+    <!-- ATENÇÃO: A configuração de log deve ser realizada diretamente no arquivo Log.config -->
+
+    <tuning>
+        <!-- Default: false -->
+        <enabled>true</enabled>
+
+        <!-- Default: ./tunning/ -->
+        <!-- <path>./tunning/</path> -->
+
+        <!-- Default: 7 -->
+        <!-- <retention_days>7</retention_days> -->
+    </tuning>
+</config>
+```
+
