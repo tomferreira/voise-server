@@ -16,7 +16,7 @@ namespace Voise.General
         internal long Id { get; private set; }
 
         // Recognizer used in this pipeline (if ASR)
-        internal CommonRecognizer Recognizer { get; set; }
+        internal ICommonRecognizer Recognizer { get; set; }
 
         internal VoiseResult Result { get; set; }
 

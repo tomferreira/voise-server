@@ -1,10 +1,9 @@
 ﻿using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Synthesis;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Voise.General;
+using Voise.General.Interface;
 using Voise.Provider.Microsoft;
 using Voise.Synthesizer.Exception;
 using Voise.Synthesizer.Provider.Common.Job;
@@ -15,9 +14,9 @@ namespace Voise.Synthesizer.Provider.Microsoft
     {
         private readonly SpeechSynthesizer _speechSynthesizer;
         private readonly SpeechAudioFormatInfo _info;
-        private readonly AudioStream _streamOut;
+        private readonly IAudioStream _streamOut;
 
-        internal Job(AudioStream streamOut, AudioEncoding encoding, int sampleRate, string languageCode)
+        internal Job(IAudioStream streamOut, AudioEncoding encoding, int sampleRate, string languageCode)
         {
             _speechSynthesizer = new SpeechSynthesizer();
 

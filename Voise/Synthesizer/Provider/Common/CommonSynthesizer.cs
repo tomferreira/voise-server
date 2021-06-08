@@ -1,23 +1,23 @@
 ﻿using System.Threading.Tasks;
-using Voise.General;
+using Voise.General.Interface;
 using Voise.Synthesizer.Provider.Common.Job;
 
 namespace Voise.Synthesizer.Provider.Common
 {
-    internal abstract class CommonSynthesizer
+    internal abstract class CommonSynthesizer : ICommonSynthesizer
     {
-        internal IJob SetSynth(AudioStream streamOut, string encoding, int sampleRate, string languageCode)
+        public IJob SetSynth(IAudioStream streamOut, string encoding, int sampleRate, string languageCode)
         {
             return CreateJob(streamOut, encoding, sampleRate, languageCode);
         }
 
-        internal async Task SynthAsync(IJob job, string text)
+        public async Task SynthAsync(IJob job, string text)
         {
             await job.SynthAsync(text).ConfigureAwait(false);
         }
 
-        protected abstract IJob CreateJob(AudioStream streamOut, string encoding, int sampleRate, string languageCode);
+        protected abstract IJob CreateJob(IAudioStream streamOut, string encoding, int sampleRate, string languageCode);
 
-        internal abstract int GetBytesPerSample(string encoding);
+        public abstract int GetBytesPerSample(string encoding);
     }
 }

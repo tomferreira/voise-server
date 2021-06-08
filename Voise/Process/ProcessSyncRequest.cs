@@ -2,27 +2,29 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Voise.Classification;
+using Voise.Classification.Interface;
 using Voise.General;
 using Voise.Recognizer;
 using Voise.Recognizer.Exception;
+using Voise.Recognizer.Interface;
 using Voise.Recognizer.Provider.Common;
 using Voise.TCP;
 using Voise.TCP.Request;
 using Voise.Tuning;
+using Voise.Tuning.Interface;
 
 namespace Voise.Process
 {
     internal class ProcessSyncRequest : ProcessBase
     {
         private readonly VoiseSyncRecognitionRequest _request;
-        private readonly RecognizerManager _recognizerManager;
-        private readonly ClassifierManager _classifierManager;
+        private readonly IRecognizerManager _recognizerManager;
+        private readonly IClassifierManager _classifierManager;
 
         private TuningIn _tuning;
 
-        internal ProcessSyncRequest(ClientConnection client, VoiseSyncRecognitionRequest request,
-            RecognizerManager recognizerManager, ClassifierManager classifierManager, TuningManager tuningManager)
+        internal ProcessSyncRequest(IClientConnection client, VoiseSyncRecognitionRequest request,
+            IRecognizerManager recognizerManager, IClassifierManager classifierManager, ITuningManager tuningManager)
             : base(client)
         {
             _request = request;
@@ -42,7 +44,7 @@ namespace Voise.Process
 
             try
             {
-                CommonRecognizer recognizer = _recognizerManager.GetRecognizer(_request.Config.engine_id);
+                ICommonRecognizer recognizer = _recognizerManager.GetRecognizer(_request.Config.engine_id);
 
                 var audio = Util.ConvertAudioToBytes(_request.audio);
 

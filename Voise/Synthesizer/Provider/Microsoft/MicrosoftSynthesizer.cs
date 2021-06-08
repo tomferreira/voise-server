@@ -1,4 +1,5 @@
 ﻿using Voise.General;
+using Voise.General.Interface;
 using Voise.Provider.Microsoft;
 using Voise.Synthesizer.Exception;
 using Voise.Synthesizer.Provider.Common;
@@ -10,13 +11,13 @@ namespace Voise.Synthesizer.Provider.Microsoft
     {
         internal const string ENGINE_IDENTIFIER = "me";
 
-        protected override IJob CreateJob(AudioStream streamOut, string encoding,
+        protected override IJob CreateJob(IAudioStream streamOut, string encoding,
             int sampleRate, string languageCode)
         {
             return new Job(streamOut, ConvertAudioEncoding(encoding), sampleRate, languageCode);
         }
 
-        internal override int GetBytesPerSample(string encoding)
+        public override int GetBytesPerSample(string encoding)
         {
             try
             {

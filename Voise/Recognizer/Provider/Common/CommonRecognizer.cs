@@ -1,25 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Voise.General;
+using Voise.General.Interface;
 using Voise.Recognizer.Provider.Common.Job;
 
 namespace Voise.Recognizer.Provider.Common
 {
-    internal abstract class CommonRecognizer
+    internal abstract class CommonRecognizer : ICommonRecognizer
     {
         private const int TIMEOUT_TASK_REMOVE_JOBS_ABORTED = 5 * 60 * 1000; // 5 minutes
 
-        protected Dictionary<AudioStream, IStreamingJob> _streamingJobs;
+        protected Dictionary<IAudioStream, IStreamingJob> _streamingJobs;
 
         internal CommonRecognizer()
         {
-            _streamingJobs = new Dictionary<AudioStream, IStreamingJob>();
+            _streamingJobs = new Dictionary<IAudioStream, IStreamingJob>();
 
             InitRemoveJobsWithAbortedStream();
         }
 
-        internal async Task<SpeechRecognitionResult> SyncRecognition(byte[] audio, string encoding,
+        public async Task<SpeechRecognitionResult> SyncRecognition(byte[] audio, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
             using (ISyncJob job = CreateSyncJob(audio, encoding, sampleRate, languageCode, contexts))
@@ -30,7 +30,7 @@ namespace Voise.Recognizer.Provider.Common
             }
         }
 
-        internal async Task StartStreamingRecognitionAsync(AudioStream streamIn, string encoding,
+        public async Task StartStreamingRecognitionAsync(IAudioStream streamIn, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
             IStreamingJob job = CreateStreamingJob(streamIn, encoding, sampleRate, languageCode, contexts);
@@ -41,7 +41,7 @@ namespace Voise.Recognizer.Provider.Common
             await job.StartAsync().ConfigureAwait(false);
         }
 
-        internal async Task<SpeechRecognitionResult> StopStreamingRecognitionAsync(AudioStream streamIn)
+        public async Task<SpeechRecognitionResult> StopStreamingRecognitionAsync(IAudioStream streamIn)
         {
             IStreamingJob job = null;
 
@@ -68,7 +68,7 @@ namespace Voise.Recognizer.Provider.Common
         protected abstract ISyncJob CreateSyncJob(byte[] audio, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts);
 
-        protected abstract IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,
+        protected abstract IStreamingJob CreateStreamingJob(IAudioStream streamIn, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts);
 
         // This task runs in background mode and its responsible to stop the aborted audio streaming.
@@ -81,12 +81,12 @@ namespace Voise.Recognizer.Provider.Common
                 {
                     try
                     {
-                        IEnumerable<AudioStream> abortedStreams = null;
+                        IEnumerable<IAudioStream> abortedStreams = null;
 
                         lock (_streamingJobs)
                             abortedStreams = _streamingJobs.Keys.Where(s => s.IsAborted());
 
-                        foreach (AudioStream stream in abortedStreams)
+                        foreach (IAudioStream stream in abortedStreams)
                             await StopStreamingRecognitionAsync(stream).ConfigureAwait(false);
                     }
                     catch

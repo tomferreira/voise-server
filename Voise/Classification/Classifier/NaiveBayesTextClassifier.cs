@@ -1,4 +1,5 @@
-﻿using weka.classifiers.bayes;
+﻿using log4net;
+using weka.classifiers.bayes;
 using weka.classifiers.meta;
 using weka.core;
 
@@ -6,8 +7,8 @@ namespace Voise.Classification.Classifier
 {
     internal class NaiveBayesTextClassifier : Base
     {
-        internal NaiveBayesTextClassifier()
-            : base()
+        internal NaiveBayesTextClassifier(ILog logger)
+            : base(logger)
         {
             _wekaClassifier = new NaiveBayesMultinomialText();
 

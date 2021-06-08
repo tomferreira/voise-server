@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using Voise.General;
+using Voise.General.Interface;
 using Voise.Provider.Microsoft;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Microsoft.Internal;
@@ -15,12 +15,12 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 {
     internal class StreamingJob : Base, IStreamingJob
     {
-        private AudioStream _streamIn;
+        private IAudioStream _streamIn;
         private SpeechStreamer _ss;
 
         private SpeechAudioFormatInfo _info;
 
-        internal StreamingJob(AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        internal StreamingJob(IAudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base(LogManager.GetLogger(typeof(StreamingJob)))
         {
             ValidateArguments(encoding, sampleRate, languageCode, contexts);
@@ -82,7 +82,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             _ss.Complete();
         }
 
-        private void ConsumeStreamData(object sender, AudioStream.StreamInEventArgs e)
+        private void ConsumeStreamData(object sender, IStreamInEventArgs e)
         {
             try
             {

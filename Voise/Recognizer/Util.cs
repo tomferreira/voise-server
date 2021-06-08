@@ -7,7 +7,7 @@ namespace Voise.Recognizer
     {
         internal static byte[] ConvertAudioToBytes(string audio_base64)
         {
-            if (String.IsNullOrWhiteSpace(audio_base64))
+            if (string.IsNullOrWhiteSpace(audio_base64))
                 throw new BadAudioException("Audio is empty.");
 
             try

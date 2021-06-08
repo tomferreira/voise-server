@@ -1,6 +1,6 @@
 ﻿namespace Voise.Recognizer
 {
-    internal class SpeechRecognitionResult
+    public class SpeechRecognitionResult
     {
         internal static readonly SpeechRecognitionResult NoResult
             = new SpeechRecognitionResult("#NORESULT", 1);

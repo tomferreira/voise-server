@@ -4,16 +4,16 @@ using Voise.TCP.Request;
 
 namespace Voise.Tuning
 {
-    internal class TuningIn : Base
+    public class TuningIn : Base
     {
-        internal TuningIn(string path, InputMethod inputMethod, VoiseConfig config)
+        public TuningIn(string path, InputMethod inputMethod, VoiseConfig config)
             : base(path, "in", inputMethod, config)
         {
             _attrs.Add("Model Name", config.model_name);
             _attrs.Add("Context", string.Join(",", values: config.context ?? new List<string>()));
         }
 
-        internal override void SetResult(VoiseResult result)
+        public override void SetResult(VoiseResult result)
         {
             _attrs.Add("Transcript", result.Transcript);
             _attrs.Add("Confidence", result.Confidence.ToString());

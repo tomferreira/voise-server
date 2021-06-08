@@ -8,13 +8,13 @@ using weka.filters.unsupervised.attribute;
 
 namespace Voise.Classification.Classifier
 {
-    internal abstract class Base
+    public abstract class Base
     {
         protected const double MINUMIN_APRC = 0.9;
 
         protected const int K_FOLDS = 11;
 
-        internal class Result
+        public class Result
         {
             internal string ClassName { get; private set; }
             internal float Probability { get; private set; }
@@ -34,7 +34,7 @@ namespace Voise.Classification.Classifier
         // List of all class => text used in train data.
         protected Dictionary<string, List<string>> _trainingList;
 
-        protected ILog _log;
+        protected ILog _logger;
 
         private string _modelName;
         internal string ModelName
@@ -53,12 +53,12 @@ namespace Voise.Classification.Classifier
             }
         }
 
-        internal Base()
+        internal Base(ILog logger)
         {
-            _log = LogManager.GetLogger(typeof(Base));
-
             _modelName = null;
             _trainingList = new Dictionary<string, List<string>>();
+
+            _logger = logger;
         }
 
         internal Dictionary<string, List<string>> GetTrainingList()
@@ -81,11 +81,11 @@ namespace Voise.Classification.Classifier
 
             if (waupr < MINUMIN_APRC)
             {
-                _log.Warn($"{ModelName}: Area under PR Curve is {waupr}, that is below down {MINUMIN_APRC}");
+                _logger.Warn($"{ModelName}: Area under PR Curve is {waupr}, that is below down {MINUMIN_APRC}");
             }
             else
             {
-                _log.Info($"{ModelName}: Area under PR Curve is {waupr}");
+                _logger.Info($"{ModelName}: Area under PR Curve is {waupr}");
             }
         }
 

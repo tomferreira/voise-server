@@ -2,24 +2,26 @@
 using System;
 using System.Threading.Tasks;
 using Voise.General;
-using Voise.Synthesizer;
+using Voise.General.Interface;
 using Voise.Synthesizer.Exception;
+using Voise.Synthesizer.Interface;
 using Voise.Synthesizer.Provider.Common;
 using Voise.TCP;
 using Voise.TCP.Request;
 using Voise.Tuning;
+using Voise.Tuning.Interface;
 
 namespace Voise.Process
 {
     internal class ProcessSynthVoiceRequest : ProcessBase
     {
         private readonly VoiseSynthVoiceRequest _request;
-        private readonly SynthesizerManager _synthesizerManager;
+        private readonly ISynthesizerManager _synthesizerManager;
 
         private TuningOut _tuning;
 
-        internal ProcessSynthVoiceRequest(ClientConnection client, VoiseSynthVoiceRequest request, 
-            SynthesizerManager synthesizerManager, TuningManager tuningManager)
+        internal ProcessSynthVoiceRequest(IClientConnection client, VoiseSynthVoiceRequest request,
+            ISynthesizerManager synthesizerManager, ITuningManager tuningManager)
             : base(client)
         {
             _request = request;
@@ -48,12 +50,12 @@ namespace Voise.Process
 
             try
             {
-                CommonSynthesizer synthesizer = _synthesizerManager.GetSynthesizer(_request.Config.engine_id);
+                ICommonSynthesizer synthesizer = _synthesizerManager.GetSynthesizer(_request.Config.engine_id);
 
                 int bytesPerSample = synthesizer.GetBytesPerSample(_request.Config.encoding);
-                _client.StreamOut = new AudioStream(_request.Config.max_frame_ms ?? 20, _request.Config.sample_rate, bytesPerSample, _tuning);
+                _client.StreamOut = new General.AudioStream(_request.Config.max_frame_ms ?? 20, _request.Config.sample_rate, bytesPerSample, _tuning);
 
-                _client.StreamOut.DataAvailable += delegate (object sender, AudioStream.StreamInEventArgs e)
+                _client.StreamOut.DataAvailable += delegate (object sender, IStreamInEventArgs e)
                 {
                     VoiseResult result = new VoiseResult(VoiseResult.Modes.TTS)
                     {

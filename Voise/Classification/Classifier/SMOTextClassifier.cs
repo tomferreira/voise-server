@@ -1,4 +1,5 @@
-﻿using weka.classifiers.functions;
+﻿using log4net;
+using weka.classifiers.functions;
 using weka.classifiers.meta;
 using weka.core;
 using weka.filters;
@@ -8,8 +9,8 @@ namespace Voise.Classification.Classifier
 {
     internal class SMOTextClassifier : Base
     {
-        internal SMOTextClassifier()
-            : base()
+        internal SMOTextClassifier(ILog logger)
+            : base(logger)
         {
             _wekaClassifier = new SMO();
             _filter = new StringToWordVector();

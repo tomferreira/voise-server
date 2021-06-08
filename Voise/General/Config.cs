@@ -4,10 +4,11 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
+using Voise.General.Interface;
 
 namespace Voise.General
 {
-    public class Config
+    public class Config : IConfig
     {
         private const string FILENAME_FULLPATH = "./config.xml";
 
@@ -30,7 +31,6 @@ namespace Voise.General
         private const string DEFAULT_TUNING_PATH = "./tuning/";
         private const int DEFAULT_TUNING_RETENTON_DAY = 7;
 
-
         private XmlElement _element;
 
         public Config()
@@ -43,7 +43,7 @@ namespace Voise.General
             _element = doc.DocumentElement;
         }
 
-        internal int Port
+        public int Port
         {
             get
             {
@@ -56,7 +56,7 @@ namespace Voise.General
             }
         }
 
-        internal List<string> RecognizersEnabled
+        public List<string> RecognizersEnabled
         {
             get
             {
@@ -70,7 +70,7 @@ namespace Voise.General
             }
         }
 
-        internal List<string> SynthesizersEnabled
+        public List<string> SynthesizersEnabled
         {
             get
             {
@@ -84,7 +84,7 @@ namespace Voise.General
             }
         }
 
-        internal string ClassifiersPath
+        public string ClassifiersPath
         {
             get
             {
@@ -97,7 +97,7 @@ namespace Voise.General
             }
         }
 
-        internal bool TuningEnabled
+        public bool TuningEnabled
         {
             get
             {
@@ -110,7 +110,7 @@ namespace Voise.General
             }
         }
 
-        internal string TuningPath
+        public string TuningPath
         {
             get
             {
@@ -123,7 +123,7 @@ namespace Voise.General
             }
         }
 
-        internal int TuningRetentionDays
+        public int TuningRetentionDays
         {
             get
             {
@@ -136,16 +136,17 @@ namespace Voise.General
             }
         }
 
-        internal string GetRecognizerAttribute(params string[] identifiers)
+        public string GetRecognizerAttribute(params string[] identifiers)
         {
             return GetAttribute("recognizers", identifiers);
         }
-        internal string GetSynthesizerAttribute(params string[] identifiers)
+
+        public string GetSynthesizerAttribute(params string[] identifiers)
         {
             return GetAttribute("synthesizers", identifiers);
         }
 
-        internal string GetTuningAttribute(params string[] identifiers)
+        public string GetTuningAttribute(params string[] identifiers)
         {
             return GetAttribute("tuning", identifiers);
         }

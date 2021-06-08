@@ -2,23 +2,24 @@
 using System;
 using System.IO;
 using System.Threading;
-using Voise.General;
+using Voise.General.Interface;
 using Voise.TCP.Request;
+using Voise.Tuning.Interface;
 
 namespace Voise.Tuning
 {
-    internal class TuningManager
+    public class TuningManager : ITuningManager
     {
         private string _tuningPath;
         private int _retentionDays;
 
-        private ILog _log;
+        private ILog _logger;
 
         private Thread _retentionPolice;
 
-        internal TuningManager(Config config)
+        public TuningManager(IConfig config, ILog logger)
         {
-            _log = LogManager.GetLogger(typeof(TuningManager));
+            _logger = logger;
 
             _tuningPath = null;
             _retentionDays = 0;
@@ -27,7 +28,7 @@ namespace Voise.Tuning
                 EnableTuning(config.TuningPath, config.TuningRetentionDays);
         }
 
-        internal TuningIn CreateTuningIn(Base.InputMethod inputMethod, VoiseConfig config)
+        public TuningIn CreateTuningIn(Base.InputMethod inputMethod, VoiseConfig config)
         {
             if (string.IsNullOrWhiteSpace(_tuningPath))
                 return null;
@@ -35,7 +36,7 @@ namespace Voise.Tuning
             return new TuningIn(_tuningPath, inputMethod, config);
         }
 
-        internal TuningOut CreateTuningOut(Base.InputMethod inputMethod, string text, VoiseConfig config)
+        public TuningOut CreateTuningOut(Base.InputMethod inputMethod, string text, VoiseConfig config)
         {
             if (string.IsNullOrWhiteSpace(_tuningPath))
                 return null;
@@ -80,11 +81,11 @@ namespace Voise.Tuning
                             {
                                 Directory.Delete(directoryPath, true);
 
-                                _log.Info($"Directory '{directoryPath}' excluded successful.");
+                                _logger.Info($"Directory '{directoryPath}' excluded successful.");
                             }
                             catch
                             {
-                                _log.Error($"Can not delete the directory '{directoryPath}'.");
+                                _logger.Error($"Can not delete the directory '{directoryPath}'.");
                             }
                         }
                     }
@@ -92,7 +93,7 @@ namespace Voise.Tuning
             }
             catch(Exception ex)
             {
-                _log.Error($"{ex.Message}");
+                _logger.Error($"{ex.Message}");
             }
         }
     }
