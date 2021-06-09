@@ -46,7 +46,7 @@ namespace Voise.Process
             {
                 ICommonRecognizer recognizer = _recognizerManager.GetRecognizer(_request.Config.engine_id);
 
-                var audio = Util.ConvertAudioToBytes(_request.audio);
+                var audio = ConvertAudioToBytes(_request.audio);
 
                 _tuning?.WriteRecording(audio, 0, audio.Length);
 
@@ -119,6 +119,21 @@ namespace Voise.Process
 
                 _client.CurrentPipeline.Dispose();
                 _client.CurrentPipeline = null;
+            }
+        }
+
+        internal static byte[] ConvertAudioToBytes(string audio_base64)
+        {
+            if (string.IsNullOrWhiteSpace(audio_base64))
+                throw new BadAudioException("Audio is empty.");
+
+            try
+            {
+                return Convert.FromBase64String(audio_base64);
+            }
+            catch (System.Exception e)
+            {
+                throw new BadAudioException("Audio is invalid.", e);
             }
         }
     }
