@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Voise.Classification;
+using Voise.Classification.Interface;
 using Voise.General;
 using Voise.TCP;
 using Voise.TCP.Request;
@@ -11,16 +11,16 @@ namespace Voise.Process
 {
     internal abstract class ProcessBase
     {
-        protected readonly ClientConnection _client;
+        protected readonly IClientConnection _client;
 
-        internal ProcessBase(ClientConnection client)
+        internal ProcessBase(IClientConnection client)
         {
             _client = client;
         }
 
         internal abstract Task ExecuteAsync();
 
-        protected static Dictionary<string, List<string>> GetContexts(VoiseConfig config, ClassifierManager classifierManager)
+        protected static Dictionary<string, List<string>> GetContexts(VoiseConfig config, IClassifierManager classifierManager)
         {
             Dictionary<string, List<string>> contexts = null;
 

@@ -1,4 +1,5 @@
-﻿using weka.classifiers.trees;
+﻿using log4net;
+using weka.classifiers.trees;
 using weka.core;
 using weka.filters;
 using weka.filters.unsupervised.attribute;
@@ -7,8 +8,8 @@ namespace Voise.Classification.Classifier
 {
     internal class J48TextClassifier : Base
     {
-        internal J48TextClassifier()
-            : base()
+        internal J48TextClassifier(ILog logger)
+            : base(logger)
         {
             _wekaClassifier = new J48();
             _filter = new StringToWordVector();

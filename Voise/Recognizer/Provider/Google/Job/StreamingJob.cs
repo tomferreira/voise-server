@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Voise.General;
+using Voise.General.Interface;
 using Voise.Recognizer.Provider.Common.Job;
 using Voise.Recognizer.Provider.Google.Internal;
 using static Google.Cloud.Speech.V1.RecognitionConfig.Types;
@@ -18,9 +18,9 @@ namespace Voise.Recognizer.Provider.Google.Job
         private RequestQueue<ByteString> _requestQueue;
         private Task _doneTask;
 
-        private AudioStream _streamIn;
+        private IAudioStream _streamIn;
 
-        internal StreamingJob(SpeechRecognizer recognizer, AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
+        internal StreamingJob(SpeechRecognizer recognizer, IAudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base(recognizer)
         {
             ValidateArguments(encoding, sampleRate, languageCode);
@@ -61,7 +61,7 @@ namespace Voise.Recognizer.Provider.Google.Job
             await _requestQueue.CompleteAsync().ConfigureAwait(false);
         }
 
-        private void ConsumeStreamData(object sender, AudioStream.StreamInEventArgs e)
+        private void ConsumeStreamData(object sender, IStreamInEventArgs e)
         {
             ByteString data = ByteString.CopyFrom(e.Buffer, 0, e.BytesStreamed);
             _requestQueue.Post(data);

@@ -5,26 +5,27 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Voise.Classification.Exception;
-using Voise.General;
+using Voise.Classification.Interface;
+using Voise.General.Interface;
 using weka.core;
 
 namespace Voise.Classification
 {
-    internal class ClassifierManager
+    public class ClassifierManager : IClassifierManager
     {
-        private ILog _log;
+        private ILog _logger;
         private Dictionary<string, Classifier.Base> _classifiers;
 
-        internal ClassifierManager(Config config)
+        public ClassifierManager(IConfig config, ILog logger)
         {
-            _log = LogManager.GetLogger(typeof(ClassifierManager));
+            _logger = logger;
 
             _classifiers = new Dictionary<string, Classifier.Base>();
 
             LoadClassifiers(config.ClassifiersPath);
         }
 
-        internal Dictionary<string, List<string>> GetTrainingList(string modelName)
+        public Dictionary<string, List<string>> GetTrainingList(string modelName)
         {
             Classifier.Base classifier = null;
 
@@ -39,9 +40,9 @@ namespace Voise.Classification
             return classifier.GetTrainingList();
         }
 
-        internal Task<Classifier.Base.Result> ClassifyAsync(string modelName, string message)
+        public Task<Classifier.Base.Result> ClassifyAsync(string modelName, string message)
         {
-            if (String.IsNullOrWhiteSpace(modelName))
+            if (string.IsNullOrWhiteSpace(modelName))
                 throw new BadModelException("Model name is empty.");
 
             Classifier.Base classifier = null;
@@ -62,7 +63,7 @@ namespace Voise.Classification
             if (!Directory.Exists(classifiersPath))
                 throw new ClassifiersPathNotFoundException($"Classifiers path not found: {classifiersPath}");
 
-            _log.Info($"Loading classifiers from {classifiersPath}");
+            _logger.Info($"Loading classifiers from {classifiersPath}");
 
             IEnumerable<string> directories = Directory.EnumerateDirectories(classifiersPath);
 
@@ -76,7 +77,7 @@ namespace Voise.Classification
                 {
                     try
                     {
-                        AddClassifier(file, new Classifier.LogisticTextClassifier());
+                        AddClassifier(file, new Classifier.LogisticTextClassifier(_logger));
                     }
                     catch (System.Exception e)
                     {
@@ -114,7 +115,7 @@ namespace Voise.Classification
             lock (_classifiers)
                 _classifiers.Add(classifier.ModelName, classifier);
 
-            _log.Info($"Classifier '{classifier.ModelName}' loaded.");
+            _logger.Info($"Classifier '{classifier.ModelName}' loaded.");
         }
     }
 }

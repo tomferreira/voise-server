@@ -9,11 +9,11 @@ namespace Voise.TCP
 {
     internal class Server
     {
-        internal delegate Task HandlerRequest(ClientConnection client, VoiseRequest request);
+        internal delegate Task HandlerRequest(IClientConnection client, VoiseRequest request);
 
         private Socket _listenSocket;
         private SocketAsyncEventArgs _acceptAsyncArgs;
-        private List<ClientConnection> _connections;
+        private List<IClientConnection> _connections;
         private readonly HandlerRequest _hr;
 
         private ILog _log;
@@ -24,35 +24,41 @@ namespace Voise.TCP
                 System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
             _hr = hr;
-            _connections = new List<ClientConnection>();
+            _connections = new List<IClientConnection>();
         }
 
         internal bool IsOpen { get; private set; }
 
-        internal void StartAsync(int port)
+        internal async Task StartAsync(int port)
         {
-            _listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            await Task.Run(() =>
+            {
+                _listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            _acceptAsyncArgs = new SocketAsyncEventArgs();
-            _acceptAsyncArgs.Completed += AcceptCompleted;
+                _acceptAsyncArgs = new SocketAsyncEventArgs();
+                _acceptAsyncArgs.Completed += AcceptCompleted;
 
-            _listenSocket.Bind(new IPEndPoint(IPAddress.Any, port));
-            _listenSocket.Listen(50);
+                _listenSocket.Bind(new IPEndPoint(IPAddress.Any, port));
+                _listenSocket.Listen(50);
 
-            AcceptAsync(_acceptAsyncArgs);
+                Accept(_acceptAsyncArgs);
 
-            IsOpen = true;
+                IsOpen = true;
+            }).ConfigureAwait(false);
         }
 
-        internal void Stop()
+        internal async Task StopAsync()
         {
-            IsOpen = false;
+            await Task.Run(() =>
+            {
+                IsOpen = false;
 
-            _listenSocket.Close();
-            _listenSocket = null;
+                _listenSocket.Close();
+                _listenSocket = null;
 
-            lock (_connections)
-                _connections.Clear();
+                lock (_connections)
+                    _connections.Clear();
+            }).ConfigureAwait(false);
         }
 
         private void AcceptCompleted(object sender, SocketAsyncEventArgs e)
@@ -61,7 +67,7 @@ namespace Voise.TCP
             {
                 if (e.SocketError == SocketError.Success)
                 {
-                    ClientConnection client = new ClientConnection(e.AcceptSocket, _hr);
+                    IClientConnection client = new ClientConnection(e.AcceptSocket, _hr);
                     client.Closed += ClientClosed;
 
                     lock (_connections)
@@ -70,11 +76,11 @@ namespace Voise.TCP
 
                 e.AcceptSocket = null;
 
-                AcceptAsync(_acceptAsyncArgs);
+                Accept(_acceptAsyncArgs);
             }
         }
 
-        private void AcceptAsync(SocketAsyncEventArgs e)
+        private void Accept(SocketAsyncEventArgs e)
         {
             bool willRaiseEvent = _listenSocket.AcceptAsync(e);
 
@@ -82,14 +88,14 @@ namespace Voise.TCP
                 AcceptCompleted(_listenSocket, e);
         }
 
-        private void ClientClosed(ClientConnection client)
+        private void ClientClosed(IClientConnection client)
         {
             client.Closed -= ClientClosed;
 
             ClearClientConnection(client);
         }
 
-        private void ClearClientConnection(ClientConnection client)
+        private void ClearClientConnection(IClientConnection client)
         {
             client.Dispose();
 

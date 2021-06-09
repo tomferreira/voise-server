@@ -1,7 +1,7 @@
 ﻿using log4net;
 using System;
 using System.Threading.Tasks;
-using Voise.Recognizer;
+using Voise.Recognizer.Interface;
 using Voise.TCP;
 using Voise.TCP.Request;
 
@@ -10,10 +10,10 @@ namespace Voise.Process
     internal class ProcessStreamStopRequest : ProcessBase
     {
         private readonly VoiseStreamRecognitionStopRequest _request;
-        private readonly RecognizerManager _recognizerManager;
+        private readonly IRecognizerManager _recognizerManager;
 
-        internal ProcessStreamStopRequest(ClientConnection client, VoiseStreamRecognitionStopRequest request,
-            RecognizerManager recognizerManager)
+        internal ProcessStreamStopRequest(IClientConnection client, VoiseStreamRecognitionStopRequest request,
+            IRecognizerManager recognizerManager)
             : base(client)
         {
             _request = request;

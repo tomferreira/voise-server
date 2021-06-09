@@ -1,6 +1,6 @@
 ﻿namespace Voise.General
 {
-    internal class VoiseResult
+    public class VoiseResult
     {
         internal enum Modes
         {
