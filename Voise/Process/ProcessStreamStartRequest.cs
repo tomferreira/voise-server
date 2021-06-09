@@ -128,6 +128,7 @@ namespace Voise.Process
                     {
                         var classification = await _classifierManager.ClassifyAsync(
                             _request.Config.model_name,
+                            _request.Config.language_code,
                             pipeline.Result.Transcript).ConfigureAwait(false);
 
                         pipeline.Result.Intent = classification.ClassName;

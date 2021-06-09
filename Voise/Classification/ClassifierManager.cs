@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Voise.Classification.Exception;
 using Voise.Classification.Interface;
@@ -16,6 +17,10 @@ namespace Voise.Classification
         private ILog _logger;
         private Dictionary<string, Classifier.Base> _classifiers;
 
+        // Delimiter used in the relation attribute
+        // to separate model name and language code.
+        private const char LANGUAGE_CODE_DELIMITER = '@';
+
         public ClassifierManager(IConfig config, ILog logger)
         {
             _logger = logger;
@@ -25,34 +30,41 @@ namespace Voise.Classification
             LoadClassifiers(config.ClassifiersPath);
         }
 
-        public Dictionary<string, List<string>> GetTrainingList(string modelName)
+        public Dictionary<string, List<string>> GetTrainingList(string modelName, string languageCode)
         {
             Classifier.Base classifier = null;
 
+            string relationName = GenerateRelationName(modelName, languageCode);
+
             lock (_classifiers)
             {
-                if (modelName == null || !_classifiers.ContainsKey(modelName))
+                if (modelName == null || languageCode == null || !_classifiers.ContainsKey(relationName))
                     return null;
 
-                classifier = _classifiers[modelName];
+                classifier = _classifiers[relationName];
             }
 
             return classifier.GetTrainingList();
         }
 
-        public Task<Classifier.Base.Result> ClassifyAsync(string modelName, string message)
+        public Task<Classifier.Base.Result> ClassifyAsync(string modelName, string languageCode, string message)
         {
             if (string.IsNullOrWhiteSpace(modelName))
                 throw new BadModelException("Model name is empty.");
+
+            if (string.IsNullOrWhiteSpace(languageCode))
+                throw new BadModelException("Language code is empty.");
+
+            string relationName = GenerateRelationName(modelName, languageCode);
 
             Classifier.Base classifier = null;
 
             lock (_classifiers)
             {
-                if (!_classifiers.ContainsKey(modelName))
-                    throw new BadModelException($"Model '{modelName}' not found.");
+                if (!_classifiers.ContainsKey(relationName))
+                    throw new BadModelException($"Model '{relationName}' not found.");
 
-                classifier = _classifiers[modelName];
+                classifier = _classifiers[relationName];
             }
 
             return Task.Run(() => classifier.Classify(message));
@@ -65,26 +77,22 @@ namespace Voise.Classification
 
             _logger.Info($"Loading classifiers from {classifiersPath}");
 
-            IEnumerable<string> directories = Directory.EnumerateDirectories(classifiersPath);
-
             ConcurrentQueue<System.Exception> exceptions = new ConcurrentQueue<System.Exception>();
 
-            foreach (var directory in directories)
-            {
-                IEnumerable<string> files = Directory.EnumerateFiles(directory, "*.arff");
+            IEnumerable<string> files = Directory.EnumerateFiles(
+                classifiersPath, "*.arff", SearchOption.AllDirectories);
 
-                Parallel.ForEach(files, (file) =>
+            Parallel.ForEach(files, (file) =>
+            {
+                try
                 {
-                    try
-                    {
-                        AddClassifier(file, new Classifier.LogisticTextClassifier(_logger));
-                    }
-                    catch (System.Exception e)
-                    {
-                        exceptions.Enqueue(e);
-                    }
-                });
-            }
+                    AddClassifier(file, new Classifier.LogisticTextClassifier(_logger));
+                }
+                catch (System.Exception e)
+                {
+                    exceptions.Enqueue(e);
+                }
+            });
 
             if (!exceptions.IsEmpty)
                 throw new AggregateException(exceptions);
@@ -102,20 +110,34 @@ namespace Voise.Classification
                 trainingData.setClassIndex(trainingData.numAttributes() - 1);
             }
 
-            classifier.ModelName = trainingData.relationName();
+            string relationName = trainingData.relationName();
+
+            Regex rgx = new Regex($"^([^{LANGUAGE_CODE_DELIMITER}]+){LANGUAGE_CODE_DELIMITER}(.+)$");
+            Match match = rgx.Match(relationName);
+
+            if (!match.Success)
+                throw new System.Exception($"Relation attribute is invalid: '{relationName}'");
+
+            classifier.ModelName = match.Groups[1].Value;
+            classifier.LanguageCode = match.Groups[2].Value;
 
             lock (_classifiers)
             {
-                if (_classifiers.ContainsKey(classifier.ModelName))
-                    throw new System.Exception($"Model is duplicated: '{classifier.ModelName}'");
+                if (_classifiers.ContainsKey(relationName))
+                    throw new System.Exception($"Model is duplicated: '{relationName}'");
             }
 
             classifier.Train(trainingData);
 
             lock (_classifiers)
-                _classifiers.Add(classifier.ModelName, classifier);
+                _classifiers.Add(relationName, classifier);
 
-            _logger.Info($"Classifier '{classifier.ModelName}' loaded.");
+            _logger.Info($"Classifier '{relationName}' loaded.");
+        }
+
+        private static string GenerateRelationName(string modelName, string languageCode)
+        {
+            return $"{modelName}{LANGUAGE_CODE_DELIMITER}{languageCode}";
         }
     }
 }
