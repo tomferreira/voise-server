@@ -356,7 +356,7 @@
     <Compile Include="Classification\Classifier\MultilayerPerceptronTextClassificatier.cs" />
     <Compile Include="Classification\Classifier\NaiveBayesTextClassifier.cs" />
     <Compile Include="Classification\Classifier\SMOTextClassifier.cs" />
-    <Compile Include="General\Config.cs" />
+    <Compile Include="General\FileConfig.cs" />
     <Compile Include="General\Interface\IAudioStream.cs" />
     <Compile Include="General\Interface\IConfig.cs" />
     <Compile Include="General\Interface\IStreamInEventArgs.cs" />

@@ -7,22 +7,18 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading.Tasks;
 using Voise.General;
-using Voise.General.Interface;
 
 namespace Voise
 {
     public static class Entry
     {
         private static ILog _logger;
-        private static IConfig _config;
 
         static async Task Main()
         {
 #if DEBUG
             BasicConfigurator.Configure();
             _logger = LogManager.GetLogger(typeof(Entry));
-
-            _config = new Config();
 
             try
             {
@@ -32,14 +28,9 @@ namespace Voise
                     .ConfigureContainer<ContainerBuilder>(ConfigureContainer)
                     .RunConsoleAsync();
             }
-            catch (AggregateException e)
-            {
-                foreach (var ie in e.InnerExceptions)
-                    _logger.Fatal($"{ie.Message}\nStacktrace: {ie.StackTrace}");
-            }
             catch (Exception e)
             {
-                _logger.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
+                IocModule.LogDeepestExceptions(e, _logger);
             }
 #else
             Console.WriteLine("To start Voise Server, use the Windows Service.");
@@ -61,7 +52,7 @@ namespace Voise
             // ConfigureServices so things you register here OVERRIDE things
             // registered in ConfigureServices.
 
-            IocModule.BuildContainer(containerBuilder, _config, _logger);
+            IocModule.BuildContainer(containerBuilder, _logger);
         }
     }
 }

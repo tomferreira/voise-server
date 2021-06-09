@@ -45,16 +45,9 @@ namespace VoiseService.Service
 
                 return true;
             }
-            catch (AggregateException e)
+            catch (Exception e)
             {
-                foreach (var ie in e.InnerExceptions)
-                    _logger.Fatal($"{ie.Message}\nStacktrace: {ie.StackTrace}");
-
-                return false;
-            }
-            catch(Exception e)
-            {
-                _logger.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
+                Voise.IocModule.LogDeepestExceptions(e, _logger);
                 return false;
             }
         }

@@ -8,7 +8,7 @@ using Voise.General.Interface;
 
 namespace Voise.General
 {
-    public class Config : IConfig
+    public class FileConfig : IConfig
     {
         private const string FILENAME_FULLPATH = "./config.xml";
 
@@ -33,7 +33,7 @@ namespace Voise.General
 
         private XmlElement _element;
 
-        public Config()
+        public FileConfig()
         {
             XmlDocument doc = new XmlDocument();
 

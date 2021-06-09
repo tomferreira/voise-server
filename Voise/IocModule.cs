@@ -1,6 +1,6 @@
 ﻿using Autofac;
+using Autofac.Core;
 using log4net;
-using log4net.Config;
 using System;
 using Voise.Classification;
 using Voise.Classification.Interface;
@@ -17,15 +17,34 @@ namespace Voise
 {
     public class IocModule
     {
-        public static void BuildContainer(ContainerBuilder containerBuilder, IConfig config, ILog logger)
+        public static void BuildContainer(ContainerBuilder containerBuilder, ILog logger)
         {            
             containerBuilder.RegisterInstance(logger).As<ILog>().ExternallyOwned();
-            containerBuilder.RegisterInstance(config).As<IConfig>().ExternallyOwned();
+
+            containerBuilder.RegisterType<FileConfig>().As<IConfig>().SingleInstance();
 
             containerBuilder.RegisterType<RecognizerManager>().As<IRecognizerManager>();
             containerBuilder.RegisterType<ClassifierManager>().As<IClassifierManager>();
             containerBuilder.RegisterType<SynthesizerManager>().As<ISynthesizerManager>();
             containerBuilder.RegisterType<TuningManager>().As<ITuningManager>();
+        }
+
+        public static void LogDeepestExceptions(Exception e, ILog logger)
+        {
+            if (e is DependencyResolutionException)
+            {
+                LogDeepestExceptions(e.InnerException, logger);
+            }
+            else if (e is AggregateException)
+            {
+                var ae = e as AggregateException;
+                foreach (var ie in ae.InnerExceptions)
+                    LogDeepestExceptions(ie, logger);
+            }
+            else
+            {
+                logger.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
+            }
         }
     }
 }

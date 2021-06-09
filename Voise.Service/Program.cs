@@ -5,8 +5,6 @@ using System;
 using System.IO;
 using Topshelf;
 using Topshelf.Autofac;
-using Voise.General;
-using Voise.General.Interface;
 
 namespace VoiseService
 {
@@ -72,11 +70,9 @@ namespace VoiseService
             BasicConfigurator.Configure();
             var logger = LogManager.GetLogger(typeof(Service.WinService));
 
-            IConfig config = new Config();
-
             ContainerBuilder containerBuilder = new ContainerBuilder();
 
-            Voise.IocModule.BuildContainer(containerBuilder, config, logger);
+            Voise.IocModule.BuildContainer(containerBuilder, logger);
 
             containerBuilder.RegisterType<Service.WinService>()
                 .AsSelf()
