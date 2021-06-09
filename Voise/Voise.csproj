@@ -393,7 +393,6 @@
     <Compile Include="Recognizer\Provider\Microsoft\MicrosoftRecognizer.cs" />
     <Compile Include="Recognizer\RecognizerManager.cs" />
     <Compile Include="Recognizer\SpeechRecognitionResult.cs" />
-    <Compile Include="Recognizer\Util.cs" />
     <Compile Include="General\ResponseCode.cs" />
     <Compile Include="Recognizer\Provider\Azure\AudioEncoding.cs" />
     <Compile Include="Synthesizer\Exception\CodecNotSupportedException.cs" />

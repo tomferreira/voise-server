@@ -33,7 +33,8 @@ namespace Voise.Process
             }
             else
             {
-                contexts = classifierManager.GetTrainingList(config.model_name);
+                contexts = classifierManager.GetTrainingList(
+                    config.model_name, config.language_code);
             }
 
             return contexts;

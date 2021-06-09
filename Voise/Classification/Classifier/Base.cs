@@ -53,6 +53,23 @@ namespace Voise.Classification.Classifier
             }
         }
 
+        private string _languageCode;
+        internal string LanguageCode
+        {
+            get
+            {
+                return _languageCode;
+            }
+
+            set
+            {
+                if (_languageCode != null)
+                    throw new System.Exception("Language code already defined.");
+
+                _languageCode = value;
+            }
+        }
+
         internal Base(ILog logger)
         {
             _modelName = null;
