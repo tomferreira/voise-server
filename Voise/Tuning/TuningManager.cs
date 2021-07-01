@@ -13,7 +13,7 @@ namespace Voise.Tuning
         private string _tuningPath;
         private int _retentionDays;
 
-        private ILog _logger;
+        private readonly ILog _logger;
 
         private Thread _retentionPolice;
 

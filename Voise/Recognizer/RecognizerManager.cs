@@ -11,7 +11,7 @@ namespace Voise.Recognizer
 {
     public class RecognizerManager : IRecognizerManager
     {
-        private Dictionary<string, ICommonRecognizer> _recognizers;
+        private readonly Dictionary<string, ICommonRecognizer> _recognizers;
 
         // Microsoft is the default engine for recognizer.
         private const string DEFAULT_ENGINE_IDENTIFIER = MicrosoftRecognizer.ENGINE_IDENTIFIER;

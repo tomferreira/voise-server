@@ -14,8 +14,8 @@ namespace Voise.Classification
 {
     public class ClassifierManager : IClassifierManager
     {
-        private ILog _logger;
-        private Dictionary<string, Classifier.Base> _classifiers;
+        private readonly ILog _logger;
+        private readonly Dictionary<string, Classifier.Base> _classifiers;
 
         // Delimiter used in the relation attribute
         // to separate model name and language code.

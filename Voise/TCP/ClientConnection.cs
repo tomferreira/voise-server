@@ -15,8 +15,8 @@ namespace Voise.TCP
     {
         private const string DELIMITER = "<EOF>";
 
-        private Socket _socket;
-        private SocketAsyncEventArgs _readEventArgs;
+        private readonly Socket _socket;
+        private readonly SocketAsyncEventArgs _readEventArgs;
 
         private byte[] _buffer;
         private StringBuilder _data;

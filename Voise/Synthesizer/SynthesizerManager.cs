@@ -10,7 +10,7 @@ namespace Voise.Synthesizer
 {
     public class SynthesizerManager : ISynthesizerManager
     {
-        private Dictionary<string, ICommonSynthesizer> _synthesizers;
+        private readonly Dictionary<string, ICommonSynthesizer> _synthesizers;
 
         // Microsoft is the default engine for recognizer.
         private const string DEFAULT_ENGINE_IDENTIFIER = MicrosoftSynthesizer.ENGINE_IDENTIFIER;

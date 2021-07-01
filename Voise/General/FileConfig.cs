@@ -31,7 +31,7 @@ namespace Voise.General
         private const string DEFAULT_TUNING_PATH = "./tuning/";
         private const int DEFAULT_TUNING_RETENTON_DAY = 7;
 
-        private XmlElement _element;
+        private readonly XmlElement _element;
 
         public FileConfig()
         {

@@ -13,10 +13,10 @@ namespace Voise.TCP
 
         private Socket _listenSocket;
         private SocketAsyncEventArgs _acceptAsyncArgs;
-        private List<IClientConnection> _connections;
+        private readonly List<IClientConnection> _connections;
         private readonly HandlerRequest _hr;
 
-        private ILog _log;
+        private readonly ILog _log;
 
         internal Server(HandlerRequest hr)
         {
