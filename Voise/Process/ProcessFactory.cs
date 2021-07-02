@@ -49,7 +49,7 @@ namespace Voise.Process
             if (request.StreamStopRequest != null)
             {
                 return new ProcessStreamStopRequest(
-                    client, request.StreamStopRequest, _recognizerManager);
+                    client, request.StreamStopRequest);
             }
 
             if (request.SynthVoiceRequest != null)
