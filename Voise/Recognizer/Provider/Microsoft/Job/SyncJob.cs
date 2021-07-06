@@ -3,11 +3,11 @@ using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Recognition;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Voise.Provider.Microsoft;
+using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Common.Job;
 
 namespace Voise.Recognizer.Provider.Microsoft.Job
@@ -22,10 +22,13 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             SpeechAudioFormatInfo info = new SpeechAudioFormatInfo(encoding.Format, sampleRate, encoding.BitsPerSample,
                 encoding.ChannelCount, sampleRate * encoding.BitsPerSample / 8, encoding.BlockAlign, null);
 
-            CultureInfo cultureInfo = new CultureInfo(languageCode);
+            RecognizerInfo recognizerInfo = GetInstalledRecognizerInfo(languageCode, false);
 
-            Thread.CurrentThread.CurrentCulture = cultureInfo;
-            _engine = new SpeechRecognitionEngine(cultureInfo);
+            if (recognizerInfo == null)
+                throw new LanguageCodeNotSupportedException($"Recognizer info not found for language '{languageCode}'");
+
+            Thread.CurrentThread.CurrentCulture = recognizerInfo.Culture;
+            _engine = new SpeechRecognitionEngine(recognizerInfo);
 
             _engine.RecognizeCompleted +=
                 new EventHandler<RecognizeCompletedEventArgs>(RecognizeCompleted);
@@ -37,7 +40,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
             {
                 GrammarBuilder gb = new GrammarBuilder
                 {
-                    Culture = cultureInfo
+                    Culture = _engine.RecognizerInfo.Culture
                 };
 
                 gb.Append(new Choices(context.Value.ToArray()));

@@ -366,6 +366,7 @@
     <Compile Include="IocModule.cs" />
     <Compile Include="Process\ProcessFactory.cs" />
     <Compile Include="Recognizer\Exception\CodecNotSupportedException.cs" />
+    <Compile Include="Recognizer\Exception\LanguageCodeNotSupportedException.cs" />
     <Compile Include="Recognizer\Interface\IRecognizerManager.cs" />
     <Compile Include="Recognizer\Provider\Common\ICommonRecognizer.cs" />
     <Compile Include="Recognizer\Provider\Google\Internal\RecognizerStream.cs" />
