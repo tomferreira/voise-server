@@ -15,11 +15,11 @@ namespace Voise.General
 {
     public class VoiseServer : IHostedService
     {
-        private TCP.Server _tcpServer;
-        private IConfig _config;
-        private ProcessFactory _processFactory;
+        private readonly TCP.Server _tcpServer;
+        private readonly IConfig _config;
+        private readonly ProcessFactory _processFactory;
 
-        private ILog _logger;
+        private readonly ILog _logger;
 
         public VoiseServer(
             IConfig config,

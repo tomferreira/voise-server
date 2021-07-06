@@ -18,7 +18,7 @@ namespace Voise.Process
         private readonly VoiseSynthVoiceRequest _request;
         private readonly ISynthesizerManager _synthesizerManager;
 
-        private TuningOut _tuning;
+        private readonly TuningOut _tuning;
 
         internal ProcessSynthVoiceRequest(IClientConnection client, VoiseSynthVoiceRequest request,
             ISynthesizerManager synthesizerManager, ITuningManager tuningManager)

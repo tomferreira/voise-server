@@ -15,8 +15,8 @@ namespace VoiseService.Service
     {
         private VoiseServer _voise;
 
-        private ILog _logger;
-        private CancellationTokenSource _cancel;
+        private readonly ILog _logger;
+        private readonly CancellationTokenSource _cancel;
 
         public WinService(ILog logger)
         {

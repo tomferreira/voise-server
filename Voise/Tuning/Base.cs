@@ -19,12 +19,12 @@ namespace Voise.Tuning
         private bool _running;
 
         private readonly string _resultPath;
-        private MemoryStream _recording;
+        private readonly MemoryStream _recording;
         private WaveFormat _waveFormat;
 
         protected Dictionary<string, string> _attrs;
 
-        private InputMethod _inputMethod;
+        private readonly InputMethod _inputMethod;
         protected bool _shouldPersist;
         private bool _disposed;
 

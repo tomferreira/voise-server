@@ -21,7 +21,7 @@ namespace Voise.Process
         private readonly IRecognizerManager _recognizerManager;
         private readonly IClassifierManager _classifierManager;
 
-        private TuningIn _tuning;
+        private readonly TuningIn _tuning;
 
         internal ProcessStreamStartRequest(IClientConnection client, VoiseStreamRecognitionStartRequest request,
             IRecognizerManager recognizerManager, IClassifierManager classifierManager, ITuningManager tuningManager)

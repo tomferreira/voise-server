@@ -7,7 +7,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
 {
     internal class SyncJob : Base, ISyncJob
     {
-        private byte[] _audio;
+        private readonly byte[] _audio;
 
         internal SyncJob(string primaryKey, byte[] audio, AudioEncoding encoding, int sampleRate, string languageCode)
             : base(LogManager.GetLogger(typeof(SyncJob)))

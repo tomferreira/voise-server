@@ -10,7 +10,7 @@ namespace Voise.General
         private static long _nextId = 1;
         private static object _lockNextId = new object();
 
-        private SemaphoreSlim _mutex;
+        private readonly SemaphoreSlim _mutex;
 
         // Identification of pipeline
         internal long Id { get; private set; }

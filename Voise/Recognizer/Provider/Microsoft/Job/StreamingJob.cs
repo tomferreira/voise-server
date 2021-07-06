@@ -15,10 +15,10 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 {
     internal class StreamingJob : Base, IStreamingJob
     {
-        private IAudioStream _streamIn;
-        private SpeechStreamer _ss;
+        private readonly IAudioStream _streamIn;
+        private readonly SpeechAudioFormatInfo _info;
 
-        private SpeechAudioFormatInfo _info;
+        private SpeechStreamer _ss;
 
         internal StreamingJob(IAudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base(LogManager.GetLogger(typeof(StreamingJob)))

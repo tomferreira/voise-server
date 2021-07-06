@@ -13,12 +13,12 @@ namespace Voise.Recognizer.Provider.Google.Job
 {
     internal class StreamingJob : Base, IStreamingJob
     {
-        private StreamingRecognitionConfig _config;
+        private readonly StreamingRecognitionConfig _config;
         private RecognizerStream _recognizerStream;
         private RequestQueue<ByteString> _requestQueue;
         private Task _doneTask;
 
-        private IAudioStream _streamIn;
+        private readonly IAudioStream _streamIn;
 
         internal StreamingJob(SpeechRecognizer recognizer, IAudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base(recognizer)

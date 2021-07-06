@@ -8,7 +8,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
 {
     internal class StreamingJob : Base, IStreamingJob
     {
-        private IAudioStream _streamIn;
+        private readonly IAudioStream _streamIn;
 
         internal StreamingJob(string primaryKey, IAudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode)
             : base(LogManager.GetLogger(typeof(StreamingJob)))

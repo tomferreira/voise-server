@@ -10,14 +10,11 @@ namespace Voise.Process
     internal class ProcessStreamStopRequest : ProcessBase
     {
         private readonly VoiseStreamRecognitionStopRequest _request;
-        private readonly IRecognizerManager _recognizerManager;
 
-        internal ProcessStreamStopRequest(IClientConnection client, VoiseStreamRecognitionStopRequest request,
-            IRecognizerManager recognizerManager)
+        internal ProcessStreamStopRequest(IClientConnection client, VoiseStreamRecognitionStopRequest request)
             : base(client)
         {
             _request = request;
-            _recognizerManager = recognizerManager;
         }
 
         internal override async Task ExecuteAsync()

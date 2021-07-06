@@ -9,7 +9,7 @@ namespace Voise.Recognizer.Provider.Google.Job
 {
     internal class SyncJob : Base, ISyncJob
     {
-        private RecognizeRequest _request;
+        private readonly RecognizeRequest _request;
 
         internal SyncJob(SpeechRecognizer recognizer, byte[] audio, AudioEncoding encoding, int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
             : base(recognizer)
