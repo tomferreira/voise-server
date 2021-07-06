@@ -1,10 +1,9 @@
 ﻿using Microsoft.Speech.AudioFormat;
 using Microsoft.Speech.Synthesis;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Voise.General;
+using Voise.General.Interface;
 using Voise.Provider.Microsoft;
 using Voise.Synthesizer.Exception;
 using Voise.Synthesizer.Provider.Common.Job;
@@ -15,9 +14,9 @@ namespace Voise.Synthesizer.Provider.Microsoft
     {
         private readonly SpeechSynthesizer _speechSynthesizer;
         private readonly SpeechAudioFormatInfo _info;
-        private readonly AudioStream _streamOut;
+        private readonly IAudioStream _streamOut;
 
-        internal Job(AudioStream streamOut, AudioEncoding encoding, int sampleRate, string languageCode)
+        internal Job(IAudioStream streamOut, AudioEncoding encoding, int sampleRate, string languageCode)
         {
             _speechSynthesizer = new SpeechSynthesizer();
 
@@ -29,7 +28,7 @@ namespace Voise.Synthesizer.Provider.Microsoft
                 encoding.Format, sampleRate, encoding.BitsPerSample,
                 encoding.ChannelCount, sampleRate * encoding.BitsPerSample / 8, encoding.BlockAlign, null);
 
-            InstalledVoice voice = GetVoise(languageCode);
+            InstalledVoice voice = GetVoise(languageCode, false);
 
             if (voice == null || !voice.Enabled)
                 throw new BadVoiceException($"Voice not found for language '{languageCode}'");
@@ -77,10 +76,23 @@ namespace Voise.Synthesizer.Provider.Microsoft
                 throw new BadEncodingException("Sample rate is invalid.");
         }
 
-        private InstalledVoice GetVoise(string languageCode)
+        private InstalledVoice GetVoise(string languageCode, bool strict)
         {
-            return _speechSynthesizer.GetInstalledVoices()
-                .FirstOrDefault(voice => string.Equals(voice.VoiceInfo.Culture.Name, languageCode, StringComparison.OrdinalIgnoreCase));
+            if (languageCode == null)
+                return null;
+
+            var installedVoices = _speechSynthesizer.GetInstalledVoices();
+
+            var voiceSelected = installedVoices.FirstOrDefault(
+                    voice => string.Equals(voice.VoiceInfo.Culture.Name, languageCode, StringComparison.OrdinalIgnoreCase));
+
+            if (strict || voiceSelected != null)
+                return voiceSelected;
+
+            string prefixLanguageCode = languageCode.Split('-').First();
+
+            return installedVoices.FirstOrDefault(
+                voice => string.Equals(voice.VoiceInfo.Culture.Name.Split('-').First(), prefixLanguageCode, StringComparison.OrdinalIgnoreCase));
         }
 
         public void Dispose()

@@ -1,21 +1,24 @@
-﻿
-using Voise.Classification;
-using Voise.Recognizer;
-using Voise.Synthesizer;
+﻿using Voise.Classification.Interface;
+using Voise.Recognizer.Interface;
+using Voise.Synthesizer.Interface;
 using Voise.TCP;
 using Voise.TCP.Request;
-using Voise.Tuning;
+using Voise.Tuning.Interface;
 
 namespace Voise.Process
 {
     internal class ProcessFactory
     {
-        private readonly RecognizerManager _recognizerManager;
-        private readonly SynthesizerManager _synthesizerManager;
-        private readonly ClassifierManager _classifierManager;
-        private readonly TuningManager _tuningManager;
+        private readonly IRecognizerManager _recognizerManager;
+        private readonly ISynthesizerManager _synthesizerManager;
+        private readonly IClassifierManager _classifierManager;
+        private readonly ITuningManager _tuningManager;
 
-        internal ProcessFactory(RecognizerManager recognizerManager, SynthesizerManager synthesizerManager, ClassifierManager classifierManager, TuningManager tuningManager)
+        internal ProcessFactory(
+            IRecognizerManager recognizerManager, 
+            ISynthesizerManager synthesizerManager, 
+            IClassifierManager classifierManager, 
+            ITuningManager tuningManager)
         {
             _recognizerManager = recognizerManager;
             _synthesizerManager = synthesizerManager;
@@ -23,7 +26,7 @@ namespace Voise.Process
             _tuningManager = tuningManager;
         }
 
-        internal ProcessBase CreateProcess(ClientConnection client, VoiseRequest request)
+        internal ProcessBase CreateProcess(IClientConnection client, VoiseRequest request)
         {
             if (request.SyncRequest != null)
             {
@@ -46,7 +49,7 @@ namespace Voise.Process
             if (request.StreamStopRequest != null)
             {
                 return new ProcessStreamStopRequest(
-                    client, request.StreamStopRequest, _recognizerManager);
+                    client, request.StreamStopRequest);
             }
 
             if (request.SynthVoiceRequest != null)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Voise.General;
+using Voise.General.Interface;
 using Voise.Recognizer.Exception;
 using Voise.Recognizer.Provider.Common;
 using Voise.Recognizer.Provider.Common.Job;
@@ -30,7 +31,7 @@ namespace Voise.Recognizer.Provider.Google
             return new SyncJob(_recognizer, audio, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);
         }
 
-        protected override IStreamingJob CreateStreamingJob(AudioStream streamIn, string encoding,
+        protected override IStreamingJob CreateStreamingJob(IAudioStream streamIn, string encoding,
             int sampleRate, string languageCode, Dictionary<string, List<string>> contexts)
         {
             return new StreamingJob(_recognizer, streamIn, ConvertAudioEncoding(encoding), sampleRate, languageCode, contexts);

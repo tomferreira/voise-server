@@ -8,9 +8,9 @@ using Voise.TCP.Request;
 
 namespace Voise.Tuning
 {
-    internal abstract class Base : IDisposable
+    public abstract class Base : IDisposable
     {
-        internal enum InputMethod
+        public enum InputMethod
         {
             Sync,
             Stream
@@ -19,16 +19,16 @@ namespace Voise.Tuning
         private bool _running;
 
         private readonly string _resultPath;
-        private MemoryStream _recording;
+        private readonly MemoryStream _recording;
         private WaveFormat _waveFormat;
 
         protected Dictionary<string, string> _attrs;
 
-        private InputMethod _inputMethod;
+        private readonly InputMethod _inputMethod;
         protected bool _shouldPersist;
         private bool _disposed;
 
-        internal Base(string basePath, string direction, InputMethod inputMethod, VoiseConfig config)
+        public Base(string basePath, string direction, InputMethod inputMethod, VoiseConfig config)
         {
             _running = false;
 
@@ -91,7 +91,7 @@ namespace Voise.Tuning
             _recording.Write(data, offset, count);
         }
 
-        internal abstract void SetResult(VoiseResult result);
+        public abstract void SetResult(VoiseResult result);
 
         internal void Close()
         {

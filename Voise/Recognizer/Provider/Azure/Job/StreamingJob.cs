@@ -1,16 +1,16 @@
 ﻿using log4net;
 using System.Threading;
 using System.Threading.Tasks;
-using Voise.General;
+using Voise.General.Interface;
 using Voise.Recognizer.Provider.Common.Job;
 
 namespace Voise.Recognizer.Provider.Azure.Job
 {
     internal class StreamingJob : Base, IStreamingJob
     {
-        private AudioStream _streamIn;
+        private readonly IAudioStream _streamIn;
 
-        internal StreamingJob(string primaryKey, AudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode)
+        internal StreamingJob(string primaryKey, IAudioStream streamIn, AudioEncoding encoding, int sampleRate, string languageCode)
             : base(LogManager.GetLogger(typeof(StreamingJob)))
         {
             ValidateArguments(encoding, sampleRate, languageCode);
@@ -42,7 +42,7 @@ namespace Voise.Recognizer.Provider.Azure.Job
             }).ConfigureAwait(false);
         }
 
-        private void ConsumeStreamData(object sender, AudioStream.StreamInEventArgs e)
+        private void ConsumeStreamData(object sender, IStreamInEventArgs e)
         {
             _recognitionClient.SendAudio(e.Buffer, e.BytesStreamed);
         }

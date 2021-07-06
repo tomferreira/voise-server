@@ -1,7 +1,13 @@
-﻿using Common.Logging;
+﻿using Autofac;
+using log4net;
 using System;
-using Topshelf;
+using System.Threading;
+using Voise.Classification.Interface;
 using Voise.General;
+using Voise.General.Interface;
+using Voise.Recognizer.Interface;
+using Voise.Synthesizer.Interface;
+using Voise.Tuning.Interface;
 
 namespace VoiseService.Service
 {
@@ -9,59 +15,57 @@ namespace VoiseService.Service
     {
         private VoiseServer _voise;
 
-        public ILog Log { get; private set; }
+        private readonly ILog _logger;
+        private readonly CancellationTokenSource _cancel;
 
         public WinService(ILog logger)
         {
-            // IocModule.cs needs to be updated in case new paramteres are added to this constructor
-
-            if (logger == null)
-                throw new ArgumentNullException(nameof(logger));
-
-            Log = logger;
+            _logger = logger;
+            _cancel = new CancellationTokenSource();
         }
 
-        public bool Start(HostControl hostControl)
+        public bool Start(IContainer container)
         {
-            Log.Info($"{nameof(Service.WinService)} Start command received.");
+            _logger.Info($"{nameof(WinService)} Start command received.");
 
             try
             {
-                Voise.General.Config config = new Voise.General.Config();
+                using (var scope = container.BeginLifetimeScope())
+                {
+                    _voise = new VoiseServer(
+                        scope.Resolve<IConfig>(),
+                        scope.Resolve<IRecognizerManager>(),
+                        scope.Resolve<IClassifierManager>(),
+                        scope.Resolve<ISynthesizerManager>(),
+                        scope.Resolve<ITuningManager>(),
+                        _logger);
+                }
 
-                _voise = new VoiseServer(config);
-                _voise.Start();
+                _voise.StartAsync(_cancel.Token).Wait();
 
                 return true;
             }
-            catch (AggregateException e)
+            catch (Exception e)
             {
-                foreach (var ie in e.InnerExceptions)
-                    Log.Fatal($"{ie.Message}\nStacktrace: {ie.StackTrace}");
-
-                return false;
-            }
-            catch(Exception e)
-            {
-                Log.Fatal($"{e.Message}\nStacktrace: {e.StackTrace}");
+                Voise.IocModule.LogDeepestExceptions(e, _logger);
                 return false;
             }
         }
 
-        public bool Stop(HostControl hostControl)
+        public bool Stop()
         {
-            Log.Trace($"{nameof(Service.WinService)} Stop command received.");
+            _logger.Debug($"{nameof(WinService)} Stop command received.");
 
-            _voise?.Stop();
+            _voise?.StopAsync(_cancel.Token).Wait();
 
             return true;
         }
 
-        public bool Shutdown(HostControl hostControl)
+        public bool Shutdown()
         {
-            Log.Trace($"{nameof(Service.WinService)} Shutdown command received.");
+            _logger.Debug($"{nameof(WinService)} Shutdown command received.");
 
-            _voise?.Stop();
+            _voise?.StopAsync(_cancel.Token).Wait();
 
             return true;
         }

@@ -1,4 +1,5 @@
-﻿using weka.classifiers.functions;
+﻿using log4net;
+using weka.classifiers.functions;
 using weka.core;
 using weka.filters;
 using weka.filters.unsupervised.attribute;
@@ -7,8 +8,8 @@ namespace Voise.Classification.Classifier
 {
     internal class LogisticTextClassifier : Base
     {
-        internal LogisticTextClassifier()
-            : base()
+        internal LogisticTextClassifier(ILog logger)
+            : base(logger)
         {
             _wekaClassifier = new Logistic();
             _filter = new StringToWordVector();

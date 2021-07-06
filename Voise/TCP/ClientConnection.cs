@@ -4,18 +4,19 @@ using System;
 using System.Net.Sockets;
 using System.Text;
 using Voise.General;
+using Voise.General.Interface;
 using Voise.TCP.Request;
 using Voise.TCP.Response;
 using static Voise.TCP.Server;
 
 namespace Voise.TCP
 {
-    internal class ClientConnection : IDisposable
+    internal class ClientConnection : IClientConnection
     {
         private const string DELIMITER = "<EOF>";
 
-        private Socket _socket;
-        private SocketAsyncEventArgs _readEventArgs;
+        private readonly Socket _socket;
+        private readonly SocketAsyncEventArgs _readEventArgs;
 
         private byte[] _buffer;
         private StringBuilder _data;
@@ -24,17 +25,15 @@ namespace Voise.TCP
 
         private ILog _log;
 
-        internal delegate void ClosedEventHandler(ClientConnection client);
+        //
+        public IAudioStream StreamIn { get; set; }
 
         //
-        internal AudioStream StreamIn { get; set; }
+        public IAudioStream StreamOut { get; set; }
 
-        //
-        internal AudioStream StreamOut { get; set; }
+        public Pipeline CurrentPipeline { get; set; }
 
-        internal Pipeline CurrentPipeline { get; set; }
-
-        internal System.Net.EndPoint RemoteEndPoint { get; private set; }
+        public System.Net.EndPoint RemoteEndPoint { get; private set; }
 
         internal ClientConnection(Socket acceptedSocket, HandlerRequest hr)
         {
@@ -59,9 +58,9 @@ namespace Voise.TCP
             ReceiveAsync(_readEventArgs);
         }
 
-        internal event ClosedEventHandler Closed;
+        public event ClosedEventHandler Closed;
 
-        internal bool IsOpen()
+        public bool IsOpen()
         {
             lock (_socket)
                 return _socket.Connected;
@@ -146,7 +145,7 @@ namespace Voise.TCP
             ReceiveAsync(e);
         }
 
-        internal void SendResponse(VoiseResponse response)
+        public void SendResponse(VoiseResponse response)
         {
             if (response == null)
                 return;

@@ -2,27 +2,29 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Voise.Classification;
+using Voise.Classification.Interface;
 using Voise.General;
 using Voise.Recognizer;
 using Voise.Recognizer.Exception;
+using Voise.Recognizer.Interface;
 using Voise.Recognizer.Provider.Common;
 using Voise.TCP;
 using Voise.TCP.Request;
 using Voise.Tuning;
+using Voise.Tuning.Interface;
 
 namespace Voise.Process
 {
     internal class ProcessSyncRequest : ProcessBase
     {
         private readonly VoiseSyncRecognitionRequest _request;
-        private readonly RecognizerManager _recognizerManager;
-        private readonly ClassifierManager _classifierManager;
+        private readonly IRecognizerManager _recognizerManager;
+        private readonly IClassifierManager _classifierManager;
 
-        private TuningIn _tuning;
+        private readonly TuningIn _tuning;
 
-        internal ProcessSyncRequest(ClientConnection client, VoiseSyncRecognitionRequest request,
-            RecognizerManager recognizerManager, ClassifierManager classifierManager, TuningManager tuningManager)
+        internal ProcessSyncRequest(IClientConnection client, VoiseSyncRecognitionRequest request,
+            IRecognizerManager recognizerManager, IClassifierManager classifierManager, ITuningManager tuningManager)
             : base(client)
         {
             _request = request;
@@ -42,9 +44,9 @@ namespace Voise.Process
 
             try
             {
-                CommonRecognizer recognizer = _recognizerManager.GetRecognizer(_request.Config.engine_id);
+                ICommonRecognizer recognizer = _recognizerManager.GetRecognizer(_request.Config.engine_id);
 
-                var audio = Util.ConvertAudioToBytes(_request.audio);
+                var audio = ConvertAudioToBytes(_request.audio);
 
                 _tuning?.WriteRecording(audio, 0, audio.Length);
 
@@ -90,6 +92,7 @@ namespace Voise.Process
                     {
                         var classification = await _classifierManager.ClassifyAsync(
                             _request.Config.model_name,
+                            _request.Config.language_code,
                             pipeline.Result.Transcript).ConfigureAwait(false);
 
                         pipeline.Result.Intent = classification.ClassName;
@@ -117,6 +120,21 @@ namespace Voise.Process
 
                 _client.CurrentPipeline.Dispose();
                 _client.CurrentPipeline = null;
+            }
+        }
+
+        internal static byte[] ConvertAudioToBytes(string audio_base64)
+        {
+            if (string.IsNullOrWhiteSpace(audio_base64))
+                throw new BadAudioException("Audio is empty.");
+
+            try
+            {
+                return Convert.FromBase64String(audio_base64);
+            }
+            catch (System.Exception e)
+            {
+                throw new BadAudioException("Audio is invalid.", e);
             }
         }
     }

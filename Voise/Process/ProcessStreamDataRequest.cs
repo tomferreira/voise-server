@@ -10,7 +10,7 @@ namespace Voise.Process
     {
         private readonly VoiseStreamRecognitionDataRequest _request;
 
-        internal ProcessStreamDataRequest(ClientConnection client, VoiseStreamRecognitionDataRequest request)
+        internal ProcessStreamDataRequest(IClientConnection client, VoiseStreamRecognitionDataRequest request)
             : base(client)
         {
             _request = request;

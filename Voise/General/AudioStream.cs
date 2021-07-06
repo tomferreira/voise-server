@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Voise.General.Interface;
 
 namespace Voise.General
 {
-    internal class AudioStream : IDisposable
+    internal class AudioStream : IAudioStream
     {
         /// <summary>
         /// Event Args for StreamIn event
         /// </summary>
-        internal class StreamInEventArgs : EventArgs
+        internal class StreamInEventArgs : EventArgs, IStreamInEventArgs
         {
             private readonly byte[] buffer;
             private readonly int bytes;
@@ -41,16 +42,6 @@ namespace Voise.General
             }
         }
 
-        /// <summary>
-        /// Indicates streamed data is available 
-        /// </summary>
-        internal event EventHandler<StreamInEventArgs> DataAvailable;
-
-        /// <summary>
-        /// Indicates that all streamed data has now been received.
-        /// </summary>
-        internal event EventHandler StreamingStopped;
-
         enum State
         {
             Started,
@@ -66,7 +57,10 @@ namespace Voise.General
 
         private readonly object _mutex;
 
-        internal int BufferCapacity { get; private set; }
+        public event EventHandler<IStreamInEventArgs> DataAvailable;
+        public event EventHandler StreamingStopped;
+
+        public int BufferCapacity { get; private set; }
 
         internal AudioStream(int maxFrameMillisec, int sampleRate, int bytesPerSample, Tuning.Base tuning)
         {
@@ -84,13 +78,13 @@ namespace Voise.General
             CreateBuffer();
         }
 
-        internal void Start()
+        public void Start()
         {
             lock (_mutex)
                 _state = State.Started;
         }
 
-        internal void Stop()
+        public void Stop()
         {
             lock (_mutex)
             {
@@ -109,7 +103,7 @@ namespace Voise.General
             StreamingStopped?.Invoke(this, EventArgs.Empty);
         }
 
-        internal void Abort()
+        public void Abort()
         {
             Stop();
 
@@ -117,19 +111,19 @@ namespace Voise.General
                 _state = State.Aborted;
         }
 
-        internal bool IsStarted()
+        public bool IsStarted()
         {
             lock (_mutex)
                 return _state == State.Started;
         }
 
-        internal bool IsAborted()
+        public bool IsAborted()
         {
             lock (_mutex)
                 return _state == State.Aborted;
         }
 
-        internal void Write(byte[] data)
+        public void Write(byte[] data)
         {
             lock (_mutex)
             {

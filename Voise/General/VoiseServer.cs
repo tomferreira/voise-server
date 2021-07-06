@@ -1,62 +1,63 @@
 ﻿using log4net;
+using Microsoft.Extensions.Hosting;
+using System.Threading;
 using System.Threading.Tasks;
-using Voise.Classification;
+using Voise.Classification.Interface;
+using Voise.General.Interface;
 using Voise.Process;
-using Voise.Recognizer;
-using Voise.Synthesizer;
+using Voise.Recognizer.Interface;
+using Voise.Synthesizer.Interface;
 using Voise.TCP;
 using Voise.TCP.Request;
-using Voise.Tuning;
+using Voise.Tuning.Interface;
 
 namespace Voise.General
 {
-    public class VoiseServer
+    public class VoiseServer : IHostedService
     {
-        private TCP.Server _tcpServer;
-        private Config _config;
-        private ProcessFactory _processFactory;
+        private readonly TCP.Server _tcpServer;
+        private readonly IConfig _config;
+        private readonly ProcessFactory _processFactory;
 
-        private ILog _log;
+        private readonly ILog _logger;
 
-        public VoiseServer(Config config)
+        public VoiseServer(
+            IConfig config,
+            IRecognizerManager recognizerManager,
+            IClassifierManager classifierManager,
+            ISynthesizerManager synthesizerManager,
+            ITuningManager tuningManager,
+            ILog logger)
         {
-            _log = LogManager.GetLogger(typeof(VoiseServer));
-            _log.Info($"Initializing Voise Server v{Version.VersionString}.");
+            _logger = logger;
+            _logger.Info($"Initializing Voise Server v{Version.VersionString}.");
 
             _config = config;
 
             _tcpServer = new TCP.Server(HandleClientRequest);
 
-            // ASR
-            RecognizerManager recognizerManager = new RecognizerManager(_config);
-            ClassifierManager classifierManager = new ClassifierManager(_config);
-
-            // TTS
-            SynthesizerManager synthesizerManager = new SynthesizerManager(_config);
-
-            //
-            TuningManager tuningManager = new TuningManager(_config);
-
             _processFactory = new ProcessFactory(
                 recognizerManager, synthesizerManager, classifierManager, tuningManager);
         }
 
-        public void Start()
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _tcpServer.StartAsync(_config.Port);
+            await _tcpServer.StartAsync(_config.Port);
 
-            _log.Info("Voise Server started.");
+            _logger.Info("Voise Server started.");
         }
 
-        public void Stop()
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
             if (_tcpServer != null && _tcpServer.IsOpen)
-                _tcpServer.Stop();
+            {
+                await _tcpServer.StopAsync();
+            }
 
-            _log.Info("Voise Server stopped.");
+            _logger.Info("Voise Server stopped.");
         }
 
-        private async Task HandleClientRequest(ClientConnection client, VoiseRequest request)
+        private async Task HandleClientRequest(IClientConnection client, VoiseRequest request)
         {
             ProcessBase process = _processFactory.CreateProcess(client, request);
 

@@ -34,3 +34,5 @@ using Voise;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion(Version.VersionString)]
 [assembly: AssemblyFileVersion(Version.VersionString)]
+
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "Log.config", Watch = true)]

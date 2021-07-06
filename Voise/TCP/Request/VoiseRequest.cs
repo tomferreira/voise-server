@@ -15,7 +15,7 @@ namespace Voise.TCP.Request
         public VoiseSynthVoiceRequest SynthVoiceRequest { get; set; }
     };
 
-    internal class VoiseConfig
+    public class VoiseConfig
     {
 #pragma warning disable 0649
         public string engine_id;

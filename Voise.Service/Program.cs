@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Autofac;
+using log4net;
+using log4net.Config;
+using System;
 using System.IO;
 using Topshelf;
-using Topshelf.Common.Logging;
-using Topshelf.Ninject;
+using Topshelf.Autofac;
 
 namespace VoiseService
 {
@@ -22,19 +24,22 @@ namespace VoiseService
 
             HostFactory.Run(x =>
             {
-                x.UseCommonLogging();
-                x.UseNinject(new IocModule());
+                x.UseLog4Net();
+
+                var container = CreateContainer();
+
+                x.UseAutofacContainer(container);
 
                 x.Service<Service.WinService>(sc =>
                 {
-                    sc.ConstructUsingNinject();
+                    sc.ConstructUsingAutofacContainer();
 
                     // the start and stop methods for the service
-                    sc.WhenStarted((s, hostControl) => s.Start(hostControl));
-                    sc.WhenStopped((s, hostControl) => s.Stop(hostControl));
+                    sc.WhenStarted((s, hostControl) => s.Start(container));
+                    sc.WhenStopped((s, hostControl) => s.Stop());
 
                     // optional, when shutdown is supported
-                    sc.WhenShutdown((s, hostControl) => s.Shutdown(hostControl));
+                    sc.WhenShutdown((s, hostControl) => s.Shutdown());
                 });
 
                 x.RunAsLocalSystem();
@@ -58,6 +63,22 @@ namespace VoiseService
                 x.SetDisplayName(displayName);
                 x.SetServiceName(serviceName);
             });
+        }
+
+        private static IContainer CreateContainer()
+        {
+            BasicConfigurator.Configure();
+            var logger = LogManager.GetLogger(typeof(Service.WinService));
+
+            ContainerBuilder containerBuilder = new ContainerBuilder();
+
+            Voise.IocModule.BuildContainer(containerBuilder, logger);
+
+            containerBuilder.RegisterType<Service.WinService>()
+                .AsSelf()
+                .InstancePerLifetimeScope();
+
+            return containerBuilder.Build();
         }
     }
 }
