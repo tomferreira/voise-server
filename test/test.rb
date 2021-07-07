@@ -2,7 +2,7 @@ require 'voise'
 
 class VoiseClientTest
 
-  VOISE_HOST = '10.100.5.65'
+  VOISE_HOST = '127.0.0.1'
   VOISE_PORT = 8102
 
   # Buffer size in bytes
