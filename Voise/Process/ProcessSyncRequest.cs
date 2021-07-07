@@ -40,13 +40,13 @@ namespace Voise.Process
 
             var pipeline = _client.CurrentPipeline = new Pipeline();
 
-            log.Info($"Starting request with engine '{_request.Config.engine_id}' at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
+            log.Info($"Starting request with engine '{_request.Config.EngineID}' at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             try
             {
-                ICommonRecognizer recognizer = _recognizerManager.GetRecognizer(_request.Config.engine_id);
+                ICommonRecognizer recognizer = _recognizerManager.GetRecognizer(_request.Config.EngineID);
 
-                var audio = ConvertAudioToBytes(_request.audio);
+                var audio = ConvertAudioToBytes(_request.Audio);
 
                 _tuningIn?.WriteRecording(audio, 0, audio.Length);
 
@@ -54,9 +54,9 @@ namespace Voise.Process
 
                 var recognition = await recognizer.SyncRecognition(
                     audio,
-                    _request.Config.encoding,
-                    _request.Config.sample_rate,
-                    _request.Config.language_code,
+                    _request.Config.Encoding,
+                    _request.Config.SampleRate,
+                    _request.Config.LanguageCode,
                     contexts).ConfigureAwait(false);
 
                 //
@@ -81,7 +81,7 @@ namespace Voise.Process
 
             try
             {
-                if (_request.Config.model_name != null && pipeline.Result.Transcript != null)
+                if (_request.Config.ModelName != null && pipeline.Result.Transcript != null)
                 {
                     if (pipeline.Result.Transcript == SpeechRecognitionResult.NoResult.Transcript)
                     {
@@ -91,8 +91,8 @@ namespace Voise.Process
                     else
                     {
                         var classification = await _classifierManager.ClassifyAsync(
-                            _request.Config.model_name,
-                            _request.Config.language_code,
+                            _request.Config.ModelName,
+                            _request.Config.LanguageCode,
                             pipeline.Result.Transcript).ConfigureAwait(false);
 
                         pipeline.Result.Intent = classification.ClassName;

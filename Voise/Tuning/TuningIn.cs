@@ -9,8 +9,8 @@ namespace Voise.Tuning
         public TuningIn(string path, InputMethod inputMethod, VoiseConfig config)
             : base(path, "in", inputMethod, config)
         {
-            _attrs.Add("Model Name", config.model_name);
-            _attrs.Add("Context", string.Join(",", values: config.context ?? new List<string>()));
+            _attrs.Add("Model Name", config.ModelName);
+            _attrs.Add("Context", string.Join(",", values: config.Context ?? new List<string>()));
         }
 
         public override void SetResult(VoiseResult result)

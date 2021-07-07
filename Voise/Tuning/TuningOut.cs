@@ -10,7 +10,7 @@ namespace Voise.Tuning
         public TuningOut(string path, InputMethod inputMethod, string text, VoiseConfig config)
             : base(path, "out", inputMethod, config)
         {
-            _attrs.Add("Max frame (ms)", (config.max_frame_ms ?? 20).ToString(CultureInfo.InvariantCulture));
+            _attrs.Add("Max frame (ms)", (config.MaxFrameMS ?? 20).ToString(CultureInfo.InvariantCulture));
             _attrs.Add("Text", text);
         }
 

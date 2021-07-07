@@ -44,13 +44,13 @@ namespace Voise.Tuning
             _attrs = new Dictionary<string, string>
             {
                 { "Input Method", inputMethod.ToString() },
-                { "Engine ID", config.engine_id },
-                { "Encoding", config.encoding },
-                { "Sample Rate", config.sample_rate.ToString() },
-                { "Language Code", config.language_code }
+                { "Engine ID", config.EngineID },
+                { "Encoding", config.Encoding },
+                { "Sample Rate", config.SampleRate.ToString() },
+                { "Language Code", config.LanguageCode }
             };
 
-            CreateWaveFormat(config.encoding, config.sample_rate);
+            CreateWaveFormat(config.Encoding, config.SampleRate);
 
             _running = true;
             _shouldPersist = false;

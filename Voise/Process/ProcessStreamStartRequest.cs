@@ -49,24 +49,24 @@ namespace Voise.Process
 
             var pipeline = _client.CurrentPipeline = new Pipeline();
 
-            log.Info($"Starting stream request with engine '{_request.Config.engine_id}' at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
+            log.Info($"Starting stream request with engine '{_request.Config.EngineID}' at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
             try
             {
-                ICommonRecognizer recognizer = _recognizerManager.GetRecognizer(_request.Config.engine_id);
+                ICommonRecognizer recognizer = _recognizerManager.GetRecognizer(_request.Config.EngineID);
 
                 // Set the recognizer for be used when to stop the stream
                 _client.CurrentPipeline.Recognizer = recognizer;
 
                 Dictionary<string, List<string>> contexts = GetContexts(_request.Config, _classifierManager);
 
-                _client.StreamIn = new AudioStream(100, _request.Config.sample_rate, 2, _tuningIn);
+                _client.StreamIn = new AudioStream(100, _request.Config.SampleRate, 2, _tuningIn);
 
                 await recognizer.StartStreamingRecognitionAsync(
                     _client.StreamIn,
-                    _request.Config.encoding,
-                    _request.Config.sample_rate,
-                    _request.Config.language_code,
+                    _request.Config.Encoding,
+                    _request.Config.SampleRate,
+                    _request.Config.LanguageCode,
                     contexts).ConfigureAwait(false);
 
                 SendAccept();
@@ -117,7 +117,7 @@ namespace Voise.Process
 
             try
             {
-                if (_request.Config.model_name != null && pipeline.Result.Transcript != null)
+                if (_request.Config.ModelName != null && pipeline.Result.Transcript != null)
                 {
                     if (pipeline.Result.Transcript == SpeechRecognitionResult.NoResult.Transcript)
                     {
@@ -127,8 +127,8 @@ namespace Voise.Process
                     else
                     {
                         var classification = await _classifierManager.ClassifyAsync(
-                            _request.Config.model_name,
-                            _request.Config.language_code,
+                            _request.Config.ModelName,
+                            _request.Config.LanguageCode,
                             pipeline.Result.Transcript).ConfigureAwait(false);
 
                         pipeline.Result.Intent = classification.ClassName;
