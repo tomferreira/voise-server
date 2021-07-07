@@ -28,7 +28,7 @@ namespace Voise.Synthesizer.Provider.Microsoft
                 encoding.Format, sampleRate, encoding.BitsPerSample,
                 encoding.ChannelCount, sampleRate * encoding.BitsPerSample / 8, encoding.BlockAlign, null);
 
-            InstalledVoice voice = GetVoise(languageCode, false);
+            InstalledVoice voice = GetInstalledVoice(languageCode, false);
 
             if (voice == null || !voice.Enabled)
                 throw new BadVoiceException($"Voice not found for language '{languageCode}'");
@@ -76,7 +76,7 @@ namespace Voise.Synthesizer.Provider.Microsoft
                 throw new BadEncodingException("Sample rate is invalid.");
         }
 
-        private InstalledVoice GetVoise(string languageCode, bool strict)
+        private InstalledVoice GetInstalledVoice(string languageCode, bool strict)
         {
             if (languageCode == null)
                 return null;
@@ -101,7 +101,7 @@ namespace Voise.Synthesizer.Provider.Microsoft
             GC.SuppressFinalize(this);
         }
 
-        protected void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {

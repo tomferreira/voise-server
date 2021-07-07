@@ -10,15 +10,6 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
     // requested the speech recogniser assumes that the stream has finished.
     internal class SpeechStreamer : Stream
     {
-        [Serializable]
-        public class BufferOverwrittenException : System.Exception
-        {
-            internal BufferOverwrittenException()
-                : base()
-            {
-            }
-        }
-
         /// <summary>
         /// Object for synchronization between read and write
         /// </summary>

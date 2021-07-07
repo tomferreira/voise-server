@@ -42,7 +42,7 @@ namespace Voise.Recognizer.Provider.Google.Job
             {
                 foreach (var alternative in result.Alternatives)
                 {
-                    if (BestAlternative == SpeechRecognitionResult.NoResult || BestAlternative.Confidence < alternative.Confidence)
+                    if (IsBetterAlternative(alternative))
                         BestAlternative = new SpeechRecognitionResult(alternative.Transcript, alternative.Confidence);
                 }
             }

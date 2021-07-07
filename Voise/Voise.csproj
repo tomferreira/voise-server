@@ -382,6 +382,7 @@
     <Compile Include="Recognizer\Provider\Common\Job\ISyncJob.cs" />
     <Compile Include="Recognizer\Exception\BadAudioException.cs" />
     <Compile Include="Recognizer\Exception\BadEncodingException.cs" />
+    <Compile Include="Recognizer\Provider\Microsoft\Internal\BufferOverwrittenException.cs" />
     <Compile Include="Recognizer\Provider\Microsoft\Job\Base.cs" />
     <Compile Include="Recognizer\Provider\Microsoft\Job\StreamingJob.cs" />
     <Compile Include="Recognizer\Provider\Microsoft\Internal\SpeechStreamer.cs" />

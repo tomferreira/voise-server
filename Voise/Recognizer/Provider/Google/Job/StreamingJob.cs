@@ -3,6 +3,7 @@ using Google.Protobuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Voise.General.Interface;
 using Voise.Recognizer.Provider.Common.Job;
@@ -69,25 +70,21 @@ namespace Voise.Recognizer.Provider.Google.Job
 
         private async Task ConsumeResultsAsync()
         {
-            var cancellationToken = new System.Threading.CancellationToken();
             var responses = _recognizerStream.ResponseStream;
 
-            while (await responses.MoveNext(cancellationToken).ConfigureAwait(false))
+            while (await responses.MoveNext(CancellationToken.None).ConfigureAwait(false))
             {
                 var response = responses.Current;
 
-                if (response.Results.Any())
+                foreach (var result in response.Results)
                 {
-                    foreach (var result in response.Results)
+                    if (!result.IsFinal)
+                        continue;
+
+                    foreach (var alternative in result.Alternatives)
                     {
-                        if (result.IsFinal)
-                        {
-                            foreach (var alternative in result.Alternatives)
-                            {
-                                if (BestAlternative == SpeechRecognitionResult.NoResult || BestAlternative.Confidence < alternative.Confidence)
-                                    BestAlternative = new SpeechRecognitionResult(alternative.Transcript, alternative.Confidence);
-                            }
-                        }
+                        if (IsBetterAlternative(alternative))
+                            BestAlternative = new SpeechRecognitionResult(alternative.Transcript, alternative.Confidence);
                     }
                 }
             }

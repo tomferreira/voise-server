@@ -26,7 +26,7 @@ namespace Voise.Synthesizer.Provider.Microsoft
                 byte[] buffer2 = new byte[count];
                 Array.Copy(buffer, offset, buffer2, 0, count);
 
-                Progress.Invoke(null, new ProgressEventArgs(buffer2));
+                Progress.Invoke(this, new ProgressEventArgs(buffer2));
             }
         }
     }
