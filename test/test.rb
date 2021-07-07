@@ -151,13 +151,11 @@ class VoiseClientTest
   end
 
   # client = VoiseClientTest.new
-  # client.say("Mensagem de teste", "Alaw", 8000, "pt-BR", "output.wav")
-  # client.say("<prosody range=\"x-high\"><prosody pitch=\"x-high\">Mensagem de teste 2</prosody></prosody>", "LINEAR16", 8000, "pt-BR", "output2.wav")
-  def say(text, encoding, sample_rate, language_code, filename)
-    response, audio_content = @client.say(text, encoding, sample_rate, language_code)
+  # client.say_to_file("Mensagem de teste", "LINEAR16", 8000, "pt-BR", "output.wav")
+  # client.say_to_file("<prosody range=\"x-high\"><prosody pitch=\"x-high\">Mensagem de teste 2</prosody></prosody>", "LINEAR16", 8000, "pt-BR", "output2.wav")
+  def say_to_file(text, encoding, sample_rate, language_code, filename)
+    response = @client.say_to_file(text, encoding, sample_rate, language_code, filename)
 
-    IO.binwrite(filename, audio_content) if response.result.code == 200
-      
     puts response.to_pretty_s
   end
 
