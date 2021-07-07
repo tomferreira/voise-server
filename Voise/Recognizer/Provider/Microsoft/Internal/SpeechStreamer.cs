@@ -23,7 +23,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         /// Object for synchronization between read and write
         /// </summary>
         private AutoResetEvent _writeEvent;
-        private object _writeEventObject;
+        private readonly object _writeEventObject;
 
         /// <summary>
         /// Buffer containing the stream data
@@ -73,7 +73,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         public override long Position
         {
             get { return 0L; }
-            set { }
+            set { throw new NotImplementedException(); }
         }
 
         public override long Seek(long offset, SeekOrigin origin)

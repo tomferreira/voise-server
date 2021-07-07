@@ -8,7 +8,7 @@ using Topshelf.Autofac;
 
 namespace VoiseService
 {
-    class Program
+    static class Program
     {
         static void Main()
         {

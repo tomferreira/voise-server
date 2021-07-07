@@ -21,7 +21,7 @@ namespace Voise.Process
         private readonly IRecognizerManager _recognizerManager;
         private readonly IClassifierManager _classifierManager;
 
-        private readonly TuningIn _tuning;
+        private readonly TuningIn _tuningIn;
 
         internal ProcessSyncRequest(IClientConnection client, VoiseSyncRecognitionRequest request,
             IRecognizerManager recognizerManager, IClassifierManager classifierManager, ITuningManager tuningManager)
@@ -31,7 +31,7 @@ namespace Voise.Process
             _recognizerManager = recognizerManager;
             _classifierManager = classifierManager;
 
-            _tuning = tuningManager.CreateTuningIn(TuningIn.InputMethod.Sync, _request.Config);
+            _tuningIn = tuningManager.CreateTuningIn(TuningIn.InputMethod.Sync, _request.Config);
         }
 
         internal override async Task ExecuteAsync()
@@ -48,7 +48,7 @@ namespace Voise.Process
 
                 var audio = ConvertAudioToBytes(_request.audio);
 
-                _tuning?.WriteRecording(audio, 0, audio.Length);
+                _tuningIn?.WriteRecording(audio, 0, audio.Length);
 
                 Dictionary<string, List<string>> contexts = GetContexts(_request.Config, _classifierManager);
 
@@ -103,7 +103,7 @@ namespace Voise.Process
                 log.Info($"Request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
                 //
-                _tuning?.SetResult(pipeline.Result);
+                _tuningIn?.SetResult(pipeline.Result);
 
                 SendResult(pipeline.Result);
             }
@@ -115,8 +115,8 @@ namespace Voise.Process
             }
             finally
             {
-                _tuning?.Close();
-                _tuning?.Dispose();
+                _tuningIn?.Close();
+                _tuningIn?.Dispose();
 
                 _client.CurrentPipeline.Dispose();
                 _client.CurrentPipeline = null;

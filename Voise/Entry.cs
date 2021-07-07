@@ -33,7 +33,7 @@ namespace Voise
                 IocModule.LogDeepestExceptions(e, _logger);
             }
 #else
-            Console.WriteLine("To start Voise Server, use the Windows Service.");
+            await Console.Out.WriteLineAsync("To start Voise Server, use the Windows Service.");
 #endif
         }
 

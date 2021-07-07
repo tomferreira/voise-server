@@ -13,7 +13,7 @@ namespace Voise.Process
     {
         protected readonly IClientConnection _client;
 
-        internal ProcessBase(IClientConnection client)
+        protected ProcessBase(IClientConnection client)
         {
             _client = client;
         }

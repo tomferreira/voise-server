@@ -139,7 +139,7 @@ namespace Voise.TCP
 
                         HandleRequest(request);
                     }
-                };
+                }
             }
 
             ReceiveAsync(e);

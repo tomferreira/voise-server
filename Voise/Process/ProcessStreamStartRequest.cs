@@ -21,7 +21,7 @@ namespace Voise.Process
         private readonly IRecognizerManager _recognizerManager;
         private readonly IClassifierManager _classifierManager;
 
-        private readonly TuningIn _tuning;
+        private readonly TuningIn _tuningIn;
 
         internal ProcessStreamStartRequest(IClientConnection client, VoiseStreamRecognitionStartRequest request,
             IRecognizerManager recognizerManager, IClassifierManager classifierManager, ITuningManager tuningManager)
@@ -31,7 +31,7 @@ namespace Voise.Process
             _recognizerManager = recognizerManager;
             _classifierManager = classifierManager;
 
-            _tuning = tuningManager.CreateTuningIn(TuningIn.InputMethod.Stream, _request.Config);
+            _tuningIn = tuningManager.CreateTuningIn(TuningIn.InputMethod.Stream, _request.Config);
         }
 
         internal override async Task ExecuteAsync()
@@ -60,7 +60,7 @@ namespace Voise.Process
 
                 Dictionary<string, List<string>> contexts = GetContexts(_request.Config, _classifierManager);
 
-                _client.StreamIn = new AudioStream(100, _request.Config.sample_rate, 2, _tuning);
+                _client.StreamIn = new AudioStream(100, _request.Config.sample_rate, 2, _tuningIn);
 
                 await recognizer.StartStreamingRecognitionAsync(
                     _client.StreamIn,
@@ -79,8 +79,8 @@ namespace Voise.Process
                 _client.StreamIn?.Dispose();
                 _client.StreamIn = null;
 
-                _tuning?.Close();
-                _tuning?.Dispose();
+                _tuningIn?.Close();
+                _tuningIn?.Dispose();
 
                 if (e is BadEncodingException || e is BadAudioException)
                 {
@@ -106,8 +106,8 @@ namespace Voise.Process
                 _client.StreamIn.Dispose();
                 _client.StreamIn = null;
 
-                _tuning?.Close();
-                _tuning?.Dispose();
+                _tuningIn?.Close();
+                _tuningIn?.Dispose();
 
                 log.Error($"{pipeline.AsyncStreamError.Message}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
@@ -136,7 +136,7 @@ namespace Voise.Process
                     }
                 }
 
-                _tuning?.SetResult(pipeline.Result);
+                _tuningIn?.SetResult(pipeline.Result);
 
                 log.Info($"Stream request successful finished at pipeline {pipeline.Id}. [Client: {_client.RemoteEndPoint.ToString()}]");
 
@@ -154,8 +154,8 @@ namespace Voise.Process
                 _client.StreamIn.Dispose();
                 _client.StreamIn = null;
 
-                _tuning?.Close();
-                _tuning?.Dispose();
+                _tuningIn?.Close();
+                _tuningIn?.Dispose();
 
                 _client.CurrentPipeline.Dispose();
                 _client.CurrentPipeline = null;

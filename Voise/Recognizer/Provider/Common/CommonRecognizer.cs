@@ -12,7 +12,7 @@ namespace Voise.Recognizer.Provider.Common
 
         protected Dictionary<IAudioStream, IStreamingJob> _streamingJobs;
 
-        internal CommonRecognizer()
+        protected CommonRecognizer()
         {
             _streamingJobs = new Dictionary<IAudioStream, IStreamingJob>();
 
