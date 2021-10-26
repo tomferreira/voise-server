@@ -12,11 +12,15 @@ namespace Voise
 {
     public static class Entry
     {
+
+#if (!DEBUG)
+        static void Main() =>
+            Console.Out.WriteLine("To start Voise Server, use the Windows Service.");
+#else
         private static ILog _logger;
 
         static async Task Main()
         {
-#if DEBUG
             BasicConfigurator.Configure();
             _logger = LogManager.GetLogger(typeof(Entry));
 
@@ -32,9 +36,6 @@ namespace Voise
             {
                 IocModule.LogDeepestExceptions(e, _logger);
             }
-#else
-            Console.WriteLine("To start Voise Server, use the Windows Service.");
-#endif
         }
 
         private static void ConfigureServices(IServiceCollection services)
@@ -54,5 +55,6 @@ namespace Voise
 
             IocModule.BuildContainer(containerBuilder, _logger);
         }
+#endif
     }
 }

@@ -13,7 +13,7 @@ namespace Voise.Process
     {
         protected readonly IClientConnection _client;
 
-        internal ProcessBase(IClientConnection client)
+        protected ProcessBase(IClientConnection client)
         {
             _client = client;
         }
@@ -24,17 +24,17 @@ namespace Voise.Process
         {
             Dictionary<string, List<string>> contexts = null;
 
-            if (config.context != null)
+            if (config.Context != null)
             {
                 contexts = new Dictionary<string, List<string>>
                 {
-                    { "default", config.context }
+                    { "default", config.Context }
                 };
             }
             else
             {
                 contexts = classifierManager.GetTrainingList(
-                    config.model_name, config.language_code);
+                    config.ModelName, config.LanguageCode );
             }
 
             return contexts;

@@ -10,20 +10,11 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
     // requested the speech recogniser assumes that the stream has finished.
     internal class SpeechStreamer : Stream
     {
-        [Serializable]
-        public class BufferOverwrittenException : System.Exception
-        {
-            internal BufferOverwrittenException()
-                : base()
-            {
-            }
-        }
-
         /// <summary>
         /// Object for synchronization between read and write
         /// </summary>
         private AutoResetEvent _writeEvent;
-        private object _writeEventObject;
+        private readonly object _writeEventObject;
 
         /// <summary>
         /// Buffer containing the stream data
@@ -73,7 +64,7 @@ namespace Voise.Recognizer.Provider.Microsoft.Internal
         public override long Position
         {
             get { return 0L; }
-            set { }
+            set { throw new NotImplementedException(); }
         }
 
         public override long Seek(long offset, SeekOrigin origin)

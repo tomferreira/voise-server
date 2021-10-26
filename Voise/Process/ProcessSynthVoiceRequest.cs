@@ -18,7 +18,7 @@ namespace Voise.Process
         private readonly VoiseSynthVoiceRequest _request;
         private readonly ISynthesizerManager _synthesizerManager;
 
-        private readonly TuningOut _tuning;
+        private readonly TuningOut _tuningOut;
 
         internal ProcessSynthVoiceRequest(IClientConnection client, VoiseSynthVoiceRequest request,
             ISynthesizerManager synthesizerManager, ITuningManager tuningManager)
@@ -27,7 +27,7 @@ namespace Voise.Process
             _request = request;
             _synthesizerManager = synthesizerManager;
 
-            _tuning = tuningManager.CreateTuningOut(TuningIn.InputMethod.Sync, _request.text, _request.Config);
+            _tuningOut = tuningManager.CreateTuningOut(TuningIn.InputMethod.Sync, _request.Text, _request.Config);
         }
 
         // For while, its only implemented Microsoft Synthesizer
@@ -50,10 +50,11 @@ namespace Voise.Process
 
             try
             {
-                ICommonSynthesizer synthesizer = _synthesizerManager.GetSynthesizer(_request.Config.engine_id);
+                ICommonSynthesizer synthesizer = _synthesizerManager.GetSynthesizer(_request.Config.EngineID);
 
-                int bytesPerSample = synthesizer.GetBytesPerSample(_request.Config.encoding);
-                _client.StreamOut = new General.AudioStream(_request.Config.max_frame_ms ?? 20, _request.Config.sample_rate, bytesPerSample, _tuning);
+                int bytesPerSample = synthesizer.GetBytesPerSample(_request.Config.Encoding);
+                _client.StreamOut = new AudioStream(
+                    _request.Config.MaxFrameMS ?? 20, _request.Config.SampleRate, bytesPerSample, _tuningOut);
 
                 _client.StreamOut.DataAvailable += delegate (object sender, IStreamInEventArgs e)
                 {
@@ -69,17 +70,17 @@ namespace Voise.Process
 
                 var job = synthesizer.SetSynth(
                     _client.StreamOut,
-                    _request.Config.encoding,
-                    _request.Config.sample_rate,
-                    _request.Config.language_code);
+                    _request.Config.Encoding,
+                    _request.Config.SampleRate,
+                    _request.Config.LanguageCode);
 
                 SendAccept();
 
-                await synthesizer.SynthAsync(job, _request.text).ConfigureAwait(false);
+                await synthesizer.SynthAsync(job, _request.Text).ConfigureAwait(false);
 
                 pipeline.Result = new VoiseResult(VoiseResult.Modes.TTS);
 
-                _tuning?.SetResult(pipeline.Result);
+                _tuningOut?.SetResult(pipeline.Result);
             }
             catch (Exception e)
             {
@@ -101,8 +102,8 @@ namespace Voise.Process
                 _client.StreamOut.Dispose();
                 _client.StreamOut = null;
 
-                _tuning?.Close();
-                _tuning?.Dispose();
+                _tuningOut?.Close();
+                _tuningOut?.Dispose();
             }
 
             // Send end of stream (Empty audio indicates end of stream)

@@ -2,6 +2,7 @@
 using Microsoft.Speech.Recognition;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Voise.Provider.Microsoft;
 using Voise.Recognizer.Exception;
@@ -67,6 +68,25 @@ namespace Voise.Recognizer.Provider.Microsoft.Job
 
             if (contexts == null || contexts.Count == 0)
                 throw new System.Exception("Context is not defined. (This is only required to Microsoft engine, for all others this is optional)");
+        }
+
+        protected RecognizerInfo GetInstalledRecognizerInfo(string languageCode, bool strict)
+        {
+            if (languageCode == null)
+                return null;
+
+            var installedInfos = SpeechRecognitionEngine.InstalledRecognizers();
+
+            var infoSelected = installedInfos.FirstOrDefault(
+                    info => string.Equals(info.Culture.Name, languageCode, StringComparison.OrdinalIgnoreCase));
+
+            if (strict || infoSelected != null)
+                return infoSelected;
+
+            string prefixLanguageCode = languageCode.Split('-').First();
+
+            return installedInfos.FirstOrDefault(
+                info => string.Equals(info.Culture.Name.Split('-').First(), prefixLanguageCode, StringComparison.OrdinalIgnoreCase));
         }
 
         public void Dispose()

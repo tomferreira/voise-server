@@ -63,6 +63,12 @@ namespace Voise.Recognizer.Provider.Google.Job
             return speechContext;
         }
 
+        protected bool IsBetterAlternative(SpeechRecognitionAlternative alternative)
+        {
+            return BestAlternative == SpeechRecognitionResult.NoResult
+                || BestAlternative.Confidence < alternative.Confidence;
+        }
+
         public void Dispose()
         {
             Dispose(true);

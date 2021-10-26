@@ -15,7 +15,7 @@ using Voise.Tuning.Interface;
 
 namespace Voise
 {
-    public class IocModule
+    public static class IocModule
     {
         public static void BuildContainer(ContainerBuilder containerBuilder, ILog logger)
         {            

@@ -10,7 +10,7 @@ using Voise;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Legião da Boa Vontade")]
 [assembly: AssemblyProduct("Voise")]
-[assembly: AssemblyCopyright("Copyright © Legião da Boa Vontade 2018")]
+[assembly: AssemblyCopyright("Copyright © Legião da Boa Vontade 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

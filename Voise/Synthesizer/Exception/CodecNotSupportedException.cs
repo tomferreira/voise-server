@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Voise.Synthesizer.Exception
 {
@@ -11,6 +12,16 @@ namespace Voise.Synthesizer.Exception
 
         public CodecNotSupportedException(string message)
             : base(message)
+        {
+        }
+
+        public CodecNotSupportedException(string message, System.Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        protected CodecNotSupportedException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

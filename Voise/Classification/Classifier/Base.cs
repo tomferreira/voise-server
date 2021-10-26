@@ -70,7 +70,7 @@ namespace Voise.Classification.Classifier
             }
         }
 
-        internal Base(ILog logger)
+        protected Base(ILog logger)
         {
             _modelName = null;
             _trainingList = new Dictionary<string, List<string>>();

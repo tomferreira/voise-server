@@ -72,8 +72,7 @@ namespace Voise.Tuning
                 {
                     var directoryName = Path.GetFileName(Path.GetDirectoryName(directoryPath + Path.DirectorySeparatorChar));
 
-                    DateTime directoryDate;
-                    if (DateTime.TryParse(directoryName, out directoryDate))
+                    if (DateTime.TryParse(directoryName, out DateTime directoryDate))
                     {
                         if ((now - directoryDate).Days >= _retentionDays)
                         {

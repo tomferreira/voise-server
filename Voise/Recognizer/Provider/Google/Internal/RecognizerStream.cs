@@ -20,7 +20,7 @@ namespace Voise.Recognizer.Provider.Google.Internal
         public StreamingRecognitionConfig Configuration { get; }
         public IClientStreamWriter<ByteString> RequestStream { get; }
 
-        private AsyncDuplexStreamingCall<StreamingRecognizeRequest, StreamingRecognizeResponse> _stream;
+        private readonly AsyncDuplexStreamingCall<StreamingRecognizeRequest, StreamingRecognizeResponse> _stream;
 
         public RecognizerStream(StreamingRecognitionConfig config, AsyncDuplexStreamingCall<StreamingRecognizeRequest, StreamingRecognizeResponse> stream)
         {

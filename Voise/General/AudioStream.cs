@@ -50,7 +50,7 @@ namespace Voise.General
         }
 
         private State _state;
-        private Queue<MemoryStream> _buffers;
+        private readonly Queue<MemoryStream> _buffers;
         private MemoryStream _currentBuffer;
 
         private readonly Tuning.Base _tuning;

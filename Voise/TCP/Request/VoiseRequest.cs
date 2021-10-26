@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Voise.TCP.Request
 {
@@ -17,18 +18,27 @@ namespace Voise.TCP.Request
 
     public class VoiseConfig
     {
-#pragma warning disable 0649
-        public string engine_id;
-        public string encoding;
-        public int sample_rate;
-        public string language_code;
+        [JsonProperty("engine_id")]
+        public string EngineID { get; private set; }
+
+        [JsonProperty("encoding")]
+        public string Encoding { get; private set; }
+
+        [JsonProperty("sample_rate")]
+        public int SampleRate { get; private set; }
+
+        [JsonProperty("language_code")]
+        public string LanguageCode { get; private set; }
 
         // Only for ASR
-        public string model_name;
-        public List<string> context;
+        [JsonProperty("model_name")]
+        public string ModelName { get; private set; }
+
+        [JsonProperty("context")]
+        public List<string> Context { get; private set; }
 
         // Only for TTS
-        public int? max_frame_ms;
-#pragma warning restore 0649
+        [JsonProperty("max_frame_ms")]
+        public int? MaxFrameMS { get; private set; }
     }
 }

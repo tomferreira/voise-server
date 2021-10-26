@@ -24,17 +24,14 @@ namespace Voise.Tuning
 
         protected Dictionary<string, string> _attrs;
 
-        private readonly InputMethod _inputMethod;
         protected bool _shouldPersist;
         private bool _disposed;
 
-        public Base(string basePath, string direction, InputMethod inputMethod, VoiseConfig config)
+        protected Base(string basePath, string direction, InputMethod inputMethod, VoiseConfig config)
         {
             _running = false;
 
             DateTime now = DateTime.Now;
-
-            _inputMethod = inputMethod;
 
             string fullPath = $"{basePath}/{now.ToString("yyyy-MM-dd")}/{direction}/";
             string filename = $"{now.ToString("HHmmss.fff")}-{new Random().Next()}";
@@ -46,14 +43,14 @@ namespace Voise.Tuning
 
             _attrs = new Dictionary<string, string>
             {
-                { "Input Method", _inputMethod.ToString() },
-                { "Engine ID", config.engine_id },
-                { "Encoding", config.encoding },
-                { "Sample Rate", config.sample_rate.ToString() },
-                { "Language Code", config.language_code }
+                { "Input Method", inputMethod.ToString() },
+                { "Engine ID", config.EngineID },
+                { "Encoding", config.Encoding },
+                { "Sample Rate", config.SampleRate.ToString() },
+                { "Language Code", config.LanguageCode }
             };
 
-            CreateWaveFormat(config.encoding, config.sample_rate);
+            CreateWaveFormat(config.Encoding, config.SampleRate);
 
             _running = true;
             _shouldPersist = false;
