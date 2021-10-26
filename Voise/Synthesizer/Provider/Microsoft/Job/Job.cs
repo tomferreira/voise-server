@@ -12,7 +12,7 @@ namespace Voise.Synthesizer.Provider.Microsoft
 {
     internal class Job : IJob
     {
-        private readonly SpeechSynthesizer _speechSynthesizer;
+        private SpeechSynthesizer _speechSynthesizer;
         private readonly SpeechAudioFormatInfo _info;
         private readonly IAudioStream _streamOut;
 
@@ -40,25 +40,25 @@ namespace Voise.Synthesizer.Provider.Microsoft
         {
             await Task.Run(() =>
             {
-                _streamOut.Start();
+                using (WaveStream waveStream = new WaveStream())
+                {
+                    _streamOut.Start();
 
-                WaveStream waveStream = new WaveStream();
+                    _speechSynthesizer.SetOutputToAudioStream(waveStream, _info);
 
-                _speechSynthesizer.SetOutputToAudioStream(waveStream, _info);
+                    string script = string.Format(
+                        "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"{0}\">{1}</speak>",
+                        _speechSynthesizer.Voice.Culture.Name, text);
 
-                string script = string.Format(
-                    "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"{0}\">{1}</speak>",
-                    _speechSynthesizer.Voice.Culture.Name, text);
+                    Prompt prompt = new Prompt(script, SynthesisTextFormat.Ssml);
 
-                Prompt prompt = new Prompt(script, SynthesisTextFormat.Ssml);
+                    waveStream.Progress += WaveStream_Progress;
 
-                waveStream.Progress += WaveStream_Progress;
+                    _speechSynthesizer.Speak(prompt);
+                    _speechSynthesizer.SetOutputToNull();
 
-                _speechSynthesizer.Speak(prompt);
-                _speechSynthesizer.SetOutputToNull();
-
-                _streamOut.Stop();
-                waveStream.Dispose();
+                    _streamOut.Stop();
+                }
             }).ConfigureAwait(false);
         }
 
@@ -106,6 +106,7 @@ namespace Voise.Synthesizer.Provider.Microsoft
             if (disposing)
             {
                 _speechSynthesizer.Dispose();
+                _speechSynthesizer = null;
             }
         }
     }
