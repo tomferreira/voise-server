@@ -1,8 +1,8 @@
 # Voise Server
 
-Componente principal da solução, o Voise Server é o gateway entre o cliente e os diversos provedores de serviços cognitvos, como reconhecimento de voz (Speech-to-text), sintetizador de voz (Text-to-speech) e reconhecimento de intenção (Intention recognition).
+Main component of solution, Voise Server is the gateway among the client and the many cognitive providers, such as speech recognition (Speech-to-text), voice synthesizer (Text-to-speech) and intention recognition.
 
-Atualmente os seguintes provedores são suportados:
+Currently follow providers are supported:
 
 | Provedor | Tipo | STT | TTS | IR |
 | -------- | :--: | :-: | :-: | :-: |
@@ -11,34 +11,30 @@ Atualmente os seguintes provedores são suportados:
 | Microsoft Speech | On-premise | X | |
 | Weka | On-premise | | | X |
 
-## Requisitos
+## Requirements
 
 * .Net Framework 4.8 Runtime (https://dotnet.microsoft.com/download/dotnet-framework/net48)
+* If using the Microsoft Speech provider
+    * Microsoft Speech Platform Runtime - x64
+    * Language Packs SR (ou STT) and TTS of chosen languages
 
-* Caso utilize o provedor Microsoft Speech
+## Instalation
 
-    * Microsoft Speech Platform Runtime - x64 (https://bvnet.lbv.org.br/repo/projects/SWVOS/repos/externals/browse/Microsoft%20Speech%20v11/Runtime)
-
-    * Language Packs SR (ou STT) e TTS dos idiomas escolhidos (https://bvnet.lbv.org.br/repo/projects/SWVOS/repos/externals/browse/Microsoft%20Speech%20v11/Language%20Packages)
-
-## Instalação
-
-1. Mova o diretório principal do Voise para o diretório %ProgramFiles%
-
-2. Para a criação do serviço Windows, execute no prompt o seguinte comando (no modo administrador):
+1. Compile the project
+2. Move the artefacts to %ProgramFiles%/voise-server directory.
+3. Create the Windows service, executing the follow command (as admin mode):
 
 ```
-cd %ProgramFiles%\Voise
+cd %ProgramFiles%\voise-server
 Voise.Server.exe install
 ```
+The service is created with automatic start.
 
-O serviço é criado com início automático, logo basta reiniciar a máquina que ele já estará no ar, ou se quiser já até a tela de serviço e inicie-o manualmente.
+## Configuration
 
-## Configuração
+The configuration is done in config.xml file in solution's main directory.
 
-A configuração é feita no arquivo config.xml no diretório principal da solução.
-
-Exemplo de configuração usando o Google Cloud:
+Example of configuration using the Google Cloud:
 ```
 <?xml version="1.0" encoding="utf-8" ?>
 <config>
@@ -50,7 +46,7 @@ Exemplo de configuração usando o Google Cloud:
         <enabled>ge</enabled>
 
         <google>
-            <credential_path>.\credentials\google-agente-virtual.json</credential_path>
+            <credential_path>.\credentials\google-credential.json</credential_path>
         </google>
 
     </recognizers>
@@ -63,7 +59,7 @@ Exemplo de configuração usando o Google Cloud:
     <!-- Default: ./classifiers/ -->
     <!-- <classifiers_path>./classifiers/</classifiers_path> -->
 
-    <!-- ATENÇÃO: A configuração de log deve ser realizada diretamente no arquivo Log.config -->
+    <!-- WARNING: The log configuration must be directly done at Log.config file -->
 
     <tuning>
         <!-- Default: false -->
@@ -77,4 +73,3 @@ Exemplo de configuração usando o Google Cloud:
     </tuning>
 </config>
 ```
-
